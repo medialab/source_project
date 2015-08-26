@@ -31,16 +31,16 @@ d3.json(apiUrl, function(error, data) {
   };
 
   var organisationsTypes = _(graph.organisations)
-      .sortBy('orgaTypeId')
-      .pluck('orgaTypeId')
+      .sortBy('typeId')
+      .pluck('typeId')
       .uniq()
       .filter(function(o){ return ! _.isUndefined(o)})
       .value()
       ;
 
   var relationsTypes = _(graph.relations)
-      .sortBy('typeInternalId')
-      .pluck('typeInternalId')
+      .sortBy('typeId')
+      .pluck('typeId')
       .uniq()
       .filter(function(o){ return ! _.isUndefined(o)})
       .value()
@@ -89,7 +89,7 @@ d3.json(apiUrl, function(error, data) {
     .enter().append("line")
       .attr("class", "link")
       .style("stroke-width", 10)
-      .style("stroke",function(r){return linkColor(_.indexOf(relationsTypes, r.typeInternalId));})
+      .style("stroke",function(r){return linkColor(_.indexOf(relationsTypes, r.typeId));})
       ;
 
   var node = svg.selectAll(".node")
@@ -97,7 +97,7 @@ d3.json(apiUrl, function(error, data) {
       .append("circle")
       .attr("class", "node")
       .attr("r", 10)
-      .style("fill",function(o){return nodeColor(_.indexOf(organisationsTypes, o.orgaTypeId));})
+      .style("fill",function(o){return nodeColor(_.indexOf(organisationsTypes, o.typeId));})
       .call(force.drag)
       ;
 
@@ -111,8 +111,8 @@ d3.json(apiUrl, function(error, data) {
       .attr('x', 0)
       .attr('y', function(t,i){return i*20})
       .text(function(t){
-        var o = _(graph.organisations).find('orgaTypeId', t);
-        return o.orgaType
+        var o = _(graph.organisations).find('typeId', t);
+        return o.typeName
       })
       .attr('fill', function(t){ return nodeColor(_.indexOf(organisationsTypes, t))})
       ;
@@ -123,7 +123,7 @@ d3.json(apiUrl, function(error, data) {
       .attr('x', 300)
       .attr('y', function(t,i){return i*20})
       .text(function(t){
-        var r = _(graph.relations).find('typeInternalId', t);
+        var r = _(graph.relations).find('typeId', t);
         if(r != undefined) return r.typeName
       })
       .attr('fill', function(t){ return linkColor(_.indexOf(relationsTypes, t))})
