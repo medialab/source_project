@@ -9,20 +9,42 @@ html, body {
 body {
 }
 
-.orgaLine { }
+#timeline {
 
-.label {
-  fill:black;
-  font-size: 12px;
-}
-.relations {
-  fill:transparent;
-  //stroke:red;
-  stroke-width:3;
-  // stroke-dasharray: 1,1;
+  .orgaLine { }
+
+  .label {
+    fill:black;
+    font-size: 12px;
+  }
+  .relations {
+    fill:transparent;
+    //stroke:red;
+    stroke-width:3;
+    // stroke-dasharray: 1,1;
+  }
+
+  text {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
 }
 
-text {
-  font-weight: bold;
-  text-transform: uppercase;
+
+#force {
+  .node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+  .link {
+    stroke: #999;
+    stroke-opacity: .6;
+  }
+
+  text {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: sans-serif;
+  }
 }

@@ -1,5 +1,5 @@
 var apiUrl = 'http://heurist.sydney.edu.au/h4-ao/h3/viewers/smarty/showReps.php?db=meder_test_to_delete&w=a&q=t:1%20OR%20t:4%20OR%20t:14%20sortby:rt&publish=1&debug=0&template=JSON-structured.tpl';
-var apiUrl = '/data/heurist-cache.json';
+var apiUrl = 'data/heurist-cache.json';
 
 d3.json(apiUrl, function(error, data) {
 
@@ -47,7 +47,7 @@ d3.json(apiUrl, function(error, data) {
     .append('svg')
     .attr('width', w)
     .attr('height', h)
-    .attr('class', 'container-fluid');
+    .attr('class', 'source-timeline');
 
 
   var timeBegin = 1920;
@@ -73,6 +73,7 @@ d3.json(apiUrl, function(error, data) {
     .attr('y', function(d, i) {return i*lineHeight;})
 
     .attr('width', function(d) {
+      // return 10
       if(d.endDate - d.startDate > 0) return x(timeBegin + d.endDate - d.startDate);
       else return  x(timeBegin + timeEnd - d.startDate);
     })
@@ -119,7 +120,7 @@ d3.json(apiUrl, function(error, data) {
     .enter()
     .append('text')
     .attr('class', 'label')
-    .attr('x', function(d) { return x(d.startDate) + lineMargin ;})
+    .attr('x', function(d) { return x(d.startDate) + lineMargin + 15 ;})
     .attr('y', function(d, i) {return i * lineHeight + 12 ;})
     .text(function(d) { return d.shortName})
     ;
