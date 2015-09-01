@@ -48,3 +48,43 @@ body {
     font-family: sans-serif;
   }
 }
+
+#forceTree {
+
+  text {
+    color: black;
+    background-color: white;
+    font-weight: bold;
+    font-size: 14px;
+        -webkit-filter: drop-shadow( -5px -5px 5px #000 );
+            filter: drop-shadow( -5px -5px 5px #000 );
+  }
+
+  circle {
+    stroke-width: 0;
+  }
+
+  .link {
+    stroke: #999;
+    stroke-opacity: .2;
+    stroke-width: 11px;
+    marker-end:"url(#triangle)";
+  }
+
+  .relTypeCaption {
+    opacity: .5;
+  }
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  shape-rendering: crispEdges;
+  stroke: #000;
+   stroke-dasharray: 2,5;
+}
+
+
+}
+
