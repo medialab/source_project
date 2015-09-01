@@ -7,6 +7,7 @@ var w = 1500,
     fill = d3.scale.category10(),
     timeBegin = 1945,
     timeEnd = 2010,
+    radius = 15,
     m = [ 50 , 30, 30, 30 ];
 
 
@@ -14,7 +15,7 @@ var
 
   y = d3.scale.linear()
     .domain([timeBegin, timeEnd])
-    .range([0, h])
+    .range([0, w])
     ,
 
   yTime = d3.time.scale()
@@ -26,12 +27,12 @@ var
   yAxis = d3.svg.axis(yTime)
     .scale(y)
     .tickSize(w)
-    .orient("right")
+    // .orient("right")
     ,
 
   force = d3.layout.force()
-    .charge(-1000)
-    .linkDistance(150)
+    .charge(-400)
+    .linkDistance(100)
     .size([w, h]);
 
   svg = d3.select("body").append("svg:svg")
@@ -143,15 +144,15 @@ svg.append("svg:defs").selectAll("marker")
 
   svg.append("g")
       .attr("class", "y axis")
-      .attr("transform", "translate( " + (-100) + ",0)")
+      .attr("transform", "translate( 0,-500)")
       .call(yAxis);
 
   var node = svg.selectAll("organisations")
       .data(graph.organisations)
-    .enter().append("text")
-      .attr("class", function(o){ return o.hasLink ? '' : 'hide'})
+    .enter().append("text").filter(function(d){ return d.hasLink; })
+      .attr("class", function(o){ return o.hasLink ? '' : 'sss'})
       .style("fill",function(o){return fill(_.indexOf(organisationsTypes, o.typeId));})
-      .attr("y", function(d) { return y(d.startDate); })
+      .attr("x", function(d) { return y(d.startDate); })
       .text(function(d) { return "⬣ "+d.shortName; })
       .call(force.drag);
 
@@ -188,17 +189,17 @@ svg.append("svg:defs").selectAll("marker")
 
   function tick(e) {
 
-    var k = 6 * e.alpha;
-    graph.relations.forEach(function(d, i) {
-      d.source.y -= k;
-      d.target.y += k;
-    });
+    // var k = 6 * e.alpha;
+    // graph.relations.forEach(function(d, i) {
+    //   d.source.y -= k;
+    //   d.target.y += k;
+    // });
 
-    node.attr("x", function(d) { return d.x; })
+    node.attr("y", function(d) { return d.y = Math.max(radius, Math.min(h - radius, d.y))})
 
-    link.attr("x1", function(d) { return d.source.x + 6; })
-        .attr("y1", function(d) { return y(d.source.startDate) - 6 ; })
-        .attr("x2", function(d) { return d.target.x + 6; })
-        .attr("y2", function(d) { return y(d.target.startDate) - 6 ; });
+    link.attr("x1", function(d) { return y(d.source.startDate) + 6; })
+        .attr("y1", function(d) { return d.source.y - 6 ; })
+        .attr("x2", function(d) { return y(d.target.startDate) + 6; })
+        .attr("y2", function(d) { return d.target.y - 6 ; });
   }
 });
