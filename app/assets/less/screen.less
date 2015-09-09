@@ -1,12 +1,9 @@
 //@import "variables.less";
-
 @import "../../../bower_components/bootstrap/less/bootstrap.less";
 
 html, body {
   height: 100%;
   width: 100%;
-}
-body {
 }
 
 #timeline {
@@ -30,7 +27,6 @@ body {
   }
 }
 
-
 #force {
   .node {
     stroke: #fff;
@@ -50,14 +46,13 @@ body {
 }
 
 #forceTree {
-
   text {
     color: black;
     background-color: white;
     font-weight: bold;
     font-size: 14px;
-        -webkit-filter: drop-shadow( -5px -5px 5px #000 );
-            filter: drop-shadow( -5px -5px 5px #000 );
+    -webkit-filter: drop-shadow( -5px -5px 5px #000 );
+    filter: drop-shadow( -5px -5px 5px #000 );
   }
 
   circle {
@@ -75,16 +70,23 @@ body {
     opacity: .5;
   }
 
-.axis path {
-  display: none;
+  .axis path {
+    display: none;
+  }
+
+  .axis line {
+    shape-rendering: crispEdges;
+    stroke: #000;
+     stroke-dasharray: 10,5;
+  }
 }
 
-.axis line {
-  shape-rendering: crispEdges;
-  stroke: #000;
-   stroke-dasharray: 2,5;
+#print {
+
+  .box {
+    shape-rendering: crispEdges;
+    stroke-dasharray: 1,3;
+  }
+  font-weight: bold;
+
 }
-
-
-}
-
