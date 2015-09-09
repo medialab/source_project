@@ -11,31 +11,7 @@ var w = 1500,
     m = [ 50 , 30, 30, 30 ];
 
 
-var
-
-  y = d3.scale.linear()
-    .domain([timeBegin, timeEnd])
-    .range([0, w])
-    ,
-
-  yTime = d3.time.scale()
-    .domain([timeBegin, timeEnd])
-    .range([0, h])
-    .nice()
-    ,
-
-  yAxis = d3.svg.axis(yTime)
-    .scale(y)
-    .tickSize(w)
-    // .orient("right")
-    ,
-
-  force = d3.layout.force()
-    .charge(-400)
-    .linkDistance(100)
-    .size([w, h]);
-
-  svg = d3.select("body").append("svg:svg")
+var svg = d3.select("body").append("svg:svg")
     .attr("width", w + m[1] + m[3] )
     .attr("height", h + m[0] + m[2]);
 
@@ -108,7 +84,8 @@ d3.json(apiUrl, function(error, data) {
 
   var nodesG = svg.selectAll("organisations")
       .data(graph.organisations)
-      .enter().append("g")
+      .enter()
+      .append("g")
         .filter(function(d){ return d.hasLink; })
         .attr("transform", function(o,i) {
           return "translate("+
@@ -134,14 +111,14 @@ d3.json(apiUrl, function(error, data) {
         ;
 
       nodesG.append("text")
-        .attr("class", function(o){ return o.hasLink ? '' : 'sss'})
         .style("fill",function(o){return fill(_.indexOf(organisationsTypes, o.typeId));})
         .attr('x', 20)
         .text(function(d) { return d.shortName; })
         ;
 
   var relTypeCaption = svg.selectAll(".relTypeCaption")
-      .data(relationsTypes).enter()
+      .data(relationsTypes)
+      .enter()
       .append("text")
       .attr('class','relTypeCaption' )
       .attr('y', function(t,i){return i*20})
@@ -154,7 +131,8 @@ d3.json(apiUrl, function(error, data) {
       ;
 
   var orgaTypeCaption = svg.selectAll(".orgaTypeCaption")
-      .data(organisationsTypes).enter()
+      .data(organisationsTypes)
+      .enter()
       .append("text")
       .attr('x', 0)
       .attr('y', function(t,i){return i*20})
