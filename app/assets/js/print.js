@@ -2,7 +2,7 @@ var apiUrl = 'http://heurist.sydney.edu.au/h4-ao/h3/viewers/smarty/showReps.php?
 var apiUrl = 'data/heurist-cache.json';
 
 var w = 1500,
-    h = 1500,
+    h = 1000,
     r = 6,
     fill = d3.scale.category10(),
     timeBegin = 1945,
@@ -78,8 +78,8 @@ d3.json(apiUrl, function(error, data) {
 
   if (error) throw error;
 
-  var lineHeight = 50;
-  var lineCount = 12;
+  var lineHeight = 80;
+  var lineCount = 9;
 
 
   var nodesG = svg.selectAll("organisations")
@@ -121,12 +121,12 @@ d3.json(apiUrl, function(error, data) {
       .enter()
       .append("text")
       .attr('class','relTypeCaption' )
-      .attr('y', function(t,i){return i*20})
+      .attr('y', function(t,i){return i*lineHeight/3})
       .text(function(t){
         var r = _(graph.relations).find('typeId', t);
-        if(r != undefined) return r.typeName
+        if(r != undefined) return "→ " + r.typeName + " → "
       })
-      .attr("transform", "translate(20,330)")
+      .attr("transform", "translate(20,400)")
       .attr('fill', function(t){ return fill(_.indexOf(relationsTypes, t))})
       ;
 
@@ -135,7 +135,7 @@ d3.json(apiUrl, function(error, data) {
       .enter()
       .append("text")
       .attr('x', 0)
-      .attr('y', function(t,i){return i*20})
+      .attr('y', function(t,i){return i*lineHeight/3})
       .attr("transform", "translate( 20,30)")
       .text(function(t){
         var o = _(graph.organisations).find('typeId', t);
