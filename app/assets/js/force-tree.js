@@ -2,7 +2,7 @@ var apiUrl = 'http://heurist.sydney.edu.au/h4-ao/h3/viewers/smarty/showReps.php?
 var apiUrl = 'data/heurist-cache.json';
 
 var w = 1500,
-    h = 1000,
+    h = 1500,
     r = 6,
     fill = d3.scale.category10(),
     timeBegin = 1945,
@@ -10,13 +10,15 @@ var w = 1500,
     radius = 15,
     m = [ 50 , 30, 30, 30 ];
 
-
 var
 
   y = d3.scale.linear()
     .domain([timeBegin, timeEnd])
     .range([0, w])
     ,
+
+
+  formatAsDate = d3.format("04d");
 
   yTime = d3.time.scale()
     .domain([timeBegin, timeEnd])
@@ -27,12 +29,13 @@ var
   yAxis = d3.svg.axis(yTime)
     .scale(y)
     .tickSize(w)
-    // .orient("right")
+    .ticks((timeEnd-timeBegin) / 2)
+    .tickFormat(formatAsDate)
     ,
 
-  force = d3.layout.force()
-    .charge(-400)
-    .linkDistance(100)
+  force = d3.layout.force(0)
+    .charge(-1500)
+    .linkDistance(150)
     .size([w, h]);
 
   svg = d3.select("body").append("svg:svg")
@@ -44,20 +47,14 @@ d3.json(apiUrl, function(error, data) {
     organisations:_(data).filter('recordTypeId', 4).forEach(function(o){o.hasLink = false;}).value(),
     relations: _(data)
                 .filter('recordTypeId', 1)
-                // .filter(function(r){
-
-                //   5150 — creates
-                //   5151 — is created by
-                //   5177 — is integrated in
-                //   5260 — transforms into
-                //   5261 — follows from
-
-                //   return r.typeId === 5150
-                //     || r.typeId === 5260
-                //     || r.typeId === 5177
-                //     || r.typeId === 5261
-                //     ;
-                // })
+                .filter(function(r){
+                  return true;
+                  return r.typeId === 5150
+                    || r.typeId === 5260
+                    || r.typeId === 5177
+                    || r.typeId === 5261
+                    ;
+                })
                 .filter(
                   function(r){
                     return r.source.recTypeId === 4 && r.target.recTypeId === 4;
@@ -67,7 +64,6 @@ d3.json(apiUrl, function(error, data) {
                 ,
     issues: _.filter(data,'recordTypeId', 14)
   };
-
   var organisationsTypes = _(graph.organisations)
       .sortBy('typeId')
       .pluck('typeId')
@@ -76,7 +72,6 @@ d3.json(apiUrl, function(error, data) {
       .sortBy('recordTypeName')
       .value()
       ;
-
   var relationsTypes = _(graph.relations)
       .sortBy('typeId')
       .pluck('typeId')
@@ -85,9 +80,7 @@ d3.json(apiUrl, function(error, data) {
       .value()
       ;
 
-  graph.relations = _(graph.relations)
-    .filter(function(r){
-
+  graph.relations = _(graph.relations).filter(function(r){
       var s = _.find(graph.organisations, 'recordId', r.source.id);
       var t = _.find(graph.organisations, 'recordId', r.target.id);
 
@@ -108,8 +101,7 @@ d3.json(apiUrl, function(error, data) {
         t.hasLink = true;
         return true;
       }
-    })
-    .value()
+    }).value()
     ;
   console.log(graph.relations);
   console.log(graph.organisations);
@@ -118,22 +110,20 @@ d3.json(apiUrl, function(error, data) {
 
 svg.append("svg:defs").selectAll("marker")
     .data(["arrow"])
-  .enter().append("svg:marker")
+    .enter()
+    .append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -25 25 25")
     .attr("refX", 10)
     .attr("refY", 0)
     .attr("orient", "auto")
-            .style("fill", "red")
+    .style("fill", "red")
     .append("svg:path")
-
-
     .attr("d", "M0,-5L10,0L0,0");
-
 
   if (error) throw error;
   var link = svg.selectAll("link")
-      .data(graph.relations)
+    .data(graph.relations)
     .enter()
     .append("svg:line")
     .attr('class','link' )
@@ -144,18 +134,18 @@ svg.append("svg:defs").selectAll("marker")
 
   svg.append("g")
       .attr("class", "y axis")
-      .attr("transform", "translate( 0,-500)")
+      .attr("transform", "translate( 0,0)")
       .call(yAxis);
 
   var node = svg.selectAll("organisations")
       .data(graph.organisations)
-    .enter().append("text").filter(function(d){ return d.hasLink; })
+      .enter()
+      .append("text").filter(function(d){ return d.hasLink; })
       .attr("class", function(o){ return o.hasLink ? '' : 'sss'})
       .style("fill",function(o){return fill(_.indexOf(organisationsTypes, o.typeId));})
       .attr("x", function(d) { return y(d.startDate); })
       .text(function(d) { return "⬣ "+d.shortName; })
       .call(force.drag);
-
   var relTypeCaption = svg.selectAll(".relTypeCaption")
       .data(relationsTypes).enter()
       .append("text")
@@ -188,12 +178,6 @@ svg.append("svg:defs").selectAll("marker")
       .start();
 
   function tick(e) {
-
-    // var k = 6 * e.alpha;
-    // graph.relations.forEach(function(d, i) {
-    //   d.source.y -= k;
-    //   d.target.y += k;
-    // });
 
     node.attr("y", function(d) { return d.y = Math.max(radius, Math.min(h - radius, d.y))})
 
