@@ -5,27 +5,28 @@ const
   w = 1500,
   h = 2500,
   r = 6,
-  fill = d3.scale.category10(),
+
   timeBegin = 1945,
   timeEnd = 2020,
   radius = 15,
-  m = [ 50 , 30, 30, 30 ],
+
+  m = [50,30,30,30],
+
   palette =  ["#D54B32","#736ACB","#56B23A","#549DAB","#495F2C","#CB3A72","#554E71","#C58939","#CF53D5","#854032","#55A877","#AD569D","#97A33D","#8C96CE","#D17986"],
-  color = d3.scale.ordinal().range(palette),
+  colorCustom = d3.scale.ordinal().range(palette),
+  color10 = d3.scale.category10(),
 
   xTime = d3.scale.linear()
     .domain([timeBegin, timeEnd])
     .range([0, w])
     ,
 
-  formatAsDate = d3.format("04d");
-
+  formatAsDate = d3.format("04d"),
   xTimeAxis = d3.time.scale()
     .domain([timeBegin, timeEnd])
     .range([0, h])
     .nice()
     ,
-
   xAxis = d3.svg.axis(xTimeAxis)
     .scale(xTime)
     .tickSize(w)
@@ -63,36 +64,25 @@ d3.json(apiUrl, function(error, data) {
       ,
     relations: _(data)
       .filter('recordTypeId', 1)
-      .filter(function(r){
-
-        return r.typeId !== undefined && r.typeId !== 5091 && r.typeId !== 5151 && r.typeId !== 5177  && r.typeId !== 5261
-        return r.typeId === 5150
-          || r.typeId === 5260
-          || r.typeId === 5177
-          || r.typeId === 5261
-          ;
+      .filter(function(r){ return r.typeId !== undefined
+          && r.typeId !== 5091
+          && r.typeId !== 5151
+          && r.typeId !== 5177
+          && r.typeId !== 5261
       })
-      .filter(
-        function(r){
-          return r.source.recTypeId === 4 && r.target.recTypeId === 4;
-        }
-      )
+      .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
       ,
     issues: _.filter(data,'recordTypeId', 14)
   };
   var organisationsTypes = _(graph.organisations)
-      .sortBy('typeId')
-      .pluck('typeId')
-      .uniq()
+      .sortBy('typeId').pluck('typeId').uniq()
       .filter(function(o){ return ! _.isUndefined(o)})
       .sortBy('recordTypeName')
       .value()
       ;
   var relationsTypes = _(graph.relations)
-      .sortBy('typeId')
-      .pluck('typeId')
-      .uniq()
+      .sortBy('typeId').pluck('typeId').uniq()
       .filter(function(o){ return ! _.isUndefined(o)})
       .value()
       ;
@@ -135,7 +125,7 @@ d3.json(apiUrl, function(error, data) {
       .attr('class','link' )
       .attr('id', function(r){ return 'r-'+r.recordId+'_'+ r.typeId })
       .attr("marker-start", "url(#arrow)")
-      .style("stroke",function(r){return fill(_.indexOf(relationsTypes, r.typeId));})
+      .style("stroke",function(r){return color10(_.indexOf(relationsTypes, r.typeId));})
       .attr('stroke-linecap', 'round')
       ;
 
@@ -143,19 +133,20 @@ d3.json(apiUrl, function(error, data) {
       .data(graph.organisations)
       .enter()
       .append("svg")
-      // .filter(function(d){ retur <n d.hasLink; })
+
+//      .filter(function(d){ return d.hasLink; })
 
       .attr('class', function(d){ return d.hasLink ? '' : 'nolink'; })
       .attr('height', "100" )
       .attr("x", function(d) { return xTime(d.startDate); })
 
       orgas.append("text")
-      .style("fill",function(o){return color(_.indexOf(organisationsTypes, o.typeId));})
+      .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
       .attr("transform", "translate(0,15)")
       .text(function(d) { return d.shortName; })
 
       orgas.append("rect")
-      .style("fill",function(o){return color(_.indexOf(organisationsTypes, o.typeId));})
+      .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
       .attr('width' , function(d) {return xTime(d.endDate) - xTime(d.startDate) })
       .attr('height', function(d) { return  3 })
 
@@ -172,7 +163,7 @@ d3.json(apiUrl, function(error, data) {
         if(r != undefined) return r.typeId + " — " +  r.typeName
       })
       .attr("transform", "translate( 300,30)")
-      .attr('fill', function(t){ return fill(_.indexOf(relationsTypes, t))})
+      .attr('fill', function(t){ return color10(_.indexOf(relationsTypes, t))})
       ;
 
   var orgaTypeCaption = svg.selectAll(".orgaTypeCaption")
@@ -185,7 +176,7 @@ d3.json(apiUrl, function(error, data) {
         var o = _(graph.organisations).find('typeId', t);
         return o.typeId + " — " + o.typeName
       })
-      .attr('fill', function(t){ return color(_.indexOf(organisationsTypes, t))})
+      .attr('fill', function(t){ return colorCustom(_.indexOf(organisationsTypes, t))})
       ;
 
   svg.append("svg:defs").selectAll("marker")
