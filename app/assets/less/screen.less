@@ -18,7 +18,7 @@ html, body {
     fill:transparent;
     //stroke:red;
     stroke-width:3;
-    // stroke-dasharray: 1,1;
+    //stroke-dasharray: 1,1;
   }
 
   text {
@@ -77,8 +77,41 @@ html, body {
   .axis line {
     shape-rendering: crispEdges;
     stroke: #000;
-     stroke-dasharray: 10,5;
+    stroke-dasharray: 1,7;
   }
+}
+
+#forceTree2 {
+
+  text {
+
+    color: black;
+    // stroke:white;
+
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .relTypeCaption {
+    opacity: .5;
+  }
+
+
+  .link {
+    stroke: #999;
+    stroke-opacity: .3;
+    stroke-width: 11px;
+  }
+  .axis path {
+    display: none;
+  }
+
+  .axis line {
+    shape-rendering: crispEdges;
+    stroke: #000;
+    stroke-dasharray: 1,7;
+  }
+
 }
 
 #print {
