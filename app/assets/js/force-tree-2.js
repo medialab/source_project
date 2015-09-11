@@ -36,7 +36,7 @@ const
 
   force = d3.layout.force(0)
     .charge(-1500)
-    .linkDistance(150)
+    .linkDistance(300)
     .size([w, h])
     ,
 
@@ -65,10 +65,10 @@ d3.json(apiUrl, function(error, data) {
     relations: _(data)
       .filter('recordTypeId', 1)
       .filter(function(r){ return r.typeId !== undefined
-          && r.typeId !== 5091
-          && r.typeId !== 5151
-          && r.typeId !== 5177
-          && r.typeId !== 5261
+          // && r.typeId !== 5091
+          // && r.typeId !== 5151
+          // && r.typeId !== 5177
+          // && r.typeId !== 5261
       })
       .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
@@ -76,16 +76,17 @@ d3.json(apiUrl, function(error, data) {
     issues: _.filter(data,'recordTypeId', 14)
   };
   var organisationsTypes = _(graph.organisations)
-      .sortBy('typeId').pluck('typeId').uniq()
-      .filter(function(o){ return ! _.isUndefined(o)})
-      .sortBy('recordTypeName')
-      .value()
-      ;
+    .sortBy('typeId').pluck('typeId').uniq()
+    .filter(function(o){ return ! _.isUndefined(o)})
+    .sortBy('recordTypeName')
+    .value()
+    ;
+
   var relationsTypes = _(graph.relations)
-      .sortBy('typeId').pluck('typeId').uniq()
-      .filter(function(o){ return ! _.isUndefined(o)})
-      .value()
-      ;
+    .sortBy('typeId').pluck('typeId').uniq()
+    .filter(function(o){ return ! _.isUndefined(o)})
+    .value()
+    ;
 
   graph.relations = _(graph.relations).filter(function(r){
 
@@ -118,66 +119,71 @@ d3.json(apiUrl, function(error, data) {
   console.log("organisationsTypes:",organisationsTypes);
   console.log("relationsTypes:",relationsTypes);
 
-  var links = svg.selectAll("link")
-      .data(graph.relations)
-      .enter()
-      .append("svg:line")
-      .attr('class','link' )
-      .attr('id', function(r){ return 'r-'+r.recordId+'_'+ r.typeId })
-      .attr("marker-start", "url(#arrow)")
-      .style("stroke",function(r){return color10(_.indexOf(relationsTypes, r.typeId));})
-      .attr('stroke-linecap', 'round')
-      ;
-
   var orgas = svg.selectAll("organisations")
-      .data(graph.organisations)
-      .enter()
-      .append("svg")
+    .data(graph.organisations)
+    .enter()
+    .append("svg")
+    .attr('class', 'orga')
 
-//      .filter(function(d){ return d.hasLink; })
 
-      .attr('class', function(d){ return d.hasLink ? '' : 'nolink'; })
-      .attr('height', "100" )
-      .attr("x", function(d) { return xTime(d.startDate); })
+    // not linked filter ?
+    .filter(function(d){ return d.hasLink; })
 
-      orgas.append("text")
-      .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
-      .attr("transform", "translate(0,15)")
-      .text(function(d) { return d.shortName; })
+    .attr('class', function(d){ return d.hasLink ? '' : 'nolink'; })
+    .attr('height', "100" )
+    .attr("x", function(d) { return xTime(d.startDate); })
 
-      orgas.append("rect")
-      .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
-      .attr('width' , function(d) {return xTime(d.endDate) - xTime(d.startDate) })
-      .attr('height', function(d) { return  3 })
+    orgas.append("text")
+    .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
+    .attr("transform", "translate(0,20)")
+    .text(function(d) { return d.shortName; })
 
-      orgas.call(force.drag)
-      ;
+    orgas.append("rect")
+    .style("fill",function(o){return colorCustom(_.indexOf(organisationsTypes, o.typeId));})
+    .attr('width' , function(d) {return xTime(d.endDate) - xTime(d.startDate) })
+    .attr('height', function(d) { return  7 })
+    .attr('rx', 3)
+    .attr('ry', 3)
+
+    orgas.call(force.drag)
+    ;
 
   var relTypeCaption = svg.selectAll(".relTypeCaption")
-      .data(relationsTypes).enter()
-      .append("text")
-      .attr('class','relTypeCaption' )
-      .attr('y', function(t,i){return i*20})
-      .text(function(t){
-        var r = _(graph.relations).find('typeId', t);
-        if(r != undefined) return r.typeId + " — " +  r.typeName
-      })
-      .attr("transform", "translate( 300,30)")
-      .attr('fill', function(t){ return color10(_.indexOf(relationsTypes, t))})
-      ;
+    .data(relationsTypes).enter()
+    .append("text")
+    .attr('class','relTypeCaption' )
+    .attr('y', function(t,i){return i*20})
+    .text(function(t){
+      var r = _(graph.relations).find('typeId', t);
+      if(r != undefined) return r.typeId + " — " +  r.typeName
+    })
+    .attr("transform", "translate( 300,30)")
+    .attr('fill', function(t){ return color10(_.indexOf(relationsTypes, t))})
+    ;
 
   var orgaTypeCaption = svg.selectAll(".orgaTypeCaption")
-      .data(organisationsTypes).enter()
-      .append("text")
-      .attr('x', 0)
-      .attr('y', function(t,i){return i*20})
-      .attr("transform", "translate( 20,30)")
-      .text(function(t){
-        var o = _(graph.organisations).find('typeId', t);
-        return o.typeId + " — " + o.typeName
-      })
-      .attr('fill', function(t){ return colorCustom(_.indexOf(organisationsTypes, t))})
-      ;
+    .data(organisationsTypes).enter()
+    .append("text")
+    .attr('x', 0)
+    .attr('y', function(t,i){return i*20})
+    .attr("transform", "translate( 20,30)")
+    .text(function(t){
+      var o = _(graph.organisations).find('typeId', t);
+      return o.typeId + " — " + o.typeName
+    })
+    .attr('fill', function(t){ return colorCustom(_.indexOf(organisationsTypes, t))})
+    ;
+
+  var links = svg.selectAll("link")
+    .data(graph.relations)
+    .enter()
+    .append("svg:line")
+    .attr('class','link' )
+    .attr('id', function(r){ return 'r-'+r.recordId+'_'+ r.typeId })
+    .attr("marker-start", "url(#arrow)")
+    .style("stroke",function(r){return color10(_.indexOf(relationsTypes, r.typeId));})
+    .attr('stroke-linecap', 'round')
+    ;
 
   svg.append("svg:defs").selectAll("marker")
     .data(["arrow"])
@@ -206,11 +212,13 @@ d3.json(apiUrl, function(error, data) {
 
   function tick(e) {
 
-    orgas.attr("y", function(d) { return d.y = Math.max(radius, Math.min(h - radius, d.y))})
+    orgas
+      .attr("y", function(d) { return d.y = Math.max(radius, Math.min(h - radius, d.y))})
 
-    links.attr("x1", function(d) { return Math.max( xTime(d.source.startDate) , xTime(d.startDate) ) - xTime(timeBegin + 0.5);})
-        .attr("y1", function(d) { return d.source.y  ; })
-        .attr("x2", function(d) { return Math.min( xTime(d.target.startDate) ,  xTime(d.target.endDate) ); })
-        .attr("y2", function(d) { return d.target.y ; });
+    links
+      .attr("x1", function(d) { return Math.max( xTime(d.source.startDate) , xTime(d.startDate) ) - xTime(timeBegin + 0.5);})
+      .attr("y1", function(d) { return d.source.y + 3 ; })
+      .attr("x2", function(d) { return Math.min( xTime(d.target.startDate) ,  xTime(d.target.endDate) ); })
+      .attr("y2", function(d) { return d.target.y + 3  ; });
   }
 });

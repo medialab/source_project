@@ -1,14 +1,16 @@
 var apiUrl = 'http://heurist.sydney.edu.au/h4-ao/h3/viewers/smarty/showReps.php?db=meder_test_to_delete&w=a&q=t:1%20OR%20t:4%20OR%20t:14%20sortby:rt&publish=1&debug=0&template=JSON-structured.tpl';
 var apiUrl = 'data/heurist-cache.json';
 
-var w = 1500,
-    h = 1000,
+var w = 1700,
+    h = 1500,
     r = 6,
     fill = d3.scale.category10(),
     timeBegin = 1945,
     timeEnd = 2010,
     radius = 15,
-    m = [ 50 , 30, 30, 30 ];
+    m = [ 50 , 30, 30, 30 ],
+    lineHeight = 80,
+    lineCount = 17;
 
 
 var svg = d3.select("body").append("svg:svg")
@@ -78,15 +80,13 @@ d3.json(apiUrl, function(error, data) {
 
   if (error) throw error;
 
-  var lineHeight = 80;
-  var lineCount = 9;
 
 
   var nodesG = svg.selectAll("organisations")
       .data(graph.organisations)
       .enter()
       .append("g")
-        .filter(function(d){ return d.hasLink; })
+        // .filter(function(d){ return d.hasLink; })
         .attr("transform", function(o,i) {
           return "translate("+
               ( 300 * (Math.floor(i/lineCount) + 1 )) +','+
