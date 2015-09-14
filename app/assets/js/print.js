@@ -1,8 +1,8 @@
 var apiUrl = 'http://heurist.sydney.edu.au/h4-ao/h3/viewers/smarty/showReps.php?db=meder_test_to_delete&w=a&q=t:1%20OR%20t:4%20OR%20t:14%20sortby:rt&publish=1&debug=0&template=JSON-structured.tpl';
 var apiUrl = 'data/heurist-cache.json';
 
-var w = 1700,
-    h = 1500,
+var w = 1800,
+    h = 2100,
     r = 6,
     fill = d3.scale.category10(),
     timeBegin = 1945,
@@ -10,7 +10,9 @@ var w = 1700,
     radius = 15,
     m = [ 50 , 30, 30, 30 ],
     lineHeight = 80,
-    lineCount = 17;
+    lineCount = 14,
+    boxWidth = 250
+    ;
 
 
 var svg = d3.select("body").append("svg:svg")
@@ -89,13 +91,13 @@ d3.json(apiUrl, function(error, data) {
         // .filter(function(d){ return d.hasLink; })
         .attr("transform", function(o,i) {
           return "translate("+
-              ( 300 * (Math.floor(i/lineCount) + 1 )) +','+
+              ( boxWidth * (Math.floor(i/lineCount) ) + 400 ) +','+
               (lineHeight + i%lineCount*lineHeight) +")"
         })
         ;
 
       nodesG.append("rect")
-        .attr('width', 300 )
+        .attr('width', boxWidth )
         .attr('height', lineHeight)
         .attr('x', -lineHeight / 2 )
         .attr('y', -lineHeight / 2 )
@@ -124,7 +126,7 @@ d3.json(apiUrl, function(error, data) {
       .attr('y', function(t,i){return i*lineHeight/3})
       .text(function(t){
         var r = _(graph.relations).find('typeId', t);
-        if(r != undefined) return "→ " + r.typeName + " → "
+        if(r != undefined) return "→ " + r.typeName + " ("+r.typeId+") → "
       })
       .attr("transform", "translate(20,400)")
       .attr('fill', function(t){ return fill(_.indexOf(relationsTypes, t))})
@@ -139,9 +141,19 @@ d3.json(apiUrl, function(error, data) {
       .attr("transform", "translate( 20,30)")
       .text(function(t){
         var o = _(graph.organisations).find('typeId', t);
-        return o.typeName
+        return o.typeName + " ("+o.typeId+") "
       })
       .attr('fill', function(t){ return fill(_.indexOf(organisationsTypes, t))})
       ;
+  var issuesCaption = svg.selectAll('.issue')
+    .data(graph.issues).enter()
+    .append('text')
+    .attr('x', 0 )
+    .attr('y', function(d,i){return i*lineHeight/3})
+    .attr('transform', 'translate( 20,650)')
+    .text(function(d,i){ return d.recordId + ' — ' + d.title; })
+    .attr('class', 'issue')
+    .attr('fill', 'black' )
+    ;
 
 });

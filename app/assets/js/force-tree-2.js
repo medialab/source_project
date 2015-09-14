@@ -2,8 +2,8 @@
 const apiUrl = 'data/heurist-cache.json';
 
 const
-  w = 1500,
-  h = 2500,
+  w =  $( "#forceTree2" ).width(),
+  h = $( "#forceTree2" ).height(),
   r = 6,
 
   timeBegin = 1945,
@@ -42,7 +42,7 @@ const
     .size([w, h])
     ,
 
-  svg = d3.select('body').append('svg:svg')
+  svg = d3.select('#forceTree2').append('svg:svg')
     .attr('width', w + m[1] + m[3] )
     .attr('height', h + m[0] + m[2])
   ;
@@ -128,6 +128,8 @@ d3.json(apiUrl, function(error, data) {
     .enter()
     .append('svg')
     .attr('class', 'orga')
+    .attr('typeId', function(r){ return r.typeId })
+    .attr('recordId', function(r){ return r.recordId })
 
     // not linked filter ?
     .filter(function(d){ return d.hasLink; })
@@ -191,19 +193,18 @@ d3.json(apiUrl, function(error, data) {
     ;
 
   var links = svg.selectAll('link')
-    .data(graph.relations)
-    .enter()
+    .data(graph.relations).enter()
     .append('svg:line')
     .attr('class','link' )
-    .attr('id', function(r){ return 'r-'+r.recordId+'_'+ r.typeId })
+    .attr('recordId', function(r){ return r.recordId })
+    .attr('typeId', function(r){ return r.typeId })
     .attr('marker-start', 'url(#arrow)')
     .style('stroke',function(r){return color10(_.indexOf(relationsTypes, r.typeId));})
     .attr('stroke-linecap', 'round')
     ;
 
   svg.append('svg:defs').selectAll('marker')
-    .data(['arrow'])
-    .enter()
+    .data(['arrow']).enter()
     .append('svg:marker')
     .attr('id', String)
     .attr('viewBox', '-20 -20 40 40')
