@@ -51,13 +51,11 @@ html, body {
     background-color: white;
     font-weight: bold;
     font-size: 14px;
-    -webkit-filter: drop-shadow( -5px -5px 5px #000 );
-    filter: drop-shadow( -5px -5px 5px #000 );
+    -webkit-filter: drop-shadow(-5px -5px 5px #000);
+    filter: drop-shadow(-5px -5px 5px #000);
   }
 
-  circle {
-    stroke-width: 0;
-  }
+  circle { stroke-width: 0;}
 
   .link {
     stroke: #999;
@@ -66,13 +64,9 @@ html, body {
     marker-end:"url(#triangle)";
   }
 
-  .relTypeCaption {
-    opacity: .5;
-  }
+  .relTypeCaption { opacity: .5;}
 
-  .axis path {
-    display: none;
-  }
+  .axis path { display: none;}
 
   .axis line {
     shape-rendering: crispEdges;
@@ -90,6 +84,7 @@ html {
 }
 
 #forceTree2 {
+
   margin: 0;
   padding: 0;
 
@@ -97,41 +92,49 @@ html {
   height: 200%;
 
   text {
-
     color: black;
-
     font-weight: bold;
-    font-size: 14px;
   }
-
-  .relTypeCaption {
-    opacity: .5;
-  }
-
-
+  .relTypeCaption { opacity: .5;}
   .link {
     stroke: #999;
-    stroke-opacity: .3;
+    stroke-opacity: .2;
     stroke-width: 8px;
   }
-  .axis path {
-    display: none;
-  }
-
+  .axis path { display: none; }
   .axis line {
     shape-rendering: crispEdges;
     stroke: #000;
     stroke-dasharray: 1,7;
   }
+  .nolink { opacity: .2; }
+}
 
-  .nolink {
-    opacity: .2;
+#dot {
+
+  margin: 0;
+  padding: 0;
+
+  width: 95%;
+  height: 200%;
+
+  text {
+    color: black;
+    font-weight: bold;
   }
-
-  .orga rect {
-
+  .relTypeCaption { opacity: .5;}
+  .link {
+    stroke: #999;
+    stroke-opacity: .2;
+    stroke-width: 8px;
   }
-
+  .axis path { display: none; }
+  .axis line {
+    shape-rendering: crispEdges;
+    stroke: #000;
+    stroke-dasharray: 1,7;
+  }
+  .nolink { opacity: .2; }
 }
 
 #print {

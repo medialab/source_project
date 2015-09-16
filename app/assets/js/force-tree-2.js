@@ -64,10 +64,10 @@ d3.json(apiUrl, function(error, data) {
     relations: _(data)
       .filter('recordTypeId', 1)
       .filter(function(r){ return r.typeId !== undefined
-          // && r.typeId !== 5091
-          // && r.typeId !== 5151
-          // && r.typeId !== 5177
-          // && r.typeId !== 5261
+          && r.typeId !== 5091
+          && r.typeId !== 5151
+          && r.typeId !== 5177
+          && r.typeId !== 5261
       })
       .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
