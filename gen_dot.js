@@ -25,7 +25,12 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
       ,
     relations: _(data)
       .filter('recordTypeId', 1)
-      .filter(function(r){ return r.typeId !== undefined})
+      .filter(function(r){ return r.typeId !== undefined
+          && r.typeId !== 5091
+          && r.typeId !== 5151
+          && r.typeId !== 5177
+          && r.typeId !== 5261
+      })
       .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
       ,
@@ -74,7 +79,10 @@ function saveDot(graph){
   }
 
   _.forEach(graph.relations, function(rel) {
+
+
     links += ' '+rel.source.id+'->'+rel.target.id+'[label="  '+rel.typeName+'"]';
+
   });
 
   nodes = 'subgraph { node [shape=hexagon style=filled, fillcolor=black, color=white fontcolor=white]; edge [penwidth=100]; '+ nodes +'}';
