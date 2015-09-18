@@ -71,6 +71,10 @@
 
       {if ($r.recTypeID=="13")}
 
+        {if ($r.f210)}
+          "startDate":{$r.f210}{*Creation Date*} ,
+        {/if}
+
         "shortSummary":"{$r.f3|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Summary*}",
         "shortTitle": "{$r.f209|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Title*}",
         "longTitle": "{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Long Title*}"
