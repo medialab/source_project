@@ -1,12 +1,12 @@
 #!/usr/bin/env node
+var _ = require('lodash'),
+  fs = require('fs'),
+  argv = require('yargs').argv,
+  graphviz = require('graphviz');
 
-var _ = require('lodash');
-var fs = require('fs');
-var argv = require('yargs').argv;
-
-var timeBegin = 1900,
-    timeEnd = 2016,
-    filename = 'source'
+var timeBegin = 1955,
+    timeEnd = 2015,
+    filename = 'source';
 
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
@@ -14,16 +14,21 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   var data = JSON.parse(string);
 
   var graph =  {
-    organisations:_(data)
+    org:_(data)
       .filter('recordTypeId', 4)
+      .filter(function(o){
+        return  o.typeId !== 5314;
+      })
+     .filter(function(o){
+        return  o.shortName !== "";
+      })
       .forEach(function(o){
         o.hasLink = false;
-        if(o.startDate === undefined) o.startDate = timeBegin;
-        if(o.endDate === 1970 || o.endDate === undefined) o.endDate = timeEnd-5;
+        if(o.startDate === undefined) o.startDate = timeBegin-1;
       })
       .value()
       ,
-    relations: _(data)
+    rel: _(data)
       .filter('recordTypeId', 1)
       .filter(function(r){ return r.typeId !== undefined
           && r.typeId !== 5091
@@ -34,66 +39,77 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
       .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
       ,
-    issues: _.filter(data,'recordTypeId', 14)
+    doc:_(data)
+      .filter('recordTypeId', 13)
+      .forEach(function(o){if(o.startDate === undefined) o.startDate = timeBegin-1;})
+      .value()
   };
 
-  // console.log(graph.relations);
-  // console.log(graph.organisations);
-  // console.log(graph.issues);
+  // console.log(graph.rel);
+  // console.log(graph.org);
+  // console.log(graph.doc);
 
-  // console.log('organisationsTypes:',organisationsTypes);
-  // console.log('relationsTypes:',relationsTypes);
-
-  saveDot(graph);
-
+  genDot2(graph);
 });
 
 
+function genDot2(graph){
 
+  var g = graphviz.digraph('source');
+  g.set('rankdir','LR');
 
+  // create organisation node
+  _.forEach(graph.org, function(d) {
+    g.addNode( d.recordId,
+      {
+        'color' : 'blue',
+        'shape':'hexagon',
+        'style':'filled',
+        'fillcolor':'black',
+        'color':'white',
+        'fontcolor':'white',
+        'label':d.shortName,
+      });
+  })
 
-function saveDot(graph){
-  var graph, graphlight,
-      axis = "node [fontsize=24, shape = plaintext]",
-      nodes="", keys="", keylinks="", links="";
+  // add past label in axis
+  g.addNode(timeBegin-1, {'label':'past','shape':'plaintext'});
 
-  // generate axis
-  for (var year = timeBegin; year < timeEnd; year++) axis += year + ' -> '
-  axis += timeEnd;
+  // Spatialize organisation by year
+  for (var y = timeBegin; y < timeEnd+1; y++){
 
+    var axis = g.addCluster('y_'+y);
+        axis.set('rank','same');
+        axis.addNode(y, {'shape':'plaintext'});
 
-
-
-  _.forEach(graph.organisations, function(org) {
-    nodes += ' '+org.recordId+' [label="'+org.shortName+'"];';
-  });
-
-  for (var year = timeBegin; year < timeEnd; year++){
-    var res = _(graph.organisations)
-      .filter({startDate: year})
-      .map('recordId')
+    // create organisation node
+    _(graph.org)
+      .filter({startDate: y})
       .value()
-      .join(" ")
-      ;
-    nodes += '{ rank = same; '+ year +' '+ res +'    }';
+      .forEach(function(d){ axis.addNode( d.recordId ) });
+
+    // create documents node
+    _(graph.doc)
+      .filter({startDate: y})
+      .value()
+      .forEach(function(d){
+        axis.addNode( d.recordId, {
+          'label':d.shortTitle,
+          'shape':'note'
+        });
+      });
+
+    g.addEdge( ''+(y-1), ''+y );
   }
 
-  _.forEach(graph.relations, function(rel) {
+  // add future in axis
+  g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
+  g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
 
+  // write dote file
+  fs.writeFileSync('./'+filename+'.dot', g.to_dot());
+  console.log(filename+'.dot saved!');
 
-    links += ' '+rel.source.id+'->'+rel.target.id+'[label="  '+rel.typeName+'"]';
+  g.output( "pdf", './'+filename+'.pdf' );
 
-  });
-
-  nodes = 'subgraph { node [shape=hexagon style=filled, fillcolor=black, color=white fontcolor=white]; edge [penwidth=100]; '+ nodes +'}';
-  settings = 'rankdir=LR ';
-
-  graph = 'digraph  {'+ settings + ' ' + axis +'; '+nodes+' '+ links +'}';
-  fs.writeFileSync("./"+filename+".dot", graph);
-  console.log(filename+".dot saved!");
-
-  // var graphlight = 'digraph  {'+ settings + nodes+' '+ links +'}';
-  // fs.writeFileSync("./"+filename+".dot", graphlight);
-  // console.log(filename+"-light.dot saved!");
-};
-
+}
