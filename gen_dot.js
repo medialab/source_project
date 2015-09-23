@@ -50,15 +50,18 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
   // console.log(graph.org);
   // console.log(graph.doc);
+  // console.log(graph.rel);
 
   var relType = _(graph.rel)
   .sortBy('typeName')
   .map(function(d){return d.typeId+'  : '+d.typeName})
   .uniq()
   .value();
-  console.log(relType)
+
+  //console.log(relType)
 
   genDot2(graph);
+
 });
 
 function genDot2(graph){
@@ -67,15 +70,15 @@ function genDot2(graph){
   g.set('rankdir','LR');
 
   var edgeStyle = {
-    '5331' : {'color':'grey'}, // applies to
+    '5331' : {'color':'goldenrod'}, // applies to
     '5260' : {'penwidth':'2','color':'blue','style':'solid'}, // becomes
     '5150' : {'penwidth':'2','color':'blue','style':'dashed'}, // creates
     '5239' : {}, // implements
     '5335' : {}, // is amended by
     '5151' : {'penwidth':'2','color':'blue','style':'dashed'}, // is created by
     '5177' : {'penwidth':'2','style':'dashed','color':'blue'}, // is integrated in
-    '5271' : {'style':'bold','color':'green'}, // is part of
-    '5287' : {'color':'grey'}, // is signed by
+    '5271' : {'style':'bold','color':'forestgreen'}, // is part of
+    '5287' : {'color':'goldenrod'}, // is signed by
     '5184' : {}, // is tabled by
     '5068' : {'penwidth':'2','color':'red'}, // is the legal basis of
     '5161' : {} // is the legal basis of device
@@ -137,30 +140,21 @@ function genDot2(graph){
       });
 
     g.addEdge( ''+(y-1), ''+y );
-  }
+  };
 
   // add future in axis
   g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
   g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
 
-  //
+  // create edges
   _.forEach(graph.rel,function(d){
-
-    // var fdata = graph.rel.concat( graph.org );
-    // var s = _.findIndex(fdata, 'recordId', d.source.id);
-    // var t = _.findIndex(fdata, 'recordId', d.target.id);
-
-    // if(s >= 0 && t >= 0)
     var edgeOption = _.merge(edgeStyle[d.typeId], {'label':" "+d.typeName  + ' ('+d.recordId+')'});
-
     g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
-
   });
 
   // write dote file
+
   fs.writeFileSync('./'+filename+'.dot', g.to_dot());
-  console.log(filename+'.dot saved!');
-
   g.output( "pdf", './'+filename+'.pdf' );
-
+  console.log(filename+" save !");
 }
