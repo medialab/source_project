@@ -17,7 +17,9 @@ subgraph y_1957 {
 
 subgraph y_1958 {
   graph [ rank = same ];
+  "55" [ label = "Treaties of Rome", shape = note ];
   "1024";
+  "1031";
   "1958" [ shape = plaintext ];
 }
 
@@ -54,6 +56,7 @@ subgraph y_1964 {
 
 subgraph y_1965 {
   graph [ rank = same ];
+  "56" [ label = "Merger Treaty", shape = note ];
   "1965" [ shape = plaintext ];
 }
 
@@ -153,6 +156,7 @@ subgraph y_1984 {
   "1001" [ label = "Saarbrucken Agreement", shape = note ];
   "1015" [ label = "Rambouillet Agreement", shape = note ];
   "1017" [ label = "A People&amp;#039;s Europe", shape = note ];
+  "1027";
   "1984" [ shape = plaintext ];
 }
 
@@ -163,9 +167,9 @@ subgraph y_1985 {
   "359";
   "360";
   "361";
-  "1002" [ label = "Schengen Agreement", shape = note ];
-  "1016" [ label = "First Adonino Report", shape = note ];
+  "1016" [ label = "1st Adonino Report", shape = note ];
   "1018" [ label = "White Paper on the completion of the single market", shape = note ];
+  "1039";
   "1985" [ shape = plaintext ];
 }
 
@@ -209,6 +213,7 @@ subgraph y_1991 {
 
 subgraph y_1992 {
   graph [ rank = same ];
+  "57" [ label = "Treaty of Maastricht", shape = note ];
   "337";
   "346";
   "1992" [ shape = plaintext ];
@@ -217,6 +222,8 @@ subgraph y_1992 {
 subgraph y_1993 {
   graph [ rank = same ];
   "155";
+  "351";
+  "371";
   "1993" [ shape = plaintext ];
 }
 
@@ -228,6 +235,8 @@ subgraph y_1994 {
 
 subgraph y_1995 {
   graph [ rank = same ];
+  "1212";
+  "1214";
   "1995" [ shape = plaintext ];
 }
 
@@ -238,18 +247,22 @@ subgraph y_1996 {
 
 subgraph y_1997 {
   graph [ rank = same ];
+  "58" [ label = "Treaty of Amsterdam", shape = note ];
   "1997" [ shape = plaintext ];
 }
 
 subgraph y_1998 {
   graph [ rank = same ];
+  "1250" [ label = "Convention based on Article K.3 of the Treaty on European Union on the establishment of a European Police Office (Europol Convention)", shape = note ];
   "1998" [ shape = plaintext ];
 }
 
 subgraph y_1999 {
   graph [ rank = same ];
   "1";
+  "22";
   "1004" [ label = "Schengen Protocol", shape = note ];
+  "1006" [ label = "Incorporation of Schengen Secretariat", shape = note ];
   "1999" [ shape = plaintext ];
 }
 
@@ -261,6 +274,9 @@ subgraph y_2000 {
 
 subgraph y_2001 {
   graph [ rank = same ];
+  "59" [ label = "Treaty of Nice", shape = note ];
+  "402";
+  "1009" [ label = "SIS 2 Regulation", shape = note ];
   "1010" [ label = "SIS 2 Decision", shape = note ];
   "1011" [ label = "SIS 2 Communication", shape = note ];
   "2001" [ shape = plaintext ];
@@ -296,6 +312,7 @@ subgraph y_2006 {
 
 subgraph y_2007 {
   graph [ rank = same ];
+  "60" [ label = "Treaty of Lisbon", shape = note ];
   "2007" [ shape = plaintext ];
 }
 
@@ -339,26 +356,123 @@ subgraph y_2015 {
   "2015" [ shape = plaintext ];
 }
 
-  "1" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EUROPOL" ];
-  "2" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "FRONTEX" ];
-  "153" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "European Council" ];
-  "155" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EU" ];
-  "206" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "TREVI 92" ];
-  "208" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "AHWG Europol" ];
-  "334" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "AHI" ];
-  "337" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "CIREFI" ];
-  "345" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EDU" ];
-  "346" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Europol Project" ];
-  "348" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Rhodes Group" ];
-  "357" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen Central" ];
-  "358" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 2" ];
-  "359" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 1" ];
-  "360" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 3" ];
-  "361" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 4" ];
-  "362" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Benelux" ];
-  "1024" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EC" ];
-  "1027" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Adonnino Committee" ];
-  "1031" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "European Communities" ];
+  "1" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EUROPOL 
+(1)" ];
+  "2" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "FRONTEX 
+(2)" ];
+  "22" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "GSC/D 
+(22)" ];
+  "24" [ shape = house, label = "Austria" ];
+  "25" [ shape = house, label = "Belgium" ];
+  "26" [ shape = house, label = "Bulgaria" ];
+  "27" [ shape = house, label = "Cyprus" ];
+  "28" [ shape = house, label = "Croatia" ];
+  "29" [ shape = house, label = "Czech Republic" ];
+  "30" [ shape = house, label = "Denmark" ];
+  "31" [ shape = house, label = "Estonia" ];
+  "32" [ shape = house, label = "Finland" ];
+  "33" [ shape = house, label = "France" ];
+  "34" [ shape = house, label = "Germany" ];
+  "35" [ shape = house, label = "Greece" ];
+  "36" [ shape = house, label = "Hungary" ];
+  "37" [ shape = house, label = "Ireland" ];
+  "38" [ shape = house, label = "Italy" ];
+  "39" [ shape = house, label = "Latvia" ];
+  "40" [ shape = house, label = "Lithuania" ];
+  "41" [ shape = house, label = "Luxembourg" ];
+  "42" [ shape = house, label = "Malta" ];
+  "43" [ shape = house, label = "Netherlands" ];
+  "44" [ shape = house, label = "Poland" ];
+  "45" [ shape = house, label = "Portugal" ];
+  "46" [ shape = house, label = "Romania" ];
+  "47" [ shape = house, label = "Slovakia" ];
+  "48" [ shape = house, label = "Slovenia" ];
+  "49" [ shape = house, label = "Spain" ];
+  "50" [ shape = house, label = "Sweden" ];
+  "51" [ shape = house, label = "United Kingdom" ];
+  "52" [ shape = house, label = "United States of America" ];
+  "53" [ shape = house, label = "Russian Federation" ];
+  "54" [ shape = house, label = "Turkey" ];
+  "55" [ shape = note, label = "Treaties of Rome (55)" ];
+  "56" [ shape = note, label = "Merger Treaty (56)" ];
+  "57" [ shape = note, label = "Treaty of Maastricht (57)" ];
+  "58" [ shape = note, label = "Treaty of Amsterdam (58)" ];
+  "59" [ shape = note, label = "Treaty of Nice (59)" ];
+  "60" [ shape = note, label = "Treaty of Lisbon (60)" ];
+  "152";
+  "153" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "European Council 
+(153)" ];
+  "155" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EU 
+(155)" ];
+  "206" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "TREVI 92 
+(206)" ];
+  "208" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "AHWG Europol 
+(208)" ];
+  "216";
+  "334" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "AHI 
+(334)" ];
+  "337" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "CIREFI 
+(337)" ];
+  "345" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EDU 
+(345)" ];
+  "346" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Europol Project 
+(346)" ];
+  "348" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Rhodes Group 
+(348)" ];
+  "351" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "JHA Task Force 
+(351)" ];
+  "352";
+  "357" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen Central 
+(357)" ];
+  "358" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 2 
+(358)" ];
+  "359" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 1 
+(359)" ];
+  "360" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 3 
+(360)" ];
+  "361" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen 4 
+(361)" ];
+  "362" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Benelux 
+(362)" ];
+  "371" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "JHA Council 
+(371)" ];
+  "402" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "CTG 
+(402)" ];
+  "1001" [ shape = note, label = "Saarbrucken Agreement (1001)" ];
+  "1002";
+  "1003" [ shape = note, label = "Schengen Implementation Conven… (1003)" ];
+  "1004" [ shape = note, label = "Schengen Protocol (1004)" ];
+  "1005" [ shape = note, label = "Schengen Border Code (1005)" ];
+  "1006" [ shape = note, label = "Incorporation of Schengen Secr… (1006)" ];
+  "1007" [ shape = note, label = "UK opt-in Schengen (1007)" ];
+  "1008" [ shape = note, label = "Ireland opt-in Schengen (1008)" ];
+  "1009" [ shape = note, label = "SIS 2 Regulation (1009)" ];
+  "1010" [ shape = note, label = "SIS 2 Decision (1010)" ];
+  "1011" [ shape = note, label = "SIS 2 Communication (1011)" ];
+  "1012" [ shape = note, label = "Single European Act (1012)" ];
+  "1013" [ shape = note, label = "Palma Document (1013)" ];
+  "1014" [ shape = note, label = "Border Convention (1014)" ];
+  "1015" [ shape = note, label = "Rambouillet Agreement (1015)" ];
+  "1016" [ shape = note, label = "1st Adonino Report (1016)" ];
+  "1017" [ shape = note, label = "A People&amp;#039;s Europe (1017)" ];
+  "1018" [ shape = note, label = "White Paper on the completion … (1018)" ];
+  "1024" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EC 
+(1024)" ];
+  "1027" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Adonnino Committee 
+(1027)" ];
+  "1031" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "European Communities 
+(1031)" ];
+  "1039" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Schengen Ministerial Meetings 
+(1039)" ];
+  "1176" [ shape = house, label = "Norway" ];
+  "1178" [ shape = house, label = "Iceland" ];
+  "1180" [ shape = house, label = "Switzerland" ];
+  "1205" [ shape = house, label = "Liechtenstein" ];
+  "1212" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = " 
+(1212)" ];
+  "1214" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = " 
+(1214)" ];
+  "1250" [ shape = note, label = "Convention based on Article K.… (1250)" ];
   "1954" [ label = "past", shape = plaintext ];
   "1955";
   "1956";
@@ -484,4 +598,63 @@ subgraph y_2015 {
   "2013" -> "2014";
   "2014" -> "2015";
   "2015" -> "2016";
+  "208" -> "352" [ penwidth = 2, style = "dashed", color = "blue", label = " is integrated in (381)" ];
+  "1002" -> "357" [ penwidth = 2, color = "red", label = " is the legal basis of (1150)" ];
+  "1002" -> "1039" [ penwidth = 2, color = "red", label = " is the legal basis of (1151)" ];
+  "1011" -> "1024" [ label = " is tabled by (1025)" ];
+  "1003" -> "24" [ color = "grey", label = " applies to (1191)" ];
+  "1003" -> "25" [ color = "grey", label = " applies to (1185)" ];
+  "1003" -> "29" [ color = "grey", label = " applies to (1200)" ];
+  "1003" -> "31" [ color = "grey", label = " applies to (1201)" ];
+  "1003" -> "32" [ color = "grey", label = " applies to (1193)" ];
+  "1003" -> "33" [ color = "grey", label = " applies to (1182)" ];
+  "1003" -> "34" [ color = "grey", label = " applies to (1183)" ];
+  "1003" -> "35" [ color = "grey", label = " applies to (1190)" ];
+  "1003" -> "36" [ color = "grey", label = " applies to (1204)" ];
+  "1003" -> "1178" [ color = "grey", label = " applies to (1196)" ];
+  "1003" -> "38" [ color = "grey", label = " applies to (1187)" ];
+  "1003" -> "39" [ color = "grey", label = " applies to (1203)" ];
+  "1003" -> "1205" [ color = "grey", label = " applies to (1206)" ];
+  "1003" -> "40" [ color = "grey", label = " applies to (1202)" ];
+  "1003" -> "41" [ color = "grey", label = " applies to (1184)" ];
+  "1003" -> "42" [ color = "grey", label = " applies to (1208)" ];
+  "1003" -> "43" [ color = "grey", label = " applies to (1186)" ];
+  "1003" -> "1176" [ color = "grey", label = " applies to (1195)" ];
+  "1003" -> "44" [ color = "grey", label = " applies to (1209)" ];
+  "1003" -> "45" [ color = "grey", label = " applies to (1189)" ];
+  "1003" -> "47" [ color = "grey", label = " applies to (1210)" ];
+  "1003" -> "48" [ color = "grey", label = " applies to (1211)" ];
+  "1003" -> "49" [ color = "grey", label = " applies to (1188)" ];
+  "1003" -> "50" [ color = "grey", label = " applies to (1197)" ];
+  "1003" -> "1180" [ color = "grey", label = " applies to (1199)" ];
+  "1003" -> "1002" [ label = " implements (1152)" ];
+  "1003" -> "1004" [ label = " is amended by (1216)" ];
+  "1003" -> "58" [ style = "bold", color = "green", label = " is part of (1153)" ];
+  "1003" -> "60" [ style = "bold", color = "green", label = " is part of (1155)" ];
+  "1003" -> "59" [ style = "bold", color = "green", label = " is part of (1154)" ];
+  "1003" -> "24" [ color = "grey", label = " is signed by (1174)" ];
+  "1003" -> "25" [ color = "grey", label = " is signed by (1168)" ];
+  "1003" -> "30" [ color = "grey", label = " is signed by (1169)" ];
+  "1003" -> "32" [ color = "grey", label = " is signed by (1194)" ];
+  "1003" -> "33" [ color = "grey", label = " is signed by (1036)" ];
+  "1003" -> "34" [ color = "grey", label = " is signed by (1156)" ];
+  "1003" -> "35" [ color = "grey", label = " is signed by (1173)" ];
+  "1003" -> "1178" [ color = "grey", label = " is signed by (1179)" ];
+  "1003" -> "38" [ color = "grey", label = " is signed by (1164)" ];
+  "1003" -> "1205" [ color = "grey", label = " is signed by (1207)" ];
+  "1003" -> "41" [ color = "grey", label = " is signed by (1158)" ];
+  "1003" -> "43" [ color = "grey", label = " is signed by (1160)" ];
+  "1003" -> "1176" [ color = "grey", label = " is signed by (1177)" ];
+  "1003" -> "45" [ color = "grey", label = " is signed by (1172)" ];
+  "1003" -> "49" [ color = "grey", label = " is signed by (1171)" ];
+  "1003" -> "50" [ color = "grey", label = " is signed by (1175)" ];
+  "1003" -> "1180" [ color = "grey", label = " is signed by (1198)" ];
+  "1003" -> "216" [ label = " is the legal basis of device (1033)" ];
+  "1003" -> "1212" [ penwidth = 2, color = "red", label = " is the legal basis of (1213)" ];
+  "1003" -> "1214" [ penwidth = 2, color = "red", label = " is the legal basis of (1215)" ];
+  "345" -> "1" [ penwidth = 2, color = "blue", style = "solid", label = " becomes (400)" ];
+  "346" -> "152" [ penwidth = 2, color = "blue", style = "dashed", label = " is created by (398)" ];
+  "346" -> "345" [ penwidth = 2, color = "blue", style = "solid", label = " becomes (399)" ];
+  "152" -> "208" [ penwidth = 2, color = "blue", style = "dashed", label = " creates (370)" ];
+  "152" -> "208";
 }

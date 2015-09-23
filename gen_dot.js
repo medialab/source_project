@@ -2,7 +2,8 @@
 var _ = require('lodash'),
   fs = require('fs'),
   argv = require('yargs').argv,
-  graphviz = require('graphviz');
+  graphviz = require('graphviz'),
+  truncate = require('truncate');
 
 var timeBegin = 1955,
     timeEnd = 2015,
@@ -17,46 +18,68 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
     org:_(data)
       .filter('recordTypeId', 4)
       .filter(function(o){
-        return  o.typeId !== 5314;
+        return  o.typeId !== 5314;// states
       })
-     .filter(function(o){
-        return  o.shortName !== "";
-      })
+     // .filter(function(o){
+     //    return  o.shortName !== "";
+     //  })
       .forEach(function(o){
-        o.hasLink = false;
         if(o.startDate === undefined) o.startDate = timeBegin-1;
+        o.shortName = truncate(o.shortName,  30);
       })
+      .value()
+      ,
+    sta: _(data)
+      .filter('recordTypeId', 4)
+      .filter(function(o){ return  o.typeId === 5314;}) // states
       .value()
       ,
     rel: _(data)
       .filter('recordTypeId', 1)
-      .filter(function(r){ return r.typeId !== undefined
-          && r.typeId !== 5091
-          && r.typeId !== 5151
-          && r.typeId !== 5177
-          && r.typeId !== 5261
-      })
-      .filter(function(r){ return r.source.recTypeId === 4 && r.target.recTypeId === 4;})
       .value()
       ,
     doc:_(data)
       .filter('recordTypeId', 13)
-      .forEach(function(o){if(o.startDate === undefined) o.startDate = timeBegin-1;})
+      .forEach(function(o){
+        if(o.startDate === undefined) o.startDate = timeBegin-1;
+        o.shortName = o.shortTitle;
+        o.shortName = truncate(o.shortName,  30);
+      })
       .value()
   };
 
-  // console.log(graph.rel);
   // console.log(graph.org);
   // console.log(graph.doc);
 
+  var relType = _(graph.rel)
+  .sortBy('typeName')
+  .map(function(d){return d.typeId+'  : '+d.typeName})
+  .uniq()
+  .value();
+  console.log(relType)
+
   genDot2(graph);
 });
-
 
 function genDot2(graph){
 
   var g = graphviz.digraph('source');
   g.set('rankdir','LR');
+
+  var edgeStyle = {
+    '5331' : {'color':'grey'}, // applies to
+    '5260' : {'penwidth':'2','color':'blue','style':'solid'}, // becomes
+    '5150' : {'penwidth':'2','color':'blue','style':'dashed'}, // creates
+    '5239' : {}, // implements
+    '5335' : {}, // is amended by
+    '5151' : {'penwidth':'2','color':'blue','style':'dashed'}, // is created by
+    '5177' : {'penwidth':'2','style':'dashed','color':'blue'}, // is integrated in
+    '5271' : {'style':'bold','color':'green'}, // is part of
+    '5287' : {'color':'grey'}, // is signed by
+    '5184' : {}, // is tabled by
+    '5068' : {'penwidth':'2','color':'red'}, // is the legal basis of
+    '5161' : {} // is the legal basis of device
+  }
 
   // create organisation node
   _.forEach(graph.org, function(d) {
@@ -68,8 +91,22 @@ function genDot2(graph){
         'fillcolor':'black',
         'color':'white',
         'fontcolor':'white',
-        'label':d.shortName,
+        'label':d.shortName + ' \n('+d.recordId+')'
       });
+  })
+
+  // create documents node
+  _.forEach(graph.doc, function(d) {
+    g.addNode( d.recordId,
+      {
+        'shape':'note',
+        'label':d.shortName + ' ('+d.recordId+')'
+      });
+  })
+
+  // create states nodes
+  _.forEach(graph.sta, function(d) {
+    g.addNode( d.recordId,{'shape':'house', 'label':d.name});
   })
 
   // add past label in axis
@@ -82,13 +119,13 @@ function genDot2(graph){
         axis.set('rank','same');
         axis.addNode(y, {'shape':'plaintext'});
 
-    // create organisation node
+    // Spatialize organisation node
     _(graph.org)
       .filter({startDate: y})
       .value()
       .forEach(function(d){ axis.addNode( d.recordId ) });
 
-    // create documents node
+    // Spatialize documents node
     _(graph.doc)
       .filter({startDate: y})
       .value()
@@ -105,6 +142,20 @@ function genDot2(graph){
   // add future in axis
   g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
   g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
+
+  //
+  _.forEach(graph.rel,function(d){
+
+    // var fdata = graph.rel.concat( graph.org );
+    // var s = _.findIndex(fdata, 'recordId', d.source.id);
+    // var t = _.findIndex(fdata, 'recordId', d.target.id);
+
+    // if(s >= 0 && t >= 0)
+    var edgeOption = _.merge(edgeStyle[d.typeId], {'label':" "+d.typeName  + ' ('+d.recordId+')'});
+
+    g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
+
+  });
 
   // write dote file
   fs.writeFileSync('./'+filename+'.dot', g.to_dot());
