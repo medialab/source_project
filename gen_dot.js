@@ -12,45 +12,57 @@ var timeBegin = 1955,
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
   if (err) return console.log(err)
-  var data = JSON.parse(string);
 
-  var graph =  {
-    org:_(data)
-      .filter('recordTypeId', 4)
-      .filter(function(o){
-        return  o.typeId !== 5314;// states
-      })
-     // .filter(function(o){
-     //    return  o.shortName !== "";
-     //  })
-      .forEach(function(o){
-        if(o.startDate === undefined) o.startDate = timeBegin-1;
-        o.shortName = truncate(o.shortName,  30);
-      })
-      .value()
-      ,
-    sta: _(data)
-      .filter('recordTypeId', 4)
-      .filter(function(o){ return  o.typeId === 5314;}) // states
-      .value()
-      ,
-    rel: _(data)
-      .filter('recordTypeId', 1)
-      .value()
-      ,
-    doc:_(data)
-      .filter('recordTypeId', 13)
-      .forEach(function(o){
-        if(o.startDate === undefined) o.startDate = timeBegin-1;
-        o.shortName = o.shortTitle;
-        o.shortName = truncate(o.shortName,  30);
-      })
-      .value()
-  };
+  var data = JSON.parse(string);
+  var graph =  {};
+
+  // list of elements to link
+  graph.allRecordsId = _(data).map('recordId').value();
+
+  // list relations
+  graph.rel = _(data)
+    .filter('recordTypeId', 1)
+    .filter(function(d){
+      return _.includes(graph.allRecordsId, d.target.id) && _.includes(graph.allRecordsId, d.source.id);
+    })
+    .value()
+    ;
+
+  // list administration
+  graph.org = _(data)
+    .filter('recordTypeId', 4)
+    .filter(function(o){
+      return  o.typeId !== 5314;// states
+    })
+    .forEach(function(o){
+      if(o.startDate === undefined) o.startDate = timeBegin-1;
+      o.shortName = truncate(o.shortName,  30);
+    })
+    .value()
+    ;
+
+  // list states
+  graph.sta = _(data)
+    .filter('recordTypeId', 4)
+    .filter(function(o){ return  o.typeId === 5314;}) // states
+    .value()
+    ;
+
+  // list documents
+  graph.doc = _(data)
+    .filter('recordTypeId', 13)
+    .forEach(function(o){
+      if(o.startDate === undefined) o.startDate = timeBegin-1;
+      o.shortName = o.shortTitle;
+      o.shortName = truncate(o.shortName,  30);
+    })
+    .value()
+    ;
 
   // console.log(graph.org);
   // console.log(graph.doc);
   // console.log(graph.rel);
+  // console.log(relType);
 
   var relType = _(graph.rel)
   .sortBy('typeName')
@@ -58,11 +70,10 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   .uniq()
   .value();
 
-  //console.log(relType)
-
   genDot2(graph);
 
 });
+
 
 function genDot2(graph){
 
@@ -148,8 +159,14 @@ function genDot2(graph){
 
   // create edges
   _.forEach(graph.rel,function(d){
+
+    // var s = _.findIndex(fdata, 'recordId', d.source.id);
+    // var t = _.findIndex(fdata, 'recordId', d.target.id);
+
     var edgeOption = _.merge(edgeStyle[d.typeId], {'label':" "+d.typeName  + ' ('+d.recordId+')'});
-    g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
+
+    // if(s > 0 && t > 0)
+      g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
   });
 
   // write dote file

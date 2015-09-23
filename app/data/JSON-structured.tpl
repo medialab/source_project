@@ -14,6 +14,24 @@
         "endDate":{$r.f11|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},
       {/if}
 
+      "relation":{
+        {foreach $r.Relationships as $Relationship}{* Relationship *}
+
+          "relId":{$r.Relationship.recID}{*Relationship >> ID*},
+
+          {if ($r.Relationship.recRelationStartDate)}
+            "startDate":{$r.Relationship.recRelationStartDate|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},
+          {/if}
+
+          {if ($r.Relationship.recRelationEndDate)}
+            "endDate":{$r.Relationship.recRelationEndDate|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},
+          {/if}
+
+          "done": ""
+
+        {/foreach}{* Relationship *}
+      },
+
 
       {* Organisation *}
       {* --------------------------------------------------*}
@@ -92,6 +110,13 @@
       {* --------------------------------------------------*}
       {if ($r.recTypeID=="20")}
         "title":"{$r.recTitle}{*RecTitle*}"
+      {/if}
+
+
+      {* Device *}
+      {* --------------------------------------------------*}
+      {if ($r.recTypeID=="16")}
+        "title":""
       {/if}
     }
     {if $smarty.foreach.mainloop.last}{else},{/if}
