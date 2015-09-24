@@ -5,10 +5,6 @@ var _ = require('lodash'),
   graphviz = require('graphviz'),
   truncate = require('truncate');
 
-var timeBegin = 1955,
-    timeEnd = 2015,
-    filename = 'source';
-
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
   if (err) return console.log(err)
@@ -16,8 +12,17 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   var data = JSON.parse(string);
   var graph =  {};
 
+  isTimed = true;
+  hasStates = false;
+
   // list of elements to link
-  graph.allRecordsId = _(data).map('recordId').value();
+  graph.allRecordsId = _(data)
+    .filter(function(d){
+     if(!hasStates) return d.typeId !== 5314;
+     else return true;
+    })
+    .map('recordId')
+    .value();
 
   // list relations
   graph.rel = _(data)
@@ -65,19 +70,23 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   // console.log(relType);
 
   var relType = _(graph.rel)
-  .sortBy('typeName')
-  .map(function(d){return d.typeId+'  : '+d.typeName})
-  .uniq()
-  .value();
+    .sortBy('typeName')
+    .map(function(d){return d.typeId+'  : '+d.typeName})
+    .uniq()
+    .value()
+    ;
 
-  genDot2(graph);
-
+  genDot2(graph,'source', isTimed, hasStates);
 });
 
 
-function genDot2(graph){
+function genDot2(graph, name, isTimed, hasStates){
+
+  var timeBegin = 1955,
+      timeEnd = 2015;
 
   var g = graphviz.digraph('source');
+
   g.set('rankdir','LR');
 
   var edgeStyle = {
@@ -118,60 +127,61 @@ function genDot2(graph){
       });
   })
 
-  // create states nodes
-  _.forEach(graph.sta, function(d) {
-    g.addNode( d.recordId,{'shape':'house', 'label':d.name});
-  })
+  if(hasStates){
+    // create states nodes
+    _.forEach(graph.sta, function(d) {
+      g.addNode( d.recordId,{'shape':'invhouse', 'label':d.name});
+    })
+  }
 
-  // add past label in axis
-  g.addNode(timeBegin-1, {'label':'past','shape':'plaintext'});
+  if(isTimed){
 
-  // Spatialize organisation by year
-  for (var y = timeBegin; y < timeEnd+1; y++){
+    // add past label in axis
+    g.addNode(timeBegin-1, {'label':'past','shape':'plaintext'});
 
-    var axis = g.addCluster('y_'+y);
-        axis.set('rank','same');
-        axis.addNode(y, {'shape':'plaintext'});
+    // Spatialize organisation by year
+    for (var y = timeBegin; y < timeEnd+1; y++){
 
-    // Spatialize organisation node
-    _(graph.org)
-      .filter({startDate: y})
-      .value()
-      .forEach(function(d){ axis.addNode( d.recordId ) });
+      var axis = g.addCluster('y_'+y);
+          axis.set('rank','same');
+          axis.addNode(y, {'shape':'plaintext'});
 
-    // Spatialize documents node
-    _(graph.doc)
-      .filter({startDate: y})
-      .value()
-      .forEach(function(d){
-        axis.addNode( d.recordId, {
-          'label':d.shortTitle,
-          'shape':'note'
+      // Spatialize organisation node
+      _(graph.org)
+        .filter({startDate: y})
+        .value()
+        .forEach(function(d){ axis.addNode( d.recordId ) });
+
+      // Spatialize documents node
+      _(graph.doc)
+        .filter({startDate: y})
+        .value()
+        .forEach(function(d){
+          axis.addNode( d.recordId, {
+            'label':d.shortTitle,
+            'shape':'note'
+          });
         });
-      });
 
-    g.addEdge( ''+(y-1), ''+y );
-  };
+      g.addEdge( ''+(y-1), ''+y );
+    };
 
-  // add future in axis
-  g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
-  g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
+    // add future in axis
+    g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
+    g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
+  }
 
   // create edges
   _.forEach(graph.rel,function(d){
-
-    // var s = _.findIndex(fdata, 'recordId', d.source.id);
-    // var t = _.findIndex(fdata, 'recordId', d.target.id);
-
     var edgeOption = _.merge(edgeStyle[d.typeId], {'label':" "+d.typeName  + ' ('+d.recordId+')'});
-
-    // if(s > 0 && t > 0)
-      g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
+    g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
   });
 
   // write dote file
 
-  fs.writeFileSync('./'+filename+'.dot', g.to_dot());
-  g.output( "pdf", './'+filename+'.pdf' );
+  var filename = name+(hasStates ? '_states':'')+(isTimed ? '_timed':'');
+
+  fs.writeFileSync('./exports/'+filename+'.dot', g.to_dot());
+  g.output( "pdf", './exports/'+filename+'.pdf' );
   console.log(filename+" save !");
 }
