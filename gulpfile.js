@@ -9,9 +9,9 @@ var browserSync = require('browser-sync').create();
 
 gulp.task('less', function() {
     return gulp.src('./app/assets/less/*.less')
-        .pipe(less())
-        .pipe(gulp.dest('./app/assets/css'))
-        .pipe(browserSync.stream());
+      .pipe(less())
+      .pipe(gulp.dest('./app/assets/css'))
+      .pipe(browserSync.stream());
 });
 
 gulp.task('build', function() {
@@ -39,14 +39,16 @@ gulp.task('dot', function(){
 gulp.task('dotwatch', function(){
   gulp.watch('./gen_dot.js', ['dot']);
   gulp.watch('./app/data/*.json', ['dot']);
-  gulp.watch('./app/*.js', ['dot']);
+  gulp.watch('./app/assets/js/source.js', ['dot']);
 })
 
 gulp.task('serve', ['less', 'dotwatch'], function() {
     browserSync.init({server: "./app"});
+
     // gulp.watch('js/*.js', ['lint', 'scripts']);
     gulp.watch('./app/assets/less/*.less', ['less']);
     gulp.watch("app/*.html").on('change', browserSync.reload);
+
 });
 
 gulp.task('default', [ 'less', 'build', 'watch']);

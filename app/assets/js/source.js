@@ -9,14 +9,32 @@
   // rec = record
 
   // get all recordId
-  source.getAllRecId = function(data){
+  source.getAllRecId = _.memoize(function(data){
      return _(data)
         .map('recordId')
         .value();
+  });
+
+  // get dates
+  source.getDates = function(data){
+   return _(data)
+      .map('startDate')
+      .uniq()
+      .reject(_.isUndefined)
+      .value()
+      ;
+  }
+
+  //
+  source.getTimeBounds = function(data){
+    return {
+      'start':_.first(source.getDates(data)),
+      'end': _.last(source.getDates(data))
+    };
   }
 
   // get valid relations
-  source.getValidRel = function(data){
+  source.getValidRel = _.memoize(function(data){
     return _(data)
       .filter('recordTypeId', 1)
       .filter(function(d){
@@ -25,7 +43,7 @@
       })
       .value()
       ;
-  }
+  });
 
   source.getRelType = function(data){
     return _(source.getValidRel(data))

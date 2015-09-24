@@ -4,7 +4,7 @@ var _ = require('lodash'),
   argv = require('yargs').argv,
   graphviz = require('graphviz'),
   truncate = require('truncate');
-  source = require('./app/source.js');
+  source = require('./app/assets/js/source.js');
 
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
@@ -16,32 +16,13 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   isTimed = true;
   hasStates = true;
 
-  console.log(source.getRelType(data));
+  console.log(source.getTimeBounds(data).end);
 
   // list of elements to link
-  graph.allRecordsId = _(data)
-    .filter(function(d){
-     if(!hasStates) return d.typeId !== 5314;
-     else return true;
-    })
-    .map('recordId')
-    .value();
+  graph.allRecordsId = source.getAllRecId(data);
 
   // list relations
-  graph.rel = _(data)
-    .filter('recordTypeId', 1)
-    .filter(function(d){
-      return _.includes(graph.allRecordsId, d.target.id) && _.includes(graph.allRecordsId, d.source.id);
-    })
-    // .filter(function(d){
-    //   return d.typeId !== undefined
-    //     && r.typeId !== 5150
-    //     && r.typeId !== 5151
-    //     && r.typeId !== 5177
-    //     && r.typeId !== 5261
-    // })
-    .value()
-    ;
+  graph.rel = source.getValidRel(data);
 
   // list administration
   graph.org = _(data)
@@ -74,19 +55,21 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
     .value()
     ;
 
+
   // console.log(graph.org);
   // console.log(graph.doc);
   // console.log(graph.rel);
   // console.log(relType);
 
-  genDot2(graph,'source', isTimed, hasStates);
+  genDot2(data,graph,'source', isTimed, hasStates);
 });
 
 
-function genDot2(graph, name, isTimed, hasStates){
+function genDot2(data, graph, name, isTimed, hasStates){
 
-  var timeBegin = 1955,
-      timeEnd = 2015;
+
+  var timeBegin = source.getTimeBounds(data).end,
+      timeEnd   = source.getTimeBounds(data).start;
 
   var g = graphviz.digraph('source');
 
@@ -181,7 +164,6 @@ function genDot2(graph, name, isTimed, hasStates){
   });
 
   // write dote file
-
   var filename = name+(hasStates ? '_states':'')+(isTimed ? '_timed':'');
 
   fs.writeFileSync('./exports/'+filename+'.dot', g.to_dot());

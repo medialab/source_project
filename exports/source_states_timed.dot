@@ -1,121 +1,5 @@
 digraph source {
   graph [ rankdir = LR ];
-subgraph y_1955 {
-  graph [ rank = same ];
-  "1955" [ shape = plaintext ];
-}
-
-subgraph y_1956 {
-  graph [ rank = same ];
-  "1956" [ shape = plaintext ];
-}
-
-subgraph y_1957 {
-  graph [ rank = same ];
-  "1957" [ shape = plaintext ];
-}
-
-subgraph y_1958 {
-  graph [ rank = same ];
-  "55" [ label = "Treaties of Rome", shape = note ];
-  "1024";
-  "1031";
-  "1958" [ shape = plaintext ];
-}
-
-subgraph y_1959 {
-  graph [ rank = same ];
-  "1959" [ shape = plaintext ];
-}
-
-subgraph y_1960 {
-  graph [ rank = same ];
-  "362";
-  "1960" [ shape = plaintext ];
-}
-
-subgraph y_1961 {
-  graph [ rank = same ];
-  "1961" [ shape = plaintext ];
-}
-
-subgraph y_1962 {
-  graph [ rank = same ];
-  "1962" [ shape = plaintext ];
-}
-
-subgraph y_1963 {
-  graph [ rank = same ];
-  "1963" [ shape = plaintext ];
-}
-
-subgraph y_1964 {
-  graph [ rank = same ];
-  "1964" [ shape = plaintext ];
-}
-
-subgraph y_1965 {
-  graph [ rank = same ];
-  "56" [ label = "Merger Treaty", shape = note ];
-  "1965" [ shape = plaintext ];
-}
-
-subgraph y_1966 {
-  graph [ rank = same ];
-  "1966" [ shape = plaintext ];
-}
-
-subgraph y_1967 {
-  graph [ rank = same ];
-  "1967" [ shape = plaintext ];
-}
-
-subgraph y_1968 {
-  graph [ rank = same ];
-  "1968" [ shape = plaintext ];
-}
-
-subgraph y_1969 {
-  graph [ rank = same ];
-  "1969" [ shape = plaintext ];
-}
-
-subgraph y_1970 {
-  graph [ rank = same ];
-  "1970" [ shape = plaintext ];
-}
-
-subgraph y_1971 {
-  graph [ rank = same ];
-  "1971" [ shape = plaintext ];
-}
-
-subgraph y_1972 {
-  graph [ rank = same ];
-  "1972" [ shape = plaintext ];
-}
-
-subgraph y_1973 {
-  graph [ rank = same ];
-  "1973" [ shape = plaintext ];
-}
-
-subgraph y_1974 {
-  graph [ rank = same ];
-  "153";
-  "1974" [ shape = plaintext ];
-}
-
-subgraph y_1975 {
-  graph [ rank = same ];
-  "1975" [ shape = plaintext ];
-}
-
-subgraph y_1976 {
-  graph [ rank = same ];
-  "1976" [ shape = plaintext ];
-}
-
 subgraph y_1977 {
   graph [ rank = same ];
   "1977" [ shape = plaintext ];
@@ -269,95 +153,6 @@ subgraph y_1999 {
   "1999" [ shape = plaintext ];
 }
 
-subgraph y_2000 {
-  graph [ rank = same ];
-  "1007" [ label = "UK opt-in Schengen", shape = note ];
-  "2000" [ shape = plaintext ];
-}
-
-subgraph y_2001 {
-  graph [ rank = same ];
-  "59" [ label = "Treaty of Nice", shape = note ];
-  "402";
-  "1010" [ label = "SIS 2 Decision", shape = note ];
-  "2001" [ shape = plaintext ];
-}
-
-subgraph y_2002 {
-  graph [ rank = same ];
-  "62";
-  "1008" [ label = "Ireland opt-in Schengen", shape = note ];
-  "2002" [ shape = plaintext ];
-}
-
-subgraph y_2003 {
-  graph [ rank = same ];
-  "2003" [ shape = plaintext ];
-}
-
-subgraph y_2004 {
-  graph [ rank = same ];
-  "2004" [ shape = plaintext ];
-}
-
-subgraph y_2005 {
-  graph [ rank = same ];
-  "2";
-  "2005" [ shape = plaintext ];
-}
-
-subgraph y_2006 {
-  graph [ rank = same ];
-  "1005" [ label = "Schengen Border Code", shape = note ];
-  "2006" [ shape = plaintext ];
-}
-
-subgraph y_2007 {
-  graph [ rank = same ];
-  "60" [ label = "Treaty of Lisbon", shape = note ];
-  "2007" [ shape = plaintext ];
-}
-
-subgraph y_2008 {
-  graph [ rank = same ];
-  "2008" [ shape = plaintext ];
-}
-
-subgraph y_2009 {
-  graph [ rank = same ];
-  "2009" [ shape = plaintext ];
-}
-
-subgraph y_2010 {
-  graph [ rank = same ];
-  "2010" [ shape = plaintext ];
-}
-
-subgraph y_2011 {
-  graph [ rank = same ];
-  "2011" [ shape = plaintext ];
-}
-
-subgraph y_2012 {
-  graph [ rank = same ];
-  "2012" [ shape = plaintext ];
-}
-
-subgraph y_2013 {
-  graph [ rank = same ];
-  "2013" [ shape = plaintext ];
-}
-
-subgraph y_2014 {
-  graph [ rank = same ];
-  "2014" [ shape = plaintext ];
-}
-
-subgraph y_2015 {
-  graph [ rank = same ];
-  "2015" [ shape = plaintext ];
-}
-
   "1" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EUROPOL 
 (1)" ];
   "2" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "FRONTEX 
@@ -476,29 +271,7 @@ subgraph y_2015 {
   "1214" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = " 
 (1214)" ];
   "1250" [ shape = note, label = "Convention based on Article K.… (1250)" ];
-  "1954" [ label = "past", shape = plaintext ];
-  "1955";
-  "1956";
-  "1957";
-  "1958";
-  "1959";
-  "1960";
-  "1961";
-  "1962";
-  "1963";
-  "1964";
-  "1965";
-  "1966";
-  "1967";
-  "1968";
-  "1969";
-  "1970";
-  "1971";
-  "1972";
-  "1973";
-  "1974";
-  "1975";
-  "1976";
+  "1976" [ label = "past", shape = plaintext ];
   "1977";
   "1978";
   "1979";
@@ -522,45 +295,7 @@ subgraph y_2015 {
   "1997";
   "1998";
   "1999";
-  "2000";
-  "2001";
-  "2002";
-  "2003";
-  "2004";
-  "2005";
-  "2006";
-  "2007";
-  "2008";
-  "2009";
-  "2010";
-  "2011";
-  "2012";
-  "2013";
-  "2014";
-  "2015";
-  "2016" [ label = "future", shape = plaintext ];
-  "1954" -> "1955";
-  "1955" -> "1956";
-  "1956" -> "1957";
-  "1957" -> "1958";
-  "1958" -> "1959";
-  "1959" -> "1960";
-  "1960" -> "1961";
-  "1961" -> "1962";
-  "1962" -> "1963";
-  "1963" -> "1964";
-  "1964" -> "1965";
-  "1965" -> "1966";
-  "1966" -> "1967";
-  "1967" -> "1968";
-  "1968" -> "1969";
-  "1969" -> "1970";
-  "1970" -> "1971";
-  "1971" -> "1972";
-  "1972" -> "1973";
-  "1973" -> "1974";
-  "1974" -> "1975";
-  "1975" -> "1976";
+  "2000" [ label = "future", shape = plaintext ];
   "1976" -> "1977";
   "1977" -> "1978";
   "1978" -> "1979";
@@ -585,22 +320,6 @@ subgraph y_2015 {
   "1997" -> "1998";
   "1998" -> "1999";
   "1999" -> "2000";
-  "2000" -> "2001";
-  "2001" -> "2002";
-  "2002" -> "2003";
-  "2003" -> "2004";
-  "2004" -> "2005";
-  "2005" -> "2006";
-  "2006" -> "2007";
-  "2007" -> "2008";
-  "2008" -> "2009";
-  "2009" -> "2010";
-  "2010" -> "2011";
-  "2011" -> "2012";
-  "2012" -> "2013";
-  "2013" -> "2014";
-  "2014" -> "2015";
-  "2015" -> "2016";
   "1006" -> "58" [ label = " implements (1259)" ];
   "1006" -> "371";
   "1004" -> "58" [ label = " implements (1261)" ];
