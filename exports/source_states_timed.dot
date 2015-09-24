@@ -752,8 +752,8 @@ subgraph y_2015 {
   "1012" -> "35" [ color = "goldenrod", label = " applies to (1098)" ];
   "1012" -> "37" [ color = "goldenrod", label = " applies to (1092)" ];
   "1012" -> "38" [ color = "goldenrod", label = " applies to (1090)" ];
-  "1012" -> "41" [ color = "goldenrod", label = " applies to (1082)" ];
   "1012" -> "41" [ color = "goldenrod", label = " applies to (1086)" ];
+  "1012" -> "41" [ color = "goldenrod", label = " applies to (1082)" ];
   "1012" -> "43" [ color = "goldenrod", label = " applies to (1085)" ];
   "1012" -> "45" [ color = "goldenrod", label = " applies to (1102)" ];
   "1012" -> "49" [ color = "goldenrod", label = " applies to (1100)" ];

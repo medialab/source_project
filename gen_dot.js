@@ -4,6 +4,7 @@ var _ = require('lodash'),
   argv = require('yargs').argv,
   graphviz = require('graphviz'),
   truncate = require('truncate');
+  source = require('./app/source.js');
 
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
@@ -13,7 +14,9 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   var graph =  {};
 
   isTimed = true;
-  hasStates = false;
+  hasStates = true;
+
+  console.log(source.getRelType(data));
 
   // list of elements to link
   graph.allRecordsId = _(data)
@@ -30,6 +33,13 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
     .filter(function(d){
       return _.includes(graph.allRecordsId, d.target.id) && _.includes(graph.allRecordsId, d.source.id);
     })
+    // .filter(function(d){
+    //   return d.typeId !== undefined
+    //     && r.typeId !== 5150
+    //     && r.typeId !== 5151
+    //     && r.typeId !== 5177
+    //     && r.typeId !== 5261
+    // })
     .value()
     ;
 
@@ -68,13 +78,6 @@ fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
   // console.log(graph.doc);
   // console.log(graph.rel);
   // console.log(relType);
-
-  var relType = _(graph.rel)
-    .sortBy('typeName')
-    .map(function(d){return d.typeId+'  : '+d.typeName})
-    .uniq()
-    .value()
-    ;
 
   genDot2(graph,'source', isTimed, hasStates);
 });

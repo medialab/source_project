@@ -39,6 +39,7 @@ gulp.task('dot', function(){
 gulp.task('dotwatch', function(){
   gulp.watch('./gen_dot.js', ['dot']);
   gulp.watch('./app/data/*.json', ['dot']);
+  gulp.watch('./app/*.js', ['dot']);
 })
 
 gulp.task('serve', ['less', 'dotwatch'], function() {
