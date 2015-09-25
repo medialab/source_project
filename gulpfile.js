@@ -41,13 +41,13 @@ gulp.task('dotwatch', function(){
   gulp.watch('./app/data/*.json', ['dot']);
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
-
 gulp.task('serve', ['less', 'dotwatch'], function() {
     browserSync.init({server: "./app"});
 
     // gulp.watch('js/*.js', ['lint', 'scripts']);
     gulp.watch('./app/assets/less/*.less', ['less']);
     gulp.watch("app/*.html").on('change', browserSync.reload);
+    gulp.watch("app/assets/js/*.js").on('change', browserSync.reload);
 
 });
 

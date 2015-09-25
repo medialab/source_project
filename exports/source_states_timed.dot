@@ -240,10 +240,10 @@ subgraph y_1999 {
 (402)" ];
   "1001" [ shape = note, label = "Saarbrucken Agreement (1001)" ];
   "1002" [ shape = note, label = "Schengen Agreement (1002)" ];
-  "1003" [ shape = note, label = "Schengen Implementation Conven… (1003)" ];
+  "1003" [ shape = note, label = "Schengen Implementation Convention (1003)" ];
   "1004" [ shape = note, label = "Schengen Protocol (1004)" ];
   "1005" [ shape = note, label = "Schengen Border Code (1005)" ];
-  "1006" [ shape = note, label = "Incorporation of Schengen Secr… (1006)" ];
+  "1006" [ shape = note, label = "Incorporation of Schengen Secretariat (1006)" ];
   "1007" [ shape = note, label = "UK opt-in Schengen (1007)" ];
   "1008" [ shape = note, label = "Ireland opt-in Schengen (1008)" ];
   "1010" [ shape = note, label = "SIS 2 Decision (1010)" ];
@@ -253,7 +253,7 @@ subgraph y_1999 {
   "1015" [ shape = note, label = "Rambouillet Agreement (1015)" ];
   "1016" [ shape = note, label = "1st Adonino Report (1016)" ];
   "1017" [ shape = note, label = "A People&amp;#039;s Europe (1017)" ];
-  "1018" [ shape = note, label = "White Paper on the completion … (1018)" ];
+  "1018" [ shape = note, label = "White Paper on the completion of the single market (1018)" ];
   "1024" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "EC 
 (1024)" ];
   "1027" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = "Adonnino Committee 
@@ -270,7 +270,7 @@ subgraph y_1999 {
 (1212)" ];
   "1214" [ color = "white", shape = hexagon, style = "filled", fillcolor = "black", fontcolor = "white", label = " 
 (1214)" ];
-  "1250" [ shape = note, label = "Convention based on Article K.… (1250)" ];
+  "1250" [ shape = note, label = "Convention based on Article K.3 of the Treaty on European Union on the establishment of a European Police Office (Europol Convention) (1250)" ];
   "1976" [ label = "past", shape = plaintext ];
   "1977";
   "1978";
@@ -471,8 +471,8 @@ subgraph y_1999 {
   "1012" -> "35" [ color = "goldenrod", label = " applies to (1098)" ];
   "1012" -> "37" [ color = "goldenrod", label = " applies to (1092)" ];
   "1012" -> "38" [ color = "goldenrod", label = " applies to (1090)" ];
-  "1012" -> "41" [ color = "goldenrod", label = " applies to (1086)" ];
   "1012" -> "41" [ color = "goldenrod", label = " applies to (1082)" ];
+  "1012" -> "41" [ color = "goldenrod", label = " applies to (1086)" ];
   "1012" -> "43" [ color = "goldenrod", label = " applies to (1085)" ];
   "1012" -> "45" [ color = "goldenrod", label = " applies to (1102)" ];
   "1012" -> "49" [ color = "goldenrod", label = " applies to (1100)" ];

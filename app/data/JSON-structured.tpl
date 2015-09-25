@@ -6,32 +6,8 @@
       "recordTypeId" : {$r.recTypeID},
       "recordTypeName":"{$r.recTypeName}{*RecTypeName*}",
 
-      {if ($r.f10)}
-        "startDate":{$r.f10|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},
-      {/if}
-
-      {if ($r.f11)}
-        "endDate":{$r.f11|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},
-      {/if}
-
-      "relation":{
-        {foreach $r.Relationships as $Relationship}{* Relationship *}
-
-          "relId":{$r.Relationship.recID}{*Relationship >> ID*},
-
-          {if ($r.Relationship.recRelationStartDate)}
-            "startDate":{$r.Relationship.recRelationStartDate|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},
-          {/if}
-
-          {if ($r.Relationship.recRelationEndDate)}
-            "endDate":{$r.Relationship.recRelationEndDate|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},
-          {/if}
-
-          "done": ""
-
-        {/foreach}{* Relationship *}
-      },
-
+      {if ($r.f10)}"startDate":{$r.f10|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},{/if}
+      {if ($r.f11)}"endDate":{$r.f11|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},{/if}
 
       {* Organisation *}
       {* --------------------------------------------------*}
@@ -45,15 +21,8 @@
 
        "short_description":"{$r.f3|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Description*}",
        "logo":"{$r.f182}{*Logo*}",
-       "url":"{$r.f77}{*URL*}",
+       "url":"{$r.f77}{*URL*}"
 
-       "extendedDescription":"{$r.f4|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Extended Description*}",
-
-       "contactDetails":"{$r.f17|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Contact Details Or URL(s)*}",
-       "location": {
-         "mappable":"{$r.f134.f28}{*Location (places) >> Location (mappable)*}",
-         "country":"{$r.f134.f26.term}{*Country >> Term*}"
-         }
       {/if}
 
       {* Relationship *}
@@ -64,7 +33,7 @@
 
         {if $r.f6.internalid}
           "typeName": "{$r.f6.term}",
-          "typeId": {$r.f6.internalid}{*Relationship Type >> Internal ID*},
+          "typeId": {$r.f6.internalid} {*Relationship Type >> Internal ID*},
         {/if}
 
         "source":{
@@ -89,13 +58,14 @@
 
       {if ($r.recTypeID=="13")}
 
-        {if ($r.f210)}
-          "startDate":{$r.f210}{*Creation Date*} ,
-        {/if}
+        {if ($r.f210)} "startDate":{$r.f210}, {*Creation Date*}{/if}
+
+        "typeName": "{$r.f137.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Document Type >> Term*}",
+        "typeId": {$r.f137.internalid}{*Document Type >> Internal ID*},
 
         "shortSummary":"{$r.f3|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Summary*}",
         "shortTitle": "{$r.f209|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Title*}",
-        "longTitle": "{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Long Title*}"
+        "longTitle": "{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}"{*Long Title*}
 
       {/if}
 

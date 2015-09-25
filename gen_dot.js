@@ -3,70 +3,56 @@ var _ = require('lodash'),
   fs = require('fs'),
   argv = require('yargs').argv,
   graphviz = require('graphviz'),
-  truncate = require('truncate');
-  source = require('./app/assets/js/source.js');
+  Source = require('./app/assets/js/source.js');
 
 fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
 
-  if (err) return console.log(err)
+  if (err) return console.log(err);
 
   var data = JSON.parse(string);
+  var so = new Source(data);
+
   var graph =  {};
 
-  isTimed = true;
-  hasStates = true;
-
-  console.log(source.getTimeBounds(data).end);
-
   // list of elements to link
-  graph.allRecordsId = source.getAllRecId(data);
+  graph.allRecordsId = so.getAllRecId();
 
-  // list relations
-  graph.rel = source.getValidRel(data);
+  // // list relations
+  graph.rel = so.getValidRel();
 
   // list administration
   graph.org = _(data)
     .filter('recordTypeId', 4)
-    .filter(function(o){
-      return  o.typeId !== 5314;// states
-    })
-    .forEach(function(o){
-      if(o.startDate === undefined) o.startDate = timeBegin-1;
-      o.shortName = truncate(o.shortName,  30);
-    })
+    .reject('typeId', 5314)
     .value()
     ;
 
   // list states
   graph.sta = _(data)
-    .filter('recordTypeId', 4)
-    .filter(function(o){ return  o.typeId === 5314;}) // states
+    .filter('typeId', 5314) // states
     .value()
     ;
 
   // list documents
   graph.doc = _(data)
     .filter('recordTypeId', 13)
-    .forEach(function(o){
-      if(o.startDate === undefined) o.startDate = timeBegin-1;
-      o.shortName = o.shortTitle;
-      o.shortName = truncate(o.shortName,  30);
+    .value()
+  //   ;
+
+  graph.treaty = _(data)
+    .where({'typeId':5319})
+    .forEach(function(d){
+      d.childEvents = so.getTimedLinks(d, {'typeId':5333, 'typeId':5331});
     })
     .value()
     ;
 
-
-  // console.log(graph.org);
-  // console.log(graph.doc);
-  // console.log(graph.rel);
-  // console.log(relType);
-
-  genDot2(data,graph,'source', isTimed, hasStates);
+  console.log( so.getTypes({'recordTypeId':1} ))
+  // console.log(graph.treaty);
+  // genDot2(data, graph,'source');
 });
 
-
-function genDot2(data, graph, name, isTimed, hasStates){
-
+function genDot2(data, graph, name){
 
   var timeBegin = source.getTimeBounds(data).end,
       timeEnd   = source.getTimeBounds(data).start;
@@ -113,49 +99,43 @@ function genDot2(data, graph, name, isTimed, hasStates){
       });
   })
 
-  if(hasStates){
-    // create states nodes
-    _.forEach(graph.sta, function(d) {
-      g.addNode( d.recordId,{'shape':'invhouse', 'label':d.name});
-    })
-  }
+  // create states nodes
+  _.forEach(graph.sta, function(d) {
+    g.addNode( d.recordId,{'shape':'invhouse', 'label':d.name});
+  })
+  // add past label in axis
+  g.addNode(timeBegin-1, {'label':'past','shape':'plaintext'});
 
-  if(isTimed){
+  // Spatialize organisation by year
+  for (var y = timeBegin; y < timeEnd+1; y++){
 
-    // add past label in axis
-    g.addNode(timeBegin-1, {'label':'past','shape':'plaintext'});
+    var axis = g.addCluster('y_'+y);
+        axis.set('rank','same');
+        axis.addNode(y, {'shape':'plaintext'});
 
-    // Spatialize organisation by year
-    for (var y = timeBegin; y < timeEnd+1; y++){
+    // Spatialize organisation node
+    _(graph.org)
+      .filter({startDate: y})
+      .value()
+      .forEach(function(d){ axis.addNode( d.recordId ) });
 
-      var axis = g.addCluster('y_'+y);
-          axis.set('rank','same');
-          axis.addNode(y, {'shape':'plaintext'});
-
-      // Spatialize organisation node
-      _(graph.org)
-        .filter({startDate: y})
-        .value()
-        .forEach(function(d){ axis.addNode( d.recordId ) });
-
-      // Spatialize documents node
-      _(graph.doc)
-        .filter({startDate: y})
-        .value()
-        .forEach(function(d){
-          axis.addNode( d.recordId, {
-            'label':d.shortTitle,
-            'shape':'note'
-          });
+    // Spatialize documents node
+    _(graph.doc)
+      .filter({startDate: y})
+      .value()
+      .forEach(function(d){
+        axis.addNode( d.recordId, {
+          'label':d.shortTitle,
+          'shape':'note'
         });
+      });
 
-      g.addEdge( ''+(y-1), ''+y );
-    };
+    g.addEdge( ''+(y-1), ''+y );
+  };
 
-    // add future in axis
-    g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
-    g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
-  }
+  // add future in axis
+  g.addNode(timeEnd+1, {'label':'future','shape':'plaintext'});
+  g.addEdge( ''+timeEnd, ''+(timeEnd+1) );
 
   // create edges
   _.forEach(graph.rel,function(d){
@@ -164,9 +144,8 @@ function genDot2(data, graph, name, isTimed, hasStates){
   });
 
   // write dote file
-  var filename = name+(hasStates ? '_states':'')+(isTimed ? '_timed':'');
 
-  fs.writeFileSync('./exports/'+filename+'.dot', g.to_dot());
-  g.output( "pdf", './exports/'+filename+'.pdf' );
-  console.log(filename+" save !");
+  fs.writeFileSync('./exports/'+name+'.dot', g.to_dot());
+  g.output( "pdf", './exports/'+name+'.pdf' );
+  console.log(name+" save !");
 }

@@ -1,60 +1,77 @@
 (function () {
 
-  // dep
   if(typeof window === 'undefined' ) _ = require('lodash');
 
-  var source = {};
+  function Source(data){
 
-  // rel = relation
-  // rec = record
+    var self = this;
 
-  // get all recordId
-  source.getAllRecId = _.memoize(function(data){
-     return _(data)
-        .map('recordId')
-        .value();
-  });
-
-  // get dates
-  source.getDates = function(data){
-   return _(data)
-      .map('startDate')
-      .uniq()
-      .reject(_.isUndefined)
-      .value()
-      ;
-  }
-
-  //
-  source.getTimeBounds = function(data){
-    return {
-      'start':_.first(source.getDates(data)),
-      'end': _.last(source.getDates(data))
+    // get all recordId
+    this.getAllRecId = function (){
+         return _(data).map('recordId').value();
     };
-  }
 
-  // get valid relations
-  source.getValidRel = _.memoize(function(data){
-    return _(data)
-      .filter('recordTypeId', 1)
-      .filter(function(d){
-        return _.includes(source.getAllRecId(data), d.target.id)
-          && _.includes(source.getAllRecId(data), d.source.id);
-      })
+    // get dates
+    this.getDates = function (){
+     return _(data)
+        .map('startDate')
+        .uniq()
+        .reject(_.isUndefined)
+        .value();
+    };
+
+    // get time limits
+    this.getTimeBounds = function (){
+      return {
+        'start':_.first(self.getDates(data)),
+        'end': _.last(self.getDates(data))
+      };
+    };
+
+    // get valid relations
+    this.getValidRel = function (){
+      return _(data)
+        .filter('recordTypeId', 1)
+        .filter(function(d){
+          return _.includes(self.getAllRecId(), d.target.id)
+              && _.includes(self.getAllRecId(), d.source.id);
+        })
+        .forEach(function(d){
+          d.source.rec = _(data).filter('recordId', d.source.id).value()[0];
+          d.target.rec = _(data).filter('recordId', d.target.id).value()[0];
+        })
+        .value();
+    };
+
+    // return type from a query
+    this.getTypes = function(q){
+      return _(data)
+        .sortBy('typeName')
+        .where(q)
+        .map(function(d){return d.typeId+'  : '+d.typeName})
+        .uniq()
+        .value();
+    };
+
+    this.getTimedLinks = function (element, q){
+     return _(self.getValidRel())
+      .where(q)
+      .filter(function(d){ return d.source.id === element.recordId })
+      .groupBy('startDate')
       .value()
       ;
-  });
+    }
 
-  source.getRelType = function(data){
-    return _(source.getValidRel(data))
-      .sortBy('typeName')
-      .map(function(d){return d.typeId+'  : '+d.typeName})
-      .uniq()
-      .value()
-      ;
+    // data first global filter
+    this.data = _(data).forEach(function(d){
+      if(_.isUndefined(d.startDate)) d.startDate = self.getTimeBounds(data).start - 1;
+      if(_.isUndefined(d.shortName)) d.shortName = d.shortTitle;
+      d.shortSummary = "…";
+    }).value();
+
   }
 
-  if(typeof window === 'undefined' ) module.exports = source; // node
-  else window.source = source; // browser
+  if(typeof window === 'undefined' ) module.exports = Source; // node
+  else window.Source = Source; // browser
 
 })();
