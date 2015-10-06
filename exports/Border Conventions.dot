@@ -1,0 +1,15 @@
+digraph source {
+  graph [ rankdir = LR ];
+subgraph y_1989 {
+  graph [ rank = same ];
+  "1989" [ shape = plaintext ];
+  "1275_1989" [ shape = invhouse, label = "implements undefined" ];
+  "1273_1989" [ shape = invhouse, label = "is prepared by Ad Hoc Immigration Group" ];
+  "1274_1989" [ shape = invhouse, label = "is tabled by France" ];
+  "1276_1989" [ shape = invhouse, label = "refers to undefined" ];
+}
+
+  "1014" [ shape = note, label = "Border Conventions", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
+  "1989";
+  "1989" -> "1989";
+}

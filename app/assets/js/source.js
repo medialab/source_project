@@ -16,6 +16,7 @@
      return _(data)
         .map('startDate')
         .uniq()
+        .sortBy()
         .reject(_.isUndefined)
         .value();
     };
@@ -48,7 +49,7 @@
       return _(data)
         .sortBy('typeName')
         .where(q)
-        .map(function(d){return d.typeId+'  : '+d.typeName})
+        .map(function(d){return d.typeId+' : '+d.typeName})
         .uniq()
         .value();
     };
@@ -64,10 +65,23 @@
 
     // data first global filter
     this.data = _(data).forEach(function(d){
-      if(_.isUndefined(d.startDate)) d.startDate = self.getTimeBounds(data).start - 1;
-      if(_.isUndefined(d.shortName)) d.shortName = d.shortTitle;
+
+      d.shortName = getShortName(d);
+
+      console.log(d.shortName, d.shortTitle, d.name, ':', getShortName(d))
+      // if( d.shortName === '') console.log(d);
+      // if(_.isUndefined(d.startDate)) d.startDate = self.getTimeBounds(data).start - 1;
+      // if( _.isUndefined(d.shortName))console.log(d);
+
       d.shortSummary = "…";
     }).value();
+
+    function getShortName(d){
+      if(d.shortName  !== '') return d.shortName +"s"
+      if(d.shortTitle !== '') return d.shortTitle
+      if(d.name !== '') return d.name
+      if(d.title !== '') return d.title
+    }
 
   }
 

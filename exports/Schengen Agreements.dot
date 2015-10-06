@@ -1,0 +1,30 @@
+digraph source {
+  graph [ rankdir = LR ];
+subgraph y_1985 {
+  graph [ rank = same ];
+  "1985" [ shape = plaintext ];
+  "1146_1985" [ shape = invhouse, label = "is signed by Belgium" ];
+  "1139_1985" [ shape = invhouse, label = "is signed by France" ];
+  "1141_1985" [ shape = invhouse, label = "is signed by Germany" ];
+  "1144_1985" [ shape = invhouse, label = "is signed by Luxembourg" ];
+  "1148_1985" [ shape = invhouse, label = "is signed by Netherlands" ];
+  "1150_1985" [ shape = invhouse, label = "is the legal basis of Schengen Central Group of Negotiation" ];
+  "1151_1985" [ shape = invhouse, label = "is the legal basis of Schengen Ministerial Meetings" ];
+}
+
+subgraph y_1986 {
+  graph [ rank = same ];
+  "1986" [ shape = plaintext ];
+  "1147_1986" [ shape = invhouse, label = "applies to Belgium" ];
+  "1143_1986" [ shape = invhouse, label = "applies to France" ];
+  "1142_1986" [ shape = invhouse, label = "applies to Germany" ];
+  "1145_1986" [ shape = invhouse, label = "applies to Luxembourg" ];
+  "1149_1986" [ shape = invhouse, label = "applies to Netherlands" ];
+}
+
+  "1002" [ shape = note, label = "Schengen Agreements", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
+  "1985";
+  "1986";
+  "1985" -> "1985";
+  "1985" -> "1986";
+}

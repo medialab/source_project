@@ -5,6 +5,7 @@
       "recordId":{$r.recID}{*ID*} ,
       "recordTypeId" : {$r.recTypeID},
       "recordTypeName":"{$r.recTypeName}{*RecTypeName*}",
+      "shortName":"{$r.f2|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Name / Acronym*}",
 
       {if ($r.f10)}"startDate":{$r.f10|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},{/if}
       {if ($r.f11)}"endDate":{$r.f11|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},{/if}
@@ -13,7 +14,6 @@
       {* --------------------------------------------------*}
       {if ($r.recTypeID=="4")}
 
-       "shortName":"{$r.f2|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Name / Acronym*}",
        "name":"{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Name Of Organisation*}",
 
        "typeName":"{$r.f22.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Organisation Type >> Term*}",
@@ -62,7 +62,6 @@
 
         "typeName": "{$r.f137.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Document Type >> Term*}",
         "typeId": {$r.f137.internalid}{*Document Type >> Internal ID*},
-
         "shortSummary":"{$r.f3|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Summary*}",
         "shortTitle": "{$r.f209|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Title*}",
         "longTitle": "{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}"{*Long Title*}

@@ -1,0 +1,151 @@
+digraph source {
+  graph [ rankdir = LR ];
+subgraph y_1990 {
+  graph [ rank = same ];
+  "1990" [ shape = plaintext ];
+  "1168_1990" [ shape = invhouse, label = "is signed by Belgium" ];
+  "1036_1990" [ shape = invhouse, label = "is signed by France" ];
+  "1156_1990" [ shape = invhouse, label = "is signed by Germany" ];
+  "1164_1990" [ shape = invhouse, label = "is signed by Italy" ];
+  "1158_1990" [ shape = invhouse, label = "is signed by Luxembourg" ];
+  "1160_1990" [ shape = invhouse, label = "is signed by Netherlands" ];
+}
+
+subgraph y_1991 {
+  graph [ rank = same ];
+  "1991" [ shape = plaintext ];
+  "1172_1991" [ shape = invhouse, label = "is signed by Portugal" ];
+  "1171_1991" [ shape = invhouse, label = "is signed by Spain" ];
+}
+
+subgraph y_1992 {
+  graph [ rank = same ];
+  "1992" [ shape = plaintext ];
+  "1173_1992" [ shape = invhouse, label = "is signed by Greece" ];
+}
+
+subgraph y_1995 {
+  graph [ rank = same ];
+  "1995" [ shape = plaintext ];
+  "1185_1995" [ shape = invhouse, label = "applies to Belgium" ];
+  "1182_1995" [ shape = invhouse, label = "applies to France" ];
+  "1183_1995" [ shape = invhouse, label = "applies to Germany" ];
+  "1184_1995" [ shape = invhouse, label = "applies to Luxembourg" ];
+  "1186_1995" [ shape = invhouse, label = "applies to Netherlands" ];
+  "1189_1995" [ shape = invhouse, label = "applies to Portugal" ];
+  "1188_1995" [ shape = invhouse, label = "applies to Spain" ];
+  "1152_1995" [ shape = invhouse, label = "implements undefined" ];
+  "1216_1995" [ shape = invhouse, label = "is amended by undefined" ];
+  "1174_1995" [ shape = invhouse, label = "is signed by Austria" ];
+  "1213_1995" [ shape = invhouse, label = "is the legal basis of Schengen Executive Committee" ];
+  "1215_1995" [ shape = invhouse, label = "is the legal basis of Schengen Secretariat" ];
+}
+
+subgraph y_1996 {
+  graph [ rank = same ];
+  "1996" [ shape = plaintext ];
+  "1169_1996" [ shape = invhouse, label = "is signed by Denmark" ];
+  "1194_1996" [ shape = invhouse, label = "is signed by Finland" ];
+  "1179_1996" [ shape = invhouse, label = "is signed by Iceland" ];
+  "1177_1996" [ shape = invhouse, label = "is signed by Norway" ];
+  "1175_1996" [ shape = invhouse, label = "is signed by Sweden" ];
+}
+
+subgraph y_1997 {
+  graph [ rank = same ];
+  "1997" [ shape = plaintext ];
+  "1191_1997" [ shape = invhouse, label = "applies to Austria" ];
+  "1190_1997" [ shape = invhouse, label = "applies to Greece" ];
+  "1187_1997" [ shape = invhouse, label = "applies to Italy" ];
+}
+
+subgraph y_1999 {
+  graph [ rank = same ];
+  "1999" [ shape = plaintext ];
+  "1153_1999" [ shape = invhouse, label = "is part of undefined" ];
+}
+
+subgraph y_2001 {
+  graph [ rank = same ];
+  "2001" [ shape = plaintext ];
+  "1193_2001" [ shape = invhouse, label = "applies to Finland" ];
+  "1196_2001" [ shape = invhouse, label = "applies to Iceland" ];
+  "1195_2001" [ shape = invhouse, label = "applies to Norway" ];
+  "1197_2001" [ shape = invhouse, label = "applies to Sweden" ];
+}
+
+subgraph y_2003 {
+  graph [ rank = same ];
+  "2003" [ shape = plaintext ];
+  "1154_2003" [ shape = invhouse, label = "is part of undefined" ];
+}
+
+subgraph y_2004 {
+  graph [ rank = same ];
+  "2004" [ shape = plaintext ];
+  "1198_2004" [ shape = invhouse, label = "is signed by Switzerland" ];
+}
+
+subgraph y_2007 {
+  graph [ rank = same ];
+  "2007" [ shape = plaintext ];
+  "1200_2007" [ shape = invhouse, label = "applies to Czech Republic" ];
+  "1201_2007" [ shape = invhouse, label = "applies to Estonia" ];
+  "1204_2007" [ shape = invhouse, label = "applies to Hungary" ];
+  "1203_2007" [ shape = invhouse, label = "applies to Latvia" ];
+  "1202_2007" [ shape = invhouse, label = "applies to Lithuania" ];
+  "1208_2007" [ shape = invhouse, label = "applies to Malta" ];
+  "1209_2007" [ shape = invhouse, label = "applies to Poland" ];
+  "1210_2007" [ shape = invhouse, label = "applies to Slovakia" ];
+  "1211_2007" [ shape = invhouse, label = "applies to Slovenia" ];
+}
+
+subgraph y_2008 {
+  graph [ rank = same ];
+  "2008" [ shape = plaintext ];
+  "1199_2008" [ shape = invhouse, label = "applies to Switzerland" ];
+  "1207_2008" [ shape = invhouse, label = "is signed by Liechtenstein" ];
+}
+
+subgraph y_2009 {
+  graph [ rank = same ];
+  "2009" [ shape = plaintext ];
+  "1155_2009" [ shape = invhouse, label = "is part of undefined" ];
+}
+
+subgraph y_2011 {
+  graph [ rank = same ];
+  "2011" [ shape = plaintext ];
+  "1206_2011" [ shape = invhouse, label = "applies to Liechtenstein" ];
+}
+
+  "1003" [ shape = note, label = "Schengen Implementation Conventions", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
+  "1990";
+  "1991";
+  "1992";
+  "1995";
+  "1996";
+  "1997";
+  "1999";
+  "2001";
+  "2003";
+  "2004";
+  "2007";
+  "2008";
+  "2009";
+  "2011";
+  "1990" -> "1990";
+  "1990" -> "1991";
+  "1991" -> "1992";
+  "1992" -> "1995";
+  "1995" -> "1996";
+  "1996" -> "1997";
+  "1997" -> "1999";
+  "1999" -> "2001";
+  "2001" -> "2003";
+  "2003" -> "2004";
+  "2004" -> "2007";
+  "2007" -> "2008";
+  "2008" -> "2009";
+  "2009" -> "2011";
+}
