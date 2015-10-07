@@ -1,4 +1,0 @@
-digraph source {
-  graph [ rankdir = LR ];
-  "1003" [ shape = note, label = "Schengen Implementation Convention", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
-}

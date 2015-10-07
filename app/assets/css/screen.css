@@ -6897,3 +6897,20 @@ html {
   shape-rendering: crispEdges;
   stroke-dasharray: 1,3;
 }
+#basic {
+  font-size: 10px;
+}
+#basic line {
+  shape-rendering: crispEdges;
+}
+#basic line {
+  stroke-width: 1px;
+}
+#basic line.axis {
+  shape-rendering: crispEdges;
+  opacity: 0.1;
+  stroke-width: 8px;
+}
+#basic .event {
+  fill: gold;
+}

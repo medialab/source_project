@@ -1,4 +1,0 @@
-digraph source {
-  graph [ rankdir = LR ];
-  "1014" [ shape = note, label = "Border Convention", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
-}

@@ -34,12 +34,13 @@
       return _(data)
         .filter('recordTypeId', 1)
         .filter(function(d){
-          return _.includes(self.getAllRecId(), d.target.id)
-              && _.includes(self.getAllRecId(), d.source.id);
+          return _.includes(self.getAllRecId(), d.target)
+              && _.includes(self.getAllRecId(), d.source);
         })
+        .sortBy('startDate')
         .forEach(function(d){
-          d.source.rec = _(data).filter('recordId', d.source.id).value()[0];
-          d.target.rec = _(data).filter('recordId', d.target.id).value()[0];
+          d.source = _(data).filter('recordId', d.source).value()[0];
+          d.target = _(data).filter('recordId', d.target).value()[0];
         })
         .value();
     };
@@ -49,38 +50,29 @@
       return _(data)
         .sortBy('typeName')
         .where(q)
-        .map(function(d){return d.typeId+' : '+d.typeName})
+        .map(function(d){return d.typeId})
         .uniq()
         .value();
     };
 
+
     this.getTimedLinks = function (element, q){
      return _(self.getValidRel())
       .where(q)
-      .filter(function(d){ return d.source.id === element.recordId })
+      .filter(function(d){ return d.source.recordId === element.recordId })
       .groupBy('startDate')
       .value()
       ;
     }
 
     // data first global filter
-    this.data = _(data).forEach(function(d){
-
+    this.data = _(data).reject('recordTypeId', 1).forEach(function(d){
       d.shortName = getShortName(d);
-
-      console.log(d.shortName, d.shortTitle, d.name, ':', getShortName(d))
-      // if( d.shortName === '') console.log(d);
-      // if(_.isUndefined(d.startDate)) d.startDate = self.getTimeBounds(data).start - 1;
-      // if( _.isUndefined(d.shortName))console.log(d);
-
-      d.shortSummary = "…";
     }).value();
 
     function getShortName(d){
-      if(d.shortName  !== '') return d.shortName +"s"
-      if(d.shortTitle !== '') return d.shortTitle
-      if(d.name !== '') return d.name
-      if(d.title !== '') return d.title
+      if(d.shortName !== ''  && !_.isUndefined(d.shortName)) return d.shortName
+      return d.title
     }
 
   }

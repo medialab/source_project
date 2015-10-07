@@ -3,9 +3,9 @@ var _ = require('lodash'),
   fs = require('fs'),
   argv = require('yargs').argv,
   graphviz = require('graphviz'),
-  Source = require('./app/assets/js/source.js');
+  Source = require('../app/assets/js/source.js');
 
-fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
+fs.readFile('../app/data/heurist-cache.json', 'utf8', function (err, string) {
 
   if (err) return console.log(err);
 
@@ -134,7 +134,7 @@ function genFull(data, graph, name,timeBegin,timeEnd){
   // create edges
   _.forEach(graph.rel,function(d){
     var edgeOption = _.merge(edgeStyle[d.typeId], {'label':" "+d.typeName  + ' ('+d.recordId+')'});
-    g.addEdge(''+d.source.id, ''+d.target.id, edgeOption);
+    g.addEdge(''+d.source.recordId, ''+d.target.recordId, edgeOption);
   });
 
   // write dote file

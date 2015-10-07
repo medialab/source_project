@@ -3,9 +3,9 @@ var _ = require('lodash'),
   fs = require('fs'),
   argv = require('yargs').argv,
   graphviz = require('graphviz'),
-  Source = require('./app/assets/js/source.js');
+  Source = require('../app/assets/js/source.js');
 
-fs.readFile('app/data/heurist-cache.json', 'utf8', function (err, string) {
+fs.readFile('../app/data/heurist-cache-2.json', 'utf8', function (err, string) {
 
   if (err) return console.log(err);
 
