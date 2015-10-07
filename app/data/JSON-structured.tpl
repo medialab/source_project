@@ -14,7 +14,6 @@
       {* Organisation *}
       {* --------------------------------------------------*}
       {if ($r.recTypeID=="4")}
-       "name":"{$r.f1|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Name Of Organisation*}",
        "typeName":"{$r.f22.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Organisation Type >> Term*}",
        "typeId":{$r.f22.internalid}{*Organisation Type >> Internal ID*} ,
        "description":"{$r.f3|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Description*}"
@@ -42,6 +41,7 @@
 
         "typeName": "{$r.f137.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Document Type >> Term*}",
         "typeId": {$r.f137.internalid}{*Document Type >> Internal ID*},
+
         "shortTitle": "{$r.f209|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Title*}"
       {/if}
 
