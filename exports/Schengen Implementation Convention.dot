@@ -1,40 +1,4 @@
 digraph source {
   graph [ rankdir = LR ];
-subgraph y_1995 {
-  graph [ rank = same ];
-  "1995" [ shape = plaintext ];
-  "1152_1995" [ shape = invhouse, label = "implements undefined" ];
-  "1216_1995" [ shape = invhouse, label = "is amended by undefined" ];
-  "1213_1995" [ shape = invhouse, label = "is the legal basis of Schengen Executive Committee" ];
-  "1215_1995" [ shape = invhouse, label = "is the legal basis of Schengen Secretariat" ];
-}
-
-subgraph y_1999 {
-  graph [ rank = same ];
-  "1999" [ shape = plaintext ];
-  "1153_1999" [ shape = invhouse, label = "is part of undefined" ];
-}
-
-subgraph y_2003 {
-  graph [ rank = same ];
-  "2003" [ shape = plaintext ];
-  "1154_2003" [ shape = invhouse, label = "is part of undefined" ];
-}
-
-subgraph y_2009 {
-  graph [ rank = same ];
-  "2009" [ shape = plaintext ];
-  "1155_2009" [ shape = invhouse, label = "is part of undefined" ];
-}
-
   "1003" [ shape = note, label = "Schengen Implementation Convention", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
-  "1990";
-  "1995";
-  "1999";
-  "2003";
-  "2009";
-  "1990" -> "1995";
-  "1995" -> "1999";
-  "1999" -> "2003";
-  "2003" -> "2009";
 }

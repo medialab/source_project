@@ -1,13 +1,4 @@
 digraph source {
   graph [ rankdir = LR ];
-subgraph y_1985 {
-  graph [ rank = same ];
-  "1985" [ shape = plaintext ];
-  "1150_1985" [ shape = invhouse, label = "is the legal basis of Schengen Central Group of Negotiation" ];
-  "1151_1985" [ shape = invhouse, label = "is the legal basis of Schengen Ministerial Meetings" ];
-}
-
   "1002" [ shape = note, label = "Schengen Agreement", style = "filled", fillcolor = "black", color = "white", fontcolor = "white" ];
-  "1985";
-  "1985" -> "1985";
 }
