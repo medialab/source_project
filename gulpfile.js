@@ -30,14 +30,18 @@ gulp.task('build', function() {
 });
 
 gulp.task('dot', function(){
-  exec('node gen_dot.js', function (err, stdout, stderr) {
+  exec('node gen_treaty.js', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+  });
+  exec('node gen_full.js', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
   });
 })
 
 gulp.task('dotwatch', function(){
-  gulp.watch('./gen_dot.js', ['dot']);
+  gulp.watch('./*.js', ['dot']);
   gulp.watch('./app/data/*.json', ['dot']);
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
