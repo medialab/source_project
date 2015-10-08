@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "wget -O app/data/heurist-cache-2.json \"http://heurist.sydney.edu.au/h4-ao/migrated/viewers/smarty/showReps.php?db=meder_test_to_delete&w=a&q=tag%3A%22Database%20Managers%5Ctimeline%201%22%20OR%20t%3A1&h4=1&publish=1&debug=0&template=JSON-structured.tpl\""
+    "migrate": "cd ./scripts/;node migrate.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "lodash": "^3.10.0",
-    "truncate": "^2.0.0"
+    "truncate": "^2.0.0",
+    "wget": "0.0.1",
+    "wget-improved": "^1.1.1"
   },
   "devDependencies": {
     "async": "^1.4.2",

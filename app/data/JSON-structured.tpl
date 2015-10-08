@@ -40,8 +40,10 @@
         {if ($r.f210)} "startDate":{$r.f210}, {*Creation Date*}{/if}
 
         "typeName": "{$r.f137.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Document Type >> Term*}",
-        "typeId": {$r.f137.internalid}{*Document Type >> Internal ID*},
 
+        {if {$r.f137.internalid}}
+          "typeId": {$r.f137.internalid}{*Document Type >> Internal ID*},
+        {/if}
         "shortTitle": "{$r.f209|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Title*}"
       {/if}
 
@@ -62,6 +64,13 @@
       {if ($r.recTypeID=="16")}
         "title":""
       {/if}
+
+      {* Activity *}
+      {* --------------------------------------------------*}
+      {if ($r.recTypeID=="23")}
+        "title":""
+      {/if}
+
     }
     {if $smarty.foreach.mainloop.last}{else},{/if}
   {/foreach}

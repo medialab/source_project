@@ -1,6 +1,5 @@
-const apiUrl = 'data/heurist-cache-2.json';
-
-
+// const apiUrl = 'data/heurist-cache-2.json';
+console.log(apiUrl)
 d3.json(apiUrl, function(error, data) {
 
   if (error) throw error;
@@ -53,13 +52,6 @@ d3.json(apiUrl, function(error, data) {
   // matching tables
   var obj_to_y = {};
 
-  var org_offset = 700,
-      org_spacing = 11
-
-  graph.org.forEach(function(d, i){
-    obj_to_y[d.recordId] = org_offset + i * org_spacing
-  })
-
   var state_offset = 50,
       state_spacing = 11
 
@@ -67,20 +59,30 @@ d3.json(apiUrl, function(error, data) {
     obj_to_y[d.recordId] = state_offset + i * state_spacing
   })
 
-  var doc_offset = 430,
+
+  var doc_offset = state_offset + state_spacing*(graph.sta.length+1),
       doc_spacing = 11
 
   graph.doc.forEach(function(d, i){
     obj_to_y[d.recordId] = doc_offset + i * doc_spacing
   })
 
+  var org_spacing = 11,
+      org_offset = doc_offset + org_spacing*(graph.doc.length+1)
+
+  graph.org.forEach(function(d, i){
+    obj_to_y[d.recordId] = org_offset + i * org_spacing
+  })
+
+
+
   console.log(graph);
 
-  var w = 1800, h = 1100,
+  var w = 2500, h = 3500,
     color = d3.scale.category20();
     start = so.getTimeBounds().start,
     end = so.getTimeBounds().end,
-    rel_offset = 150, rel_spacing = 7,
+    rel_offset = 250, rel_spacing = 7,
 
   svg = d3.select('#basic')
     .append('svg:svg')
@@ -111,7 +113,7 @@ d3.json(apiUrl, function(error, data) {
     .style('stroke', 'grey')
     .attr('transform', 'translate(-80)')
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .on('mouseover', function(d) {d3.select(this).style('stroke', 'black');})
+    .on('mouseover', function(d) {d3.select(this).style('stroke', 'red');})
     .on('mouseout', function(d) {d3.select(this).style('stroke', 'grey');});
 
   // draw events
@@ -162,8 +164,8 @@ d3.json(apiUrl, function(error, data) {
     .attr('r', 4)
     .style('fill',function(d){return color(_.indexOf(relTypes, d.typeId));})
     .on('mouseover', function(d) {
-      d3.select('#l'+d.target.recordId).style('stroke', 'black');
-      d3.select('#l'+d.source.recordId).style('stroke', 'black');
+      d3.select('#l'+d.target.recordId).style('stroke', 'red');
+      d3.select('#l'+d.source.recordId).style('stroke', 'red');
     })
     .on('mouseout', function(d) {
       d3.select('#l'+d.target.recordId).style('stroke', 'grey');
@@ -177,8 +179,8 @@ d3.json(apiUrl, function(error, data) {
     .attr('title', function(d){ d.shortName } )
     .style('fill', function(d){return color(_.indexOf(relTypes, d.typeId));})
     .on('mouseover', function(d) {
-      d3.select('#l'+d.target.recordId).style('stroke', 'black');
-      d3.select('#l'+d.source.recordId).style('stroke', 'black');
+      d3.select('#l'+d.target.recordId).style('stroke', 'red');
+      d3.select('#l'+d.source.recordId).style('stroke', 'red');
     })
     .on('mouseout', function(d) {
       d3.select('#l'+d.target.recordId).style('stroke', 'grey');
