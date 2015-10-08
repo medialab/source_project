@@ -14,7 +14,7 @@ d3.json(apiUrl, function(error, data) {
   // list relations
   graph.rel = so.getValidRel();
 
-  // // list administration
+  // list administration
   graph.org = _(data)
     .filter('recordTypeId', 4)
     .reject('typeId', 5314)
@@ -55,18 +55,21 @@ d3.json(apiUrl, function(error, data) {
 
   var org_offset = 700,
       org_spacing = 11
+
   graph.org.forEach(function(d, i){
     obj_to_y[d.recordId] = org_offset + i * org_spacing
   })
 
   var state_offset = 50,
       state_spacing = 11
+
   graph.sta.forEach(function(d, i){
     obj_to_y[d.recordId] = state_offset + i * state_spacing
   })
 
   var doc_offset = 430,
       doc_spacing = 11
+
   graph.doc.forEach(function(d, i){
     obj_to_y[d.recordId] = doc_offset + i * doc_spacing
   })
@@ -84,33 +87,22 @@ d3.json(apiUrl, function(error, data) {
     .attr('width', w)
     .attr('height', h)
 
-  var marker = svg.append('defs')
-    .append('marker').attr('id', 'arrow')
-    .attr('viewBox', '0 0 10 10')
-    .attr('refX', 12)
-    .attr('refY', 5)
-    .attr('markerWidth', 6)
-    .attr('markerHeight', 6)
-    .style('fill', 'grey')
-    .attr('orient', 'auto');
-
-    marker.append('path')
-      .attr("d", 'M 0 0 L 10 5 L 0 10 z');
-
   var relTypes = so.getTypes({'recordTypeId':1});
 
-  var orga = svg.selectAll('.org')
+  // draw organisations, document and state list
+  var list = svg.selectAll('.org')
     .data(graph.org.slice(0).concat(graph.doc).slice(0).concat(graph.sta))
     .enter()
     .append('g')
+    .attr('class','listItem')
 
-  orga.append('text')
+  list.append('text')
     .attr('x', 20)
     .attr('y', function(d){return obj_to_y[d.recordId]})
     .attr('transform', 'translate(0, 4)')
     .text(function(d){return d.shortName})
 
-  orga.append('line')
+  list.append('line')
     .attr('x1', 100)
     .attr('y1', function(d){return obj_to_y[d.recordId]})
     .attr('x2', w)
@@ -118,28 +110,31 @@ d3.json(apiUrl, function(error, data) {
     .attr('class','axis' )
     .style('stroke', 'grey')
     .attr('transform', 'translate(-80)')
-    .on("mouseover", function(d) {d3.select(this).style("stroke", "black");})
-    .on("mouseout", function(d) {d3.select(this).style("stroke", "grey");});
+    .attr('id',function(d){ return 'l'+d.recordId } )
+    .on('mouseover', function(d) {d3.select(this).style('stroke', 'black');})
+    .on('mouseout', function(d) {d3.select(this).style('stroke', 'grey');});
 
-  var prevDate = '';
-  var event = svg.selectAll('.event')
+  // draw events
+  var prevDate,event = svg.selectAll('.event')
     .data(graph.rel)
     .enter()
     .append('g')
+    .attr('id',function(d){ return d.recordId } )
     .attr('class', function(d){
 
       var isShown = prevDate!==d.startDate;
       prevDate = d.startDate;
 
       return isShown ? 'event newYear':'event';
-    });
+    })
+    ;
 
-  event.append("title")
+  event.append('title')
     .text(function(d) {return  d.source.shortName + ' ' + d.typeName + ' ' + d.target.shortName+' ('+d.recordId+')\n—\n[[' + d.title + ']]'})
 
   event.append('text')
     .attr('x', function(d,i){ return rel_offset + i * rel_spacing })
-    .attr('y', function(d,i){ return 10+ (i%4) * 10})
+    .attr('y', function(d,i){ return 10+ (d.startDate%4) * 10})
     .text(function(d){return d.startDate})
     .attr('class', 'yearLabel')
     .attr('text-anchor', 'middle');
@@ -147,7 +142,7 @@ d3.json(apiUrl, function(error, data) {
   event.append('line')
     .attr('x1', function(d,i){ return rel_offset + i * rel_spacing })
     .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
-    .attr('y1', function(d,i){ return 15+ (i%4) * 10})
+    .attr('y1', function(d,i){ return 15+ (d.startDate%4) * 10})
     .attr('y2', h)
     .attr('class', 'yearMark')
     .style('stroke-width', 1)
@@ -158,7 +153,6 @@ d3.json(apiUrl, function(error, data) {
     .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
     .attr('y1', function(d){ return obj_to_y[d.source.recordId] })
     .attr('y2', function(d){ return obj_to_y[d.target.recordId] })
-    .attr('marker-end', 'url(#arrow)')
     .style('stroke',function(d){return color(_.indexOf(relTypes, d.typeId));})
     .style('stroke-width', 1)
 
@@ -167,6 +161,14 @@ d3.json(apiUrl, function(error, data) {
     .attr('cy', function(d){ return obj_to_y[d.source.recordId] })
     .attr('r', 4)
     .style('fill',function(d){return color(_.indexOf(relTypes, d.typeId));})
+    .on('mouseover', function(d) {
+      d3.select('#l'+d.target.recordId).style('stroke', 'black');
+      d3.select('#l'+d.source.recordId).style('stroke', 'black');
+    })
+    .on('mouseout', function(d) {
+      d3.select('#l'+d.target.recordId).style('stroke', 'grey');
+      d3.select('#l'+d.source.recordId).style('stroke', 'grey');
+    });
 
   event.append('circle')
     .attr('cx', function(d,i){ return rel_offset + i * rel_spacing })
@@ -174,6 +176,14 @@ d3.json(apiUrl, function(error, data) {
     .attr('r', 4)
     .attr('title', function(d){ d.shortName } )
     .style('fill', function(d){return color(_.indexOf(relTypes, d.typeId));})
+    .on('mouseover', function(d) {
+      d3.select('#l'+d.target.recordId).style('stroke', 'black');
+      d3.select('#l'+d.source.recordId).style('stroke', 'black');
+    })
+    .on('mouseout', function(d) {
+      d3.select('#l'+d.target.recordId).style('stroke', 'grey');
+      d3.select('#l'+d.source.recordId).style('stroke', 'grey');
+    });
 
 })
 

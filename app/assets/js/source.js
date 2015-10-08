@@ -45,6 +45,11 @@
         .value();
     };
 
+    // get used nodes
+    this.getUsedNode = function(){
+
+    }
+
     // return type from a query
     this.getTypes = function(q){
       return _(data)

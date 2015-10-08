@@ -6911,6 +6911,9 @@ html {
   opacity: 0.1;
   stroke-width: 8px;
 }
+#basic .listItem {
+  font-weight: bold;
+}
 #basic .event .yearMark,
 #basic .event .yearLabel {
   display: none;
