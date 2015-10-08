@@ -6911,6 +6911,12 @@ html {
   opacity: 0.1;
   stroke-width: 8px;
 }
-#basic .event {
-  fill: gold;
+#basic .event .yearMark,
+#basic .event .yearLabel {
+  display: none;
+}
+#basic .event.newYear .yearMark,
+#basic .event.newYear .yearLabel {
+  display: inherit;
+  stroke-dasharray: 1,4;
 }

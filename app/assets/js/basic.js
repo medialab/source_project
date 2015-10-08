@@ -53,35 +53,36 @@ d3.json(apiUrl, function(error, data) {
   // matching tables
   var obj_to_y = {};
 
-  var org_offset = 660,
+  var org_offset = 700,
       org_spacing = 11
   graph.org.forEach(function(d, i){
     obj_to_y[d.recordId] = org_offset + i * org_spacing
   })
 
-  var state_offset = 20,
+  var state_offset = 50,
       state_spacing = 11
   graph.sta.forEach(function(d, i){
     obj_to_y[d.recordId] = state_offset + i * state_spacing
   })
 
-  var doc_offset = 400,
+  var doc_offset = 430,
       doc_spacing = 11
   graph.doc.forEach(function(d, i){
     obj_to_y[d.recordId] = doc_offset + i * doc_spacing
   })
 
-  console.log(graph)
+  console.log(graph);
 
-  var w = 2000, h = 3000,
+  var w = 1800, h = 1100,
     color = d3.scale.category20();
     start = so.getTimeBounds().start,
     end = so.getTimeBounds().end,
     rel_offset = 150, rel_spacing = 7,
 
-  svg = d3.select('#basic').append('svg:svg')
-  .attr('width', w)
-  .attr('height', h)
+  svg = d3.select('#basic')
+    .append('svg:svg')
+    .attr('width', w)
+    .attr('height', h)
 
   var marker = svg.append('defs')
     .append('marker').attr('id', 'arrow')
@@ -96,79 +97,83 @@ d3.json(apiUrl, function(error, data) {
     marker.append('path')
       .attr("d", 'M 0 0 L 10 5 L 0 10 z');
 
-
-    var relTypes = so.getTypes({'recordTypeId':1});
+  var relTypes = so.getTypes({'recordTypeId':1});
 
   var orga = svg.selectAll('.org')
     .data(graph.org.slice(0).concat(graph.doc).slice(0).concat(graph.sta))
     .enter()
     .append('g')
 
-    orga.append('text')
-      .attr('x', 20)
-      .attr('y', function(d){return obj_to_y[d.recordId]})
-      .attr('transform', 'translate(0, 4)')
-      .text(function(d){return d.shortName})
+  orga.append('text')
+    .attr('x', 20)
+    .attr('y', function(d){return obj_to_y[d.recordId]})
+    .attr('transform', 'translate(0, 4)')
+    .text(function(d){return d.shortName})
 
-    orga.append('line')
-          .attr('x1', 100)
-          .attr('y1', function(d){return obj_to_y[d.recordId]})
-          .attr('x2', w)
-          .attr('y2', function(d){return obj_to_y[d.recordId]})
-          .attr('class','axis' )
-          .style('stroke', 'grey')
-          .attr('transform', 'translate(-80)')
-          .on("mouseover", function(d) {d3.select(this).style("stroke", "black");})
-          .on("mouseout", function(d) {d3.select(this).style("stroke", "grey");});
+  orga.append('line')
+    .attr('x1', 100)
+    .attr('y1', function(d){return obj_to_y[d.recordId]})
+    .attr('x2', w)
+    .attr('y2', function(d){return obj_to_y[d.recordId]})
+    .attr('class','axis' )
+    .style('stroke', 'grey')
+    .attr('transform', 'translate(-80)')
+    .on("mouseover", function(d) {d3.select(this).style("stroke", "black");})
+    .on("mouseout", function(d) {d3.select(this).style("stroke", "grey");});
 
-
-  var group = svg.selectAll('.event')
+  var prevDate = '';
+  var event = svg.selectAll('.event')
     .data(graph.rel)
     .enter()
     .append('g')
+    .attr('class', function(d){
 
-  var prevDate = '';
+      var isShown = prevDate!==d.startDate;
+      prevDate = d.startDate;
 
-    group.append("title").text(function(d) {
-        return  d.source.shortName + ' ' + d.typeName + ' ' + d.target.shortName
-          +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
-      })
+      return isShown ? 'event newYear':'event';
+    });
 
-    group.append('text')
-      .attr('x', function(d,i){ return rel_offset + i * rel_spacing })
-      .attr('y', 20)
-      .text(function(d){
-        console.log(prevDate,d.startDate, prevDate !== d.startDate)
-        var isShown = prevDate === d.startDate
-        prevDate = d.startDate
-        if(isShown) return ''
-        return d.startDate
-      });
+  event.append("title")
+    .text(function(d) {return  d.source.shortName + ' ' + d.typeName + ' ' + d.target.shortName+' ('+d.recordId+')\n—\n[[' + d.title + ']]'})
 
-    group.append('line')
-      .attr('x1', function(d,i){ return rel_offset + i * rel_spacing })
-      .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
-      .attr('y1', function(d){ return obj_to_y[d.source.recordId] })
-      .attr('y2', function(d){ return obj_to_y[d.target.recordId] })
-      .attr('marker-end', 'url(#arrow)')
-      .style('stroke',function(d){return color(_.indexOf(relTypes, d.typeId));})
-      .style('stroke-width', 1)
+  event.append('text')
+    .attr('x', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('y', function(d,i){ return 10+ (i%4) * 10})
+    .text(function(d){return d.startDate})
+    .attr('class', 'yearLabel')
+    .attr('text-anchor', 'middle');
 
+  event.append('line')
+    .attr('x1', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('y1', function(d,i){ return 15+ (i%4) * 10})
+    .attr('y2', h)
+    .attr('class', 'yearMark')
+    .style('stroke-width', 1)
+    .style('stroke', 'black')
 
-    group.append('circle')
-      .attr('cx', function(d,i){ return rel_offset + i * rel_spacing })
-      .attr('cy', function(d){ return obj_to_y[d.source.recordId] })
-      .attr('r', 4)
-      .style('fill',function(d){return color(_.indexOf(relTypes, d.typeId));})
+  event.append('line')
+    .attr('x1', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('y1', function(d){ return obj_to_y[d.source.recordId] })
+    .attr('y2', function(d){ return obj_to_y[d.target.recordId] })
+    .attr('marker-end', 'url(#arrow)')
+    .style('stroke',function(d){return color(_.indexOf(relTypes, d.typeId));})
+    .style('stroke-width', 1)
 
-    group.append('circle')
-      .attr('cx', function(d,i){ return rel_offset + i * rel_spacing })
-      .attr('cy', function(d){ return obj_to_y[d.target.recordId] })
-      .attr('r', 4)
-      .attr('title', function(d){ d.shortName } )
-      .style('fill', function(d){return color(_.indexOf(relTypes, d.typeId));})
+  event.append('circle')
+    .attr('cx', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('cy', function(d){ return obj_to_y[d.source.recordId] })
+    .attr('r', 4)
+    .style('fill',function(d){return color(_.indexOf(relTypes, d.typeId));})
 
-
+  event.append('circle')
+    .attr('cx', function(d,i){ return rel_offset + i * rel_spacing })
+    .attr('cy', function(d){return obj_to_y[d.target.recordId] })
+    .attr('r', 4)
+    .attr('title', function(d){ d.shortName } )
+    .style('fill', function(d){return color(_.indexOf(relTypes, d.typeId));})
 
 })
 

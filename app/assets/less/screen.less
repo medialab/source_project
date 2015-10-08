@@ -162,6 +162,16 @@ html {
 
 
   .event {
-    fill:gold;
+    .yearMark, .yearLabel {
+      display: none;
+    }
+
+    &.newYear {
+     .yearMark, .yearLabel {
+        display: inherit;
+        stroke-dasharray: 1,4;
+      }
+    }
+
   }
 }
