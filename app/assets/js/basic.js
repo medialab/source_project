@@ -52,7 +52,7 @@ d3.json(apiUrl, function(error, data) {
   // matching tables
   var obj_to_y = {};
 
-  var state_offset = 50,
+  var state_offset = 80,
       state_spacing = 11
 
   graph.sta.forEach(function(d, i){
@@ -82,7 +82,7 @@ d3.json(apiUrl, function(error, data) {
     color = d3.scale.category20();
     start = so.getTimeBounds().start,
     end = so.getTimeBounds().end,
-    rel_offset = 250, rel_spacing = 7,
+    rel_offset = 250, rel_spacing = 6,
 
   svg = d3.select('#basic')
     .append('svg:svg')
@@ -136,7 +136,7 @@ d3.json(apiUrl, function(error, data) {
 
   event.append('text')
     .attr('x', function(d,i){ return rel_offset + i * rel_spacing })
-    .attr('y', function(d,i){ return 10+ (d.startDate%4) * 10})
+    .attr('y', function(d,i){ return 10+ (d.startDate%6) * 10})
     .text(function(d){return d.startDate})
     .attr('class', 'yearLabel')
     .attr('text-anchor', 'middle');
@@ -144,7 +144,7 @@ d3.json(apiUrl, function(error, data) {
   event.append('line')
     .attr('x1', function(d,i){ return rel_offset + i * rel_spacing })
     .attr('x2', function(d,i){ return rel_offset + i * rel_spacing })
-    .attr('y1', function(d,i){ return 15+ (d.startDate%4) * 10})
+    .attr('y1', function(d,i){ return 15+ (d.startDate%6) * 10})
     .attr('y2', h)
     .attr('class', 'yearMark')
     .style('stroke-width', 1)

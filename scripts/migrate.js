@@ -14,7 +14,7 @@ _.forEach(config.corpus, function(d, k){
         if (err) throw err;
         fs.writeFile('../app/autobasic_'+k+'.html', data.replace("API", 'autobasic_'+k), function (err) {
           if (err) throw err;
-          console.log('html page saved');
+          console.log('html page saved.');
         });
       });
     });
