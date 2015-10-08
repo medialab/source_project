@@ -1,0 +1,23 @@
+{
+  "server":"http://heurist.sydney.edu.au/h4-ao/migrated/viewers/smarty/showReps.php?db=meder_test_to_delete&w=all&q=",
+  "param":"&h4=1&publish=1&debug=0&template=JSON-structured.tpl",
+
+  "corpus": {
+    "all": {
+      "q": "t:13 OR t:1 OR t:4",
+      "title": "all"
+    },
+    "timeline1": {
+      "q":"tag:timeline_1 OR t:1",
+      "title":"timeline 1"
+    },
+    "freedom_of_move_core":{
+      "q":"tag:freedom_of_move_core OR t:1",
+      "title":"Freedom of Movement"
+    },
+    "migration-asylum-border":{
+      "q":"tag:timeline_asylum-migration-border OR t:1",
+      "title":"migration asylum border"
+    }
+  }
+}
