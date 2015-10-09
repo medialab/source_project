@@ -12,6 +12,12 @@ d3.json(apiUrl, function(error, data) {
   var graph =  {};
   var so = new Source(data);
 
+  var w = 2500, h = 3500,
+    color = d3.scale.category10();
+    start = so.getTimeBounds().start,
+    end = so.getTimeBounds().end,
+    rel_offset = 250, relSpacing = 6;
+
   // list relations
   graph.rel = so.getValidRel();
 
@@ -85,12 +91,6 @@ d3.json(apiUrl, function(error, data) {
   })
 
   console.log(graph);
-
-  var w = 2500, h = 3500,
-    color = d3.scale.category10();
-    start = so.getTimeBounds().start,
-    end = so.getTimeBounds().end,
-    rel_offset = 250, relSpacing = 6;
 
   var svg = d3.select('#basic')
     .append('svg:svg')
@@ -233,6 +233,9 @@ d3.json(apiUrl, function(error, data) {
     d3.selectAll('.edges')
       .attr('x1', relX)
       .attr('x2', relX)
+      .style('stroke-width', function(d){
+        return relSpacing < 4 ? 0 : 1
+      })
 
     // source node
     d3.selectAll('.source.node')
