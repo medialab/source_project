@@ -11,6 +11,25 @@
          return _(data).map('recordId').value();
     };
 
+    this.getAllSources = function(){
+      return _(data).filter('recordTypeId', 1)
+        .map(function(d){
+          return d.source.recordId;
+        })
+        .uniq()
+        .filter(function(d){return ! _.isUndefined(d)})
+        .value();
+    }
+    this.getAllTargets = function(){
+      return _(data).filter('recordTypeId', 1)
+        .map(function(d){
+          return d.source.recordId;
+        })
+        .uniq()
+        .filter(function(d){return ! _.isUndefined(d)})
+        .value();
+    }
+
     // get dates
     this.getDates = function (){
      return _(data)
@@ -47,7 +66,11 @@
 
     // get used nodes
     this.getUsedNode = function(){
-
+      var nodes = [];
+      _().forEach(function(d){
+        node.push(d.source.recordId, d.target.recordId);
+      });
+      return nodes;
     }
 
     // return type from a query

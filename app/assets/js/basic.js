@@ -14,6 +14,7 @@ d3.json(apiUrl, function(error, data) {
 
   // list relations
   graph.rel = so.getValidRel();
+  graph.source = so.getUsedNode();
 
   // list administration
   graph.org = _(data)
@@ -92,8 +93,6 @@ d3.json(apiUrl, function(error, data) {
 
   var relTypes = so.getTypes({'recordTypeId':1});
 
-
-
   function focusOn(d){
     d3.select(this).style('stroke', 'red');
     if(d.source){
@@ -118,6 +117,7 @@ d3.json(apiUrl, function(error, data) {
     // draw organisations, document and state list
     var list = svg.selectAll('.org')
       .data(graph.org.slice(0).concat(graph.doc).slice(0).concat(graph.sta))
+
       .enter()
       .append('g')
       .attr('class','listItem')
