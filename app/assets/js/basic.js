@@ -14,7 +14,6 @@ d3.json(apiUrl, function(error, data) {
 
   // list relations
   graph.rel = so.getValidRel();
-  graph.source = so.getUsedNode();
 
   // list administration
   graph.org = _(data)
@@ -35,43 +34,44 @@ d3.json(apiUrl, function(error, data) {
     .value();
 
   // doc index
-  graph.docIndex = {}
+  graph.docIndex = {};
   graph.doc.forEach(function(d){
     graph.docIndex[d.recordId] = d
-  })
+  });
 
   // org index
   graph.orgIndex = {}
   graph.org.forEach(function(d){
     graph.orgIndex[d.recordId] = d
-  })
+  });
 
   // rel index
-  graph.relIndex = {}
+  graph.relIndex = {};
   graph.rel.forEach(function(d){
     graph.relIndex[d.recordId] = d
-  })
+  });
 
   // matching tables
   var eventYpos = {};
 
+  // states
   var stateOffset = 80,
-      stateSpacing = 11
-
+      stateSpacing = 11;
   graph.sta.forEach(function(d, i){
     eventYpos[d.recordId] = stateOffset + i * stateSpacing
-  })
+  });
 
-
+  // documents
   var docOffset = stateOffset + stateSpacing*(graph.sta.length+1),
-      docSpacing = 11
+      docSpacing = 11;
 
   graph.doc.forEach(function(d, i){
     eventYpos[d.recordId] = docOffset + i * docSpacing
   })
 
+  // organisation
   var org_spacing = 11,
-      orgOffset = docOffset + org_spacing*(graph.doc.length+1)
+      orgOffset = docOffset + org_spacing*(graph.doc.length+1);
 
   graph.org.forEach(function(d, i){
     eventYpos[d.recordId] = orgOffset + i * org_spacing
@@ -80,19 +80,23 @@ d3.json(apiUrl, function(error, data) {
   console.log(graph);
 
   var w = 2500, h = 3500,
-    color = d3.scale.category20();
+    color = d3.scale.category10();
     start = so.getTimeBounds().start,
     end = so.getTimeBounds().end,
-    rel_offset = 250, relSpacing = 6,
+    rel_offset = 250, relSpacing = 6;
 
-
-  svg = d3.select('#basic')
+  var svg = d3.select('#basic')
     .append('svg:svg')
     .attr('width', w)
     .attr('height', h)
 
-  var relTypes = so.getTypes({'recordTypeId':1});
+  // attributes formulas
+  function sourceY(d){ return eventYpos[d.source.recordId] }
+  function targetY(d){ return eventYpos[d.target.recordId] }
+  function relX(d,i){  return rel_offset + i * relSpacing }
+  function relTypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
 
+  // event handlers
   function focusOn(d){
     d3.select(this).style('stroke', 'red');
     if(d.source){
@@ -108,13 +112,12 @@ d3.json(apiUrl, function(error, data) {
     }
   }
 
-  function sourceY(d){ return eventYpos[d.source.recordId] }
-  function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return rel_offset + i * relSpacing }
-  function relTypeColor(d){return color(_.indexOf(relTypes, d.typeId));}
-
+  // create nodes
   function create(){
-    // draw organisations, document and state list
+
+  //
+  // draw organisations, document and state list
+  //
     var list = svg.selectAll('.org')
       .data(graph.org.slice(0).concat(graph.doc).slice(0).concat(graph.sta))
 
@@ -140,26 +143,31 @@ d3.json(apiUrl, function(error, data) {
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
 
-    // draw events
+  //
+  // draw events
+  //
     var prevDate;
-
     var event = svg.selectAll('.event')
       .data(graph.rel)
       .enter()
       .append('g')
       .attr('id',function(d){ return d.recordId } )
       .attr('class', function(d){
-
-        var isShown = prevDate!==d.startDate;
+        var isShown = prevDate !== d.startDate;
         prevDate = d.startDate;
-
         return isShown ? 'event newYear':'event';
-      })
-      ;
+      });
 
     // event title info
     event.append('title')
-      .text(function(d) {return  d.source.shortName + ' ' + d.typeName + ' ' + d.target.shortName+' ('+d.recordId+')\n—\n[[' + d.title + ']]'})
+      .text(function(d) {
+        return  + d.startDate + '\n'
+        + d.source.shortName + ' '
+        + d.typeName + ' '
+        + d.target.shortName
+        +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
+
+      })
 
     // year label
     event.append('text')
@@ -201,6 +209,7 @@ d3.json(apiUrl, function(error, data) {
     update();
   }
 
+  // update attributes
   function update(){
 
     // year label
@@ -228,13 +237,15 @@ d3.json(apiUrl, function(error, data) {
 
   }
 
+  // range input event
   d3.select("#zoom").on("input", function() {
     relSpacing = this.value;
     update();
   });
 
-
+  // draw viz at launch
   create();
+
 })
 
 
