@@ -15,20 +15,27 @@ d3.json(apiUrl, function(error, data) {
   // list relations
   graph.rel = so.getValidRel();
 
+  graph.linkedNodes = [];
+
+  _.forEach(graph.rel, function(d){
+    graph.linkedNodes.push(d.source, d.target);
+  });
+
+  graph.linkedNodes = _.uniq(graph.linkedNodes);
   // list administration
-  graph.org = _(data)
+  graph.org = _(graph.linkedNodes)
     .filter('recordTypeId', 4)
     .reject('typeId', 5314)
     .sortBy(['typeId','startDate'])
     .value();
 
   // list states
-  graph.sta = _(data)
+  graph.sta = _(graph.linkedNodes)
     .filter('typeId', 5314) // states
     .value();
 
   // list documents
-  graph.doc = _(data)
+  graph.doc = _(graph.linkedNodes)
     .filter('recordTypeId', 13)
     .sortBy(['typeId','startDate'])
     .value();

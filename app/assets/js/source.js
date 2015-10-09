@@ -65,11 +65,13 @@
     };
 
     // get used nodes
-    this.getUsedNode = function(){
+    this.getValidNodes = function(){
       var nodes = [];
-      _().forEach(function(d){
-        node.push(d.source.recordId, d.target.recordId);
-      });
+      _(self.getValidRel()).forEach(function(d){
+        nodes.push(d.source.recordId, d.target.recordId);
+        console.log(d);
+      })
+      .value();
       return nodes;
     }
 
