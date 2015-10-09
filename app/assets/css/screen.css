@@ -6769,6 +6769,39 @@ body {
   height: 100%;
   width: 100%;
 }
+#basic {
+  font-size: 11px;
+}
+#basic line {
+  shape-rendering: crispEdges;
+}
+#basic .axis {
+  shape-rendering: crispEdges;
+  opacity: 0.15;
+  stroke-width: 8px;
+}
+#basic .listItem {
+  font-weight: bold;
+}
+#basic .event .yearMark,
+#basic .event .yearLabel {
+  display: none;
+}
+#basic .event .yearMark {
+  stroke-width: 1;
+  stroke: black;
+}
+#basic .event.newYear .yearMark,
+#basic .event.newYear .yearLabel {
+  display: inherit;
+  stroke-dasharray: 1,4;
+}
+#basic .event .edges {
+  stroke-width: 1;
+}
+#basic .event .node {
+  stroke-width: 0;
+}
 #timeline .orgaLine {
   color: red;
 }
@@ -6896,30 +6929,4 @@ html {
 #print .box {
   shape-rendering: crispEdges;
   stroke-dasharray: 1,3;
-}
-#basic {
-  font-size: 11px;
-}
-#basic line {
-  shape-rendering: crispEdges;
-}
-#basic line {
-  stroke-width: 1px;
-}
-#basic line.axis {
-  shape-rendering: crispEdges;
-  opacity: 0.15;
-  stroke-width: 8px;
-}
-#basic .listItem {
-  font-weight: bold;
-}
-#basic .event .yearMark,
-#basic .event .yearLabel {
-  display: none;
-}
-#basic .event.newYear .yearMark,
-#basic .event.newYear .yearLabel {
-  display: inherit;
-  stroke-dasharray: 1,4;
 }

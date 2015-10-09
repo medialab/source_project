@@ -6,6 +6,40 @@ html, body {
   width: 100%;
 }
 
+#basic {
+
+  line {shape-rendering: crispEdges; }
+  font-size: 11px;
+
+  .axis {
+    shape-rendering: crispEdges;
+    opacity: 0.15;
+    stroke-width:8px;
+  }
+
+  .listItem { font-weight: bold;}
+
+  .event {
+    .yearMark, .yearLabel { display: none;}
+    .yearMark {
+      stroke-width:1;
+      stroke:black
+    }
+
+    &.newYear {
+     .yearMark, .yearLabel {
+        display: inherit;
+        stroke-dasharray: 1,4;
+      }
+    }
+
+    .edges {stroke-width:1;}
+    .node {stroke-width:0}
+
+  }
+}
+
+
 #timeline {
   .orgaLine { color: red}
 
@@ -141,42 +175,4 @@ html {
   }
   font-weight: bold;
   font-size: 18px;
-}
-
-
-#basic {
-  line {shape-rendering: crispEdges; }
-
-  line {    stroke-width:1px }
-  font-size: 11px;
-
-  // .axis path { display: none; }
-
-  line.axis {
-    shape-rendering: crispEdges;
-    // stroke: #000;
-    opacity: 0.15;
-    stroke-width:8px;
-    // stroke-dasharray: 1,2;
-  }
-
-  .listItem {
-      font-weight: bold;
-  }
-
-
-
-  .event {
-    .yearMark, .yearLabel {
-      display: none;
-    }
-
-    &.newYear {
-     .yearMark, .yearLabel {
-        display: inherit;
-        stroke-dasharray: 1,4;
-      }
-    }
-
-  }
 }
