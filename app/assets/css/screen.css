@@ -6805,19 +6805,6 @@ h1 {
 #explo .event .node {
   stroke-width: 0;
 }
-#force .node {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-#force .link {
-  stroke: #999;
-  stroke-opacity: .6;
-}
-#force text {
-  font-weight: bold;
-  text-transform: uppercase;
-  font-family: sans-serif;
-}
 #forceTree text {
   color: black;
   background-color: white;
