@@ -39,7 +39,6 @@ d3.json(apiUrl, function(error, data) {
   // list states
   graph.sta = _(graph.linkedNodes)
     .filter('typeId', 5314) // states
-    // .sortBy('shortName')
     .reverse()
     .value();
 
@@ -106,7 +105,6 @@ d3.json(apiUrl, function(error, data) {
   function targetY(d){ return eventYpos[d.target.recordId] }
   function relX(d,i){  return rel_offset + i * relSpacing } // index event per target i > (d.startDate-start)
   function relTypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
-  // function @TypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
 
   // event handlers
   function focusOn(d){
@@ -141,8 +139,11 @@ d3.json(apiUrl, function(error, data) {
       .attr('x', 20)
       .attr('y', function(d){return eventYpos[d.recordId]})
       .attr('transform', 'translate(0, 4)')
-      .text(function(d){return '['+d.typeName +'] '+d.shortName})
+      .text(function(d){return d.shortName})
       .style('color',relTypeColor)
+      .append('title')
+      .text(function(d) { return d.typeName})
+
 
     list.append('line')
       .attr('x1', 100)
