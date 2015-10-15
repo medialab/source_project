@@ -1,0 +1,10 @@
+{
+  "server":"http://heurist.sydney.edu.au/",
+  "param":"JSON-structured.tpl",
+  "corpus": {
+    "all": {
+      "query": "t:13 OR t:1 OR t:4",
+      "title": "all"
+    }
+  }
+}
