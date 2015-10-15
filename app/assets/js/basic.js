@@ -8,12 +8,13 @@ d3.json(apiUrl, function(error, data) {
   if (error) throw error;
 
   console.log(data);
-
   var graph =  {};
   var so = new Source(data);
 
+  console.log(so.getTypes({'recordTypeId':1}))
+
   var w = 2500, h = 3500,
-    color = d3.scale.category10();
+    color = d3.scale.category20();
     start = so.getTimeBounds().start,
     end = so.getTimeBounds().end,
     rel_offset = 250, relSpacing = 6;
@@ -32,18 +33,20 @@ d3.json(apiUrl, function(error, data) {
   graph.org = _(graph.linkedNodes)
     .filter('recordTypeId', 4)
     .reject('typeId', 5314)
-    .sortBy(['typeId','startDate'])
+    .sortBy('startDate')
     .value();
 
   // list states
   graph.sta = _(graph.linkedNodes)
     .filter('typeId', 5314) // states
+    // .sortBy('shortName')
+    .reverse()
     .value();
 
   // list documents
   graph.doc = _(graph.linkedNodes)
     .filter('recordTypeId', 13)
-    .sortBy(['typeId','startDate'])
+    .sortBy('startDate')
     .value();
 
   // doc index
@@ -66,6 +69,7 @@ d3.json(apiUrl, function(error, data) {
 
   // matching tables
   var eventYpos = {};
+  // var event
 
   // states
   var stateOffset = 80,
@@ -100,8 +104,9 @@ d3.json(apiUrl, function(error, data) {
   // attributes formulas
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return rel_offset + i * relSpacing }
+  function relX(d,i){  return rel_offset + i * relSpacing } // index event per target i > (d.startDate-start)
   function relTypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
+  // function @TypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
 
   // event handlers
   function focusOn(d){
@@ -136,7 +141,8 @@ d3.json(apiUrl, function(error, data) {
       .attr('x', 20)
       .attr('y', function(d){return eventYpos[d.recordId]})
       .attr('transform', 'translate(0, 4)')
-      .text(function(d){return d.shortName})
+      .text(function(d){return '['+d.typeName +'] '+d.shortName})
+      .style('color',relTypeColor)
 
     list.append('line')
       .attr('x1', 100)
