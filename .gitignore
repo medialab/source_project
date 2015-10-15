@@ -5,6 +5,7 @@ bower_components/
 *.dot
 *_*.html
 app/data/
+app/assets/css/
 app/autobasic_*
 config.json
 

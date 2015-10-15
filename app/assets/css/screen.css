@@ -6805,21 +6805,6 @@ h1 {
 #explo .event .node {
   stroke-width: 0;
 }
-#timeline .orgaLine {
-  color: red;
-}
-#timeline .label {
-  fill: black;
-  font-size: 12px;
-}
-#timeline .relations {
-  fill: transparent;
-  stroke-width: 3;
-}
-#timeline text {
-  font-weight: bold;
-  text-transform: uppercase;
-}
 #force .node {
   stroke: #fff;
   stroke-width: 1.5px;
