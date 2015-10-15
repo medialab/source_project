@@ -6910,11 +6910,3 @@ html {
 #dot .nolink {
   opacity: .2;
 }
-#print {
-  font-weight: bold;
-  font-size: 18px;
-}
-#print .box {
-  shape-rendering: crispEdges;
-  stroke-dasharray: 1,3;
-}
