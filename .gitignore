@@ -3,7 +3,7 @@ node_modules/
 bower_components/
 *.pdf
 *.dot
-autobasic_*
+*_*.html
 app/data/
 app/autobasic_*
 config.json

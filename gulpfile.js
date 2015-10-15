@@ -1,11 +1,21 @@
-var gulp = require('gulp');
-var less = require('gulp-less');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var exec = require('child_process').exec;
+var gulp = require('gulp'),
+    less = require('gulp-less'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    rename = require('gulp-rename'),
+    exec = require('child_process').exec,
+    handlebars = require('gulp-handlebars'),
+    wrap = require('gulp-wrap'),
+    browserSync = require('browser-sync').create();
 
-var browserSync = require('browser-sync').create();
+
+var jsFiles = [
+  './bower_components/jquery/dist/jquery.js',
+  './bower_components/bootstrap/dist/js/bootstrap.js',
+  './bower_components/d3/d3.js',
+  './bower_components/lodash/lodash.js',
+  './bower_components/handlebars/handlebars.js',
+  ];
 
 gulp.task('less', function() {
     return gulp.src('./app/assets/less/*.less')
@@ -14,14 +24,10 @@ gulp.task('less', function() {
       .pipe(browserSync.stream());
 });
 
+// javascript compilation
+
 gulp.task('build', function() {
-    return gulp.src([
-      './bower_components/jquery/dist/jquery.js',
-      './bower_components/bootstrap/dist/js/bootstrap.js',
-      './bower_components/d3/d3.js',
-      './bower_components/lodash/lodash.js'
-      ],{base: 'bower_components/'}
-    )
+  return gulp.src(jsFiles,{base: 'bower_components/'})
     .pipe(concat('lib.js'))
     .pipe(gulp.dest('./app/assets/js/'))
     .pipe(rename('lib.min.js'))
@@ -29,15 +35,20 @@ gulp.task('build', function() {
     .pipe(gulp.dest('./app/assets/js/'));
 });
 
+// template
+gulp.task('templates', function() {
+  return gulp.src('./app/templates/*.hbs')
+    .pipe(handlebars())
+    .pipe(wrap('Handlebars.template(<%= contents %>);'))
+    .pipe(concat('templates.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('./app/templates/'));
+});
+
+// dot render
 gulp.task('dot', function(){
-  exec('node gen_treaty.js', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-  });
-  exec('node gen_full.js', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-  });
+  exec('node gen_treaty.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
+  exec('node gen_full.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
 })
 
 gulp.task('dotwatch', function(){
@@ -45,14 +56,16 @@ gulp.task('dotwatch', function(){
   gulp.watch('./app/data/*.json', ['dot']);
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
-gulp.task('serve', ['less', 'dotwatch'], function() {
+
+gulp.task('serve', ['less', 'dotwatch', 'templates'], function() {
     browserSync.init({server: "./app"});
 
-    // gulp.watch('js/*.js', ['lint', 'scripts']);
     gulp.watch('./app/assets/less/*.less', ['less']);
+    gulp.watch('./app/templates/*.hbs', ['templates']);
+
     gulp.watch("app/*.html").on('change', browserSync.reload);
     gulp.watch("app/assets/js/*.js").on('change', browserSync.reload);
-
 });
 
-gulp.task('default', [ 'less', 'build', 'watch']);
+
+gulp.task('default', [ 'less', 'build','templates']);
