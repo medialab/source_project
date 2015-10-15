@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="assets/css/screen.css">
+    <meta charset="utf-8">
+  </head>
+  <body class="container">
+    <h2>source corpus</h2>
+     <hr>
+
+    {{#each corpus}}
+      <div class="row">
+        <h4 class="col-sm-3"><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
+        <p class="col-sm-1">{{template}} </p>
+        <a class="col-sm-2" href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">view in heurist</a>
+        <pre class="col-sm-4">{{query}}</pre>
+      </div>
+      <hr>
+    {{/each}}
+  </body>
+</html>
