@@ -2,8 +2,10 @@
 @import "../../../bower_components/bootstrap/less/bootstrap.less";
 
 html, body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 h1 { text-align: center;}
@@ -40,94 +42,3 @@ h1 { text-align: center;}
 
   }
 }
-
-#forceTree {
-  text {
-    color: black;
-    background-color: white;
-    font-weight: bold;
-    font-size: 14px;
-    -webkit-filter: drop-shadow(-5px -5px 5px #000);
-    filter: drop-shadow(-5px -5px 5px #000);
-  }
-
-  circle { stroke-width: 0;}
-
-  .link {
-    stroke: #999;
-    stroke-opacity: .2;
-    stroke-width: 11px;
-    marker-end:"url(#triangle)";
-  }
-
-  .relTypeCaption { opacity: .5;}
-
-  .axis path { display: none;}
-
-  .axis line {
-    shape-rendering: crispEdges;
-    stroke: #000;
-    stroke-dasharray: 1,7;
-  }
-}
-
-
-html {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#forceTree2 {
-  margin: 0;
-  padding: 0;
-
-  width: 95%;
-  height: 200%;
-
-  text {
-    color: black;
-    font-weight: bold;
-  }
-  .relTypeCaption { opacity: .5;}
-  .link {
-    stroke: #999;
-    stroke-opacity: .2;
-    stroke-width: 8px;
-  }
-  .axis path { display: none; }
-  .axis line {
-    shape-rendering: crispEdges;
-    stroke: #000;
-    stroke-dasharray: 1,7;
-  }
-  .nolink { opacity: .2; }
-}
-
-#dot {
-  margin: 0;
-  padding: 0;
-
-  width: 95%;
-  height: 200%;
-
-  text {
-    color: black;
-    font-weight: bold;
-  }
-  .relTypeCaption { opacity: .5;}
-  .link {
-    stroke: #999;
-    stroke-opacity: .2;
-    stroke-width: 8px;
-  }
-  .axis path { display: none; }
-  .axis line {
-    shape-rendering: crispEdges;
-    stroke: #000;
-    stroke-dasharray: 1,7;
-  }
-  .nolink { opacity: .2; }
-}
-

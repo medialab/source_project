@@ -6766,8 +6766,10 @@ button.close {
 }
 html,
 body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 h1 {
   text-align: center;
@@ -6804,96 +6806,4 @@ h1 {
 }
 #explo .event .node {
   stroke-width: 0;
-}
-#forceTree text {
-  color: black;
-  background-color: white;
-  font-weight: bold;
-  font-size: 14px;
-  -webkit-filter: drop-shadow(-5px -5px 5px #000);
-  filter: drop-shadow(-5px -5px 5px #000);
-}
-#forceTree circle {
-  stroke-width: 0;
-}
-#forceTree .link {
-  stroke: #999;
-  stroke-opacity: .2;
-  stroke-width: 11px;
-  marker-end: "url(#triangle)";
-}
-#forceTree .relTypeCaption {
-  opacity: .5;
-}
-#forceTree .axis path {
-  display: none;
-}
-#forceTree .axis line {
-  shape-rendering: crispEdges;
-  stroke: #000;
-  stroke-dasharray: 1,7;
-}
-html {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-#forceTree2 {
-  margin: 0;
-  padding: 0;
-  width: 95%;
-  height: 200%;
-}
-#forceTree2 text {
-  color: black;
-  font-weight: bold;
-}
-#forceTree2 .relTypeCaption {
-  opacity: .5;
-}
-#forceTree2 .link {
-  stroke: #999;
-  stroke-opacity: .2;
-  stroke-width: 8px;
-}
-#forceTree2 .axis path {
-  display: none;
-}
-#forceTree2 .axis line {
-  shape-rendering: crispEdges;
-  stroke: #000;
-  stroke-dasharray: 1,7;
-}
-#forceTree2 .nolink {
-  opacity: .2;
-}
-#dot {
-  margin: 0;
-  padding: 0;
-  width: 95%;
-  height: 200%;
-}
-#dot text {
-  color: black;
-  font-weight: bold;
-}
-#dot .relTypeCaption {
-  opacity: .5;
-}
-#dot .link {
-  stroke: #999;
-  stroke-opacity: .2;
-  stroke-width: 8px;
-}
-#dot .axis path {
-  display: none;
-}
-#dot .axis line {
-  shape-rendering: crispEdges;
-  stroke: #000;
-  stroke-dasharray: 1,7;
-}
-#dot .nolink {
-  opacity: .2;
 }
