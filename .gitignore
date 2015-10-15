@@ -5,3 +5,4 @@ bower_components/
 *.dot
 autobasic_*
 app/data/
+app/autobasic_*
