@@ -30,6 +30,7 @@ _.forEach(config.corpus, function(data, key){
 
 });
 
+config.date = new Date();
 
 var hbsFile = fs.readFileSync('../app/templates/index.hbs','utf8');
 var template = handlebars.compile(hbsFile);
