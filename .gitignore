@@ -8,6 +8,7 @@ app/data/
 app/assets/css/
 app/autobasic_*
 config.json
+app/index.html
 
 # Windows image file caches
 Thumbs.db

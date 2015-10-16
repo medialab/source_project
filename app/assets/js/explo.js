@@ -9,18 +9,17 @@ d3.json(apiUrl, function(error, data) {
 
   console.log(data);
   var graph =  {};
-  var so = new Source(data);
 
-  console.log(so.getTypes({'recordTypeId':1}))
+  console.log(Sutils.getTypes(data,{'recordTypeId':1}))
 
   var w = 2500, h = 3500,
     color = d3.scale.category20();
-    start = so.getTimeBounds().start,
-    end = so.getTimeBounds().end,
+    start = Sutils.getTimeBounds(data).start,
+    end = Sutils.getTimeBounds(data).end,
     rel_offset = 250, relSpacing = 6;
 
   // list relations
-  graph.rel = so.getValidRel();
+  graph.rel = Sutils.getValidRel(data);
 
   graph.linkedNodes = [];
 
@@ -104,7 +103,7 @@ d3.json(apiUrl, function(error, data) {
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
   function relX(d,i){  return rel_offset + i * relSpacing } // index event per target i > (d.startDate-start)
-  function relTypeColor(d){return color(_.indexOf(so.getTypes({'recordTypeId':1}), d.typeId));}
+  function relTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
   function focusOn(d){
