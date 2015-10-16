@@ -9,25 +9,6 @@
        return _(data).map('recordId').value();
   };
 
-  Sutils.getAllSources = function(data){
-    return _(data).filter('recordTypeId', 1)
-      .map(function(d){
-        return d.source.recordId;
-      })
-      .uniq()
-      .filter(function(d){return ! _.isUndefined(d)})
-      .value();
-  }
-  Sutils.getAllTargets = function(data){
-    return _(data).filter('recordTypeId', 1)
-      .map(function(d){
-        return d.source.recordId;
-      })
-      .uniq()
-      .filter(function(d){return ! _.isUndefined(d)})
-      .value();
-  }
-
   // get dates
   Sutils.getDates = function(data){
    return _(data)
@@ -47,7 +28,7 @@
   };
 
   // get valid relations
-  Sutils.getValidRel = function(data){
+  Sutils.getValidLinks = function(data){
     return _(data)
       .filter('recordTypeId', 1)
       .filter(function(d){
@@ -62,15 +43,11 @@
       .value();
   };
 
-  // get used nodes
-  Sutils.getValidNodes = function(data){
-    var nodes = [];
-    _(Sutils.getValidRel(data)).forEach(function(d){
-      nodes.push(d.source.recordId, d.target.recordId);
-      console.log(d);
-    })
-    .value();
-    return nodes;
+  // get linked nodes
+  Sutils.getLinkedNodes = function(data, rel){
+    var linkedNodes = [];
+    _.forEach(rel, function(d){linkedNodes.push(d.source, d.target);});
+    return _.uniq(linkedNodes);
   }
 
   // return type from a query
@@ -85,7 +62,7 @@
 
 
   Sutils.getTimedLinks = function (element, q){
-   return _(Sutils.getValidRel(data))
+   return _(Sutils.getValidLinks(data))
     .where(q)
     .filter(function(d){ return d.source.recordId === element.recordId })
     .groupBy('startDate')

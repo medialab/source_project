@@ -1,97 +1,79 @@
-// const apiUrl = 'data/heurist-cache-2.json';
 
-console.log(apiUrl)
+config = JSON.parse(config);
 
-
-d3.json(apiUrl, function(error, data) {
+d3.json('data/'+config.corpus.json, function(error, data) {
 
   if (error) throw error;
 
   console.log(data);
   var graph =  {};
 
-  console.log(Sutils.getTypes(data,{'recordTypeId':1}))
-
   var w = 2500, h = 3500,
     color = d3.scale.category20();
     start = Sutils.getTimeBounds(data).start,
     end = Sutils.getTimeBounds(data).end,
-    rel_offset = 250, relSpacing = 6;
+    linkOffset = 250, linkSpacing = 6;
 
-  // list relations
-  graph.rel = Sutils.getValidRel(data);
+  // get relations with a source and a target
+  graph.links = Sutils.getValidLinks(data);
 
-  graph.linkedNodes = [];
+  // get linked nodes
+  graph.nodes = Sutils.getLinkedNodes(data, graph.links);
 
-  _.forEach(graph.rel, function(d){
-    graph.linkedNodes.push(d.source, d.target);
-  });
+  // get bounds
+  graph.relTimeBounds = Sutils.getTimeBounds(graph.links),
 
-  graph.linkedNodes = _.uniq(graph.linkedNodes);
+  // get relation type
+  graph.relTypes = Sutils.getTypes(data,{'recordTypeId':1});
 
-  // list administration
-  graph.org = _(graph.linkedNodes)
+
+  // get organisations
+  graph.org = _(graph.nodes)
     .filter('recordTypeId', 4)
-    .reject('typeId', 5314)
+    .reject('typeId', 5314) // exclude states
     .sortBy('startDate')
     .value();
 
-  // list states
-  graph.sta = _(graph.linkedNodes)
-    .filter('typeId', 5314) // states
+  // get states
+  graph.sta = _(graph.nodes)
+    .filter('typeId', 5314)
     .reverse()
     .value();
 
-  // list documents
-  graph.doc = _(graph.linkedNodes)
+  // get documents
+  graph.doc = _(graph.nodes)
     .filter('recordTypeId', 13)
     .sortBy('startDate')
     .value();
 
+  // get device
+  graph.dev = _(graph.nodes)
+    .filter('recordTypeId', 16)
+    .value();
+
   // doc index
-  graph.docIndex = {};
-  graph.doc.forEach(function(d){
-    graph.docIndex[d.recordId] = d
-  });
+  graph.docIndex = _.indexBy(graph.doc, 'recordId');
 
   // org index
-  graph.orgIndex = {}
-  graph.org.forEach(function(d){
-    graph.orgIndex[d.recordId] = d
-  });
+  graph.orgIndex = _.indexBy(graph.org, 'recordId');
 
   // rel index
-  graph.relIndex = {};
-  graph.rel.forEach(function(d){
-    graph.relIndex[d.recordId] = d
-  });
+  graph.relIndex = _.indexBy(graph.rel, 'recordId');
 
   // matching tables
   var eventYpos = {};
   // var event
 
-  // states
-  var stateOffset = 80,
-      stateSpacing = 11;
-  graph.sta.forEach(function(d, i){
-    eventYpos[d.recordId] = stateOffset + i * stateSpacing
+  var cats = ['doc','sta','org','dev'];
+  var offset = 80;
+  var spacing = 11;
+
+  cats.forEach(function(c){
+    graph[c].forEach(function(d, i){
+      eventYpos[d.recordId] = offset + i * spacing
+    });
+    offset += (graph[c].length) * spacing + spacing;
   });
-
-  // documents
-  var docOffset = stateOffset + stateSpacing*(graph.sta.length+1),
-      docSpacing = 11;
-
-  graph.doc.forEach(function(d, i){
-    eventYpos[d.recordId] = docOffset + i * docSpacing
-  })
-
-  // organisation
-  var org_spacing = 11,
-      orgOffset = docOffset + org_spacing*(graph.doc.length+1);
-
-  graph.org.forEach(function(d, i){
-    eventYpos[d.recordId] = orgOffset + i * org_spacing
-  })
 
   console.log(graph);
 
@@ -103,7 +85,7 @@ d3.json(apiUrl, function(error, data) {
   // attributes formulas
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return rel_offset + i * relSpacing } // index event per target i > (d.startDate-start)
+  function relX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
   function relTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
@@ -129,8 +111,7 @@ d3.json(apiUrl, function(error, data) {
   // draw organisations, document and state list
   //
     var list = svg.selectAll('.org')
-      .data(graph.org.slice(0).concat(graph.doc).slice(0).concat(graph.sta))
-
+      .data(graph.nodes)
       .enter()
       .append('g')
       .attr('class','listItem')
@@ -162,7 +143,7 @@ d3.json(apiUrl, function(error, data) {
   //
     var prevDate;
     var event = svg.selectAll('.event')
-      .data(graph.rel)
+      .data(graph.links)
       .enter()
       .append('g')
       .attr('id',function(d){ return d.recordId } )
@@ -241,7 +222,7 @@ d3.json(apiUrl, function(error, data) {
       .attr('x1', relX)
       .attr('x2', relX)
       .style('stroke-width', function(d){
-        return relSpacing < 4 ? 0 : 1
+        return linkSpacing < 4 ? 0 : 1
       })
 
     // source node
@@ -256,7 +237,7 @@ d3.json(apiUrl, function(error, data) {
 
   // range input event
   d3.select("#zoom").on("input", function() {
-    relSpacing = this.value;
+    linkSpacing = this.value;
     update();
   });
 
