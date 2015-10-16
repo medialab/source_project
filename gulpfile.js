@@ -47,8 +47,8 @@ gulp.task('templates', function() {
 
 // dot render
 gulp.task('dot', function(){
-  exec('node gen_treaty.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
-  exec('node gen_full.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
+  // exec('node gen_treaty.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
+  // exec('node gen_full.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
 })
 
 gulp.task('dotwatch', function(){
