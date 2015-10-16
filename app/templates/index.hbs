@@ -8,13 +8,13 @@
   <body class="container">
     <h2>source corpus</h2>
      <hr>
-
     {{#each corpus}}
       <div class="row">
-        <h4 class="col-sm-3"><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
+        <h4 class="col-sm-4"><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
         <p class="col-sm-1">{{template}} </p>
-        <a class="col-sm-2" href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">view in heurist</a>
-        <pre class="col-sm-4">{{query}}</pre>
+        <p class="col-sm-1"><a href="data/{{template}}_{{@key}}.json"  target="_blank">json</a> </p>
+        <a class="col-sm-1" href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">heurist</a>
+        <pre class="col-sm-5">{{query}}</pre>
       </div>
       <hr>
     {{/each}}

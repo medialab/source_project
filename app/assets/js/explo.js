@@ -28,6 +28,7 @@ d3.json(apiUrl, function(error, data) {
   });
 
   graph.linkedNodes = _.uniq(graph.linkedNodes);
+
   // list administration
   graph.org = _(graph.linkedNodes)
     .filter('recordTypeId', 4)
