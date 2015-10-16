@@ -4,9 +4,12 @@
     <link rel="stylesheet" type="text/css" href="assets/css/screen.css">
     <meta charset="utf-8">
   </head>
-  <body id="{{template}}">
-    <h1>{{title}}</h1>
-    <input id="zoom" type="range" value="6" max="20" min="1" step="1">
+  <body id="{{template}}" class="container-fluid">
+    <hr/>
+      <p class="col-sm-8"><strong>{{title}}</strong></p>
+      <p class="col-sm-2">{{date}}</p>
+      <p class="col-sm-2" ><input id="zoom" type="range" value="6" max="20" min="1" step="1"></p>
+    <hr/>
     <script type="text/javascript" src="assets/js/lib.min.js"></script>
     <script type="text/javascript" src="assets/js/sutils.js"></script>
     <script type="text/javascript">const apiUrl = 'data/{{json}}';</script>

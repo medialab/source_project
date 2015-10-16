@@ -17,9 +17,10 @@ _.forEach(config.corpus, function(data, key){
         var hbsFile = fs.readFileSync('../app/templates/'+data.template+'.hbs','utf8'),
           template = handlebars.compile(hbsFile),
           result = template({
-            title:key,
+            title:data.title,
             json:'explo_'+ key +'.json',
-            template:data.template
+            template:data.template,
+            date: new Date()
           });
 
         fs.writeFile('../app/explo_'+ key +'.html', result, function (err) {
