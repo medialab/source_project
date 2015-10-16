@@ -3,8 +3,9 @@
   "param":"JSON-structured.tpl",
   "corpus": {
     "all": {
+      "title":"all heurist database",
       "query": "t:13 OR t:1 OR t:4",
-      "title": "all"
+      "template":["explo"]
     }
   }
 }
