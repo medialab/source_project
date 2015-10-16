@@ -64,7 +64,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
   var eventYpos = {};
   // var event
 
-  var cats = ['doc','sta','org','dev'];
+  var cats = ['sta','doc','org','dev'];
   var offset = 80;
   var spacing = 11;
 
