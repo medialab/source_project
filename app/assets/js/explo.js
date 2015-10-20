@@ -87,7 +87,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
   // attributes formulas
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return linkOffset + (d.startDate-start) * linkSpacing } // index event per target i > (d.startDate-start)
+  function relX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
   function relTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
