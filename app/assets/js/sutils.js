@@ -4,9 +4,38 @@
 
   Sutils = {}
 
+  // nest
+  // https://gist.github.com/joyrexus/9837596
+  Sutils.nest = function (seq, keys) {
+    if (!keys.length)
+        return seq;
+    var first = keys[0];
+    var rest = keys.slice(1);
+    return _.mapValues(_.groupBy(seq, first), function (value) {
+        return Sutils.nest(value, rest)
+    });
+  };
+
+  //
+  Sutils.dataCheck = function(data){
+
+    var r = {}; // report
+    var fields = ['startDate','endDate','shortName','source','target'];
+
+    _.forEach(fields, function(f){
+
+        var und = _.filter(data, function(d){ return _.isUndefined(d[f]) });
+        r['undefined-'+f]= Sutils.nest(und, ['recordTypeName','typeName']);
+
+    })
+    // types
+    r.recordsByTypes = Sutils.nest(data, ['recordTypeName','typeName'])
+
+    return r;
+  }
   // get all recordId
   Sutils.getAllRecId = function(data){
-       return _(data).map('recordId').value();
+    return _(data).map('recordId').value();
   };
 
   // get dates
@@ -69,11 +98,6 @@
     .value()
     ;
   }
-
-  // data first global filter
-  // sutils.data = _(data).reject('recordTypeId', 1).forEach(function(d){
-  //   d.shortName = getShortName(d);
-  // }).value();
 
   function getShortName(d){
     if(d.shortName !== ''  && !_.isUndefined(d.shortName)) return d.shortName

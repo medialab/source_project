@@ -4,9 +4,9 @@ config = JSON.parse(config);
 d3.json('data/'+config.corpus.json, function(error, data) {
 
   if (error) throw error;
-
-  console.log(data);
   var graph =  {};
+
+  console.log("\n== data report == \n",Sutils.dataCheck(data),"\n\n== end ==\n");
 
   var w = 2500, h = 3500,
     color = d3.scale.category20();
@@ -82,10 +82,12 @@ d3.json('data/'+config.corpus.json, function(error, data) {
     .attr('width', w)
     .attr('height', h)
 
+
+
   // attributes formulas
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
+  function relX(d,i){  return linkOffset + (d.startDate-start) * linkSpacing } // index event per target i > (d.startDate-start)
   function relTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
