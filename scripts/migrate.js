@@ -15,6 +15,7 @@ _.forEach(config.corpus, function(data, key){
     template = handlebars.compile(hbsFile),
     result = template({
       corpus: data,
+      update: new Date(),
       config: JSON.stringify({
         corpus: data,
         global:config
