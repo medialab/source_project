@@ -9,7 +9,7 @@ _.forEach(config.corpus, function(data, key){
 
   var req = config.server + data.query + config.param;
       data.id = key;
-      data.json = json = 'explo_'+ key +'.json';
+      data.json = json = data.template+'_'+ key +'.json';
 
   var hbsFile = fs.readFileSync('../app/templates/'+data.template+'.hbs','utf8'),
     template = handlebars.compile(hbsFile),
