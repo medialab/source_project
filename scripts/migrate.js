@@ -15,11 +15,9 @@ _.forEach(config.corpus, function(data, key){
     template = handlebars.compile(hbsFile),
     result = template({
       corpus: data,
+      id:key,
       update: new Date(),
-      config: JSON.stringify({
-        corpus: data,
-        global:config
-      })
+      config: JSON.stringify({ corpus:data, global:config })
     });
 
   fs.writeFile('../app/explo_'+ key +'.html', result, function (err) {
@@ -27,9 +25,9 @@ _.forEach(config.corpus, function(data, key){
     console.log('html page saved.');
   });
 
-  wget
-    .download(req, '../app/data/'+data.json)
-    .on('end', function(json){ console.log(key, json) });
+  // wget
+  //   .download(req, '../app/data/'+data.json)
+  //   .on('end', function(json){ console.log(key, json) });
 
 });
 

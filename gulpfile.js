@@ -58,7 +58,7 @@ gulp.task('dotwatch', function(){
 })
 
 gulp.task('serve', ['less', 'dotwatch', 'templates'], function() {
-    browserSync.init({server: "./app"});
+    browserSync.init({server: "./"});
 
     gulp.watch('./app/assets/less/*.less', ['less']);
     gulp.watch('./app/templates/*.hbs', ['templates']);

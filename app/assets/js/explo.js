@@ -1,12 +1,20 @@
+var config  = {}, graph = {};
 
-config = JSON.parse(config);
+d3.json('../config.json', function(error, config){
+  graph.conf = config;
+  graph.corpus = _(config.corpus).filter(function(value, key) {
+    return key === corpusId;
+  }).first();
 
-d3.json('data/'+config.corpus.json, function(error, data) {
+  d3.json('data/'+graph.corpus.template+'_'+ corpusId +'.json', onData);
+});
+
+
+function onData(error, data) {
 
   if (error) throw error;
-  var graph =  {};
 
-  console.log("\n== data report == \n",Sutils.dataCheck(data),"\n\n== end ==\n");
+  console.log("\n== data report == \n",Sutils.dataCheck(data),"\n== end ==\n\n");
 
   var w = 2500, h = 3500,
     color = d3.scale.category20();
@@ -21,54 +29,25 @@ d3.json('data/'+config.corpus.json, function(error, data) {
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
 
   // get bounds
-  graph.relTimeBounds = Sutils.getTimeBounds(graph.links),
+  graph.linksTimeBounds = Sutils.getTimeBounds(graph.links),
 
-  // get relation type
-  graph.relTypes = Sutils.getTypes(data,{'recordTypeId':1});
-
-
-  // get organisations
-  graph.org = _(graph.nodes)
-    .filter('recordTypeId', 4)
-    .reject('typeId', 5314) // exclude states
-    .sortBy('startDate')
+  // group from config
+  graph.corpus.groups.forEach(function(g){
+    graph[g.name] = _(graph.nodes)
+    .filter(g.filter)
+    .reject(g.reject || {'all':0} )
+    .sortBy(g.sortBy)
     .value();
+  })
 
-  // get states
-  graph.sta = _(graph.nodes)
-    .filter('typeId', 5314)
-    .reverse()
-    .value();
-
-  // get documents
-  graph.doc = _(graph.nodes)
-    .filter('recordTypeId', 13)
-    .sortBy('startDate')
-    .value();
-
-  // get device
-  graph.dev = _(graph.nodes)
-    .filter('recordTypeId', 16)
-    .value();
-
-  // doc index
-  graph.docIndex = _.indexBy(graph.doc, 'recordId');
-
-  // org index
-  graph.orgIndex = _.indexBy(graph.org, 'recordId');
-
-  // rel index
-  graph.relIndex = _.indexBy(graph.rel, 'recordId');
+  graph.groupNames = _.map(graph.corpus.groups, 'name');
 
   // matching tables
   var eventYpos = {};
-  // var event
-
-  var cats = ['sta','doc','org','dev'];
   var offset = 80;
   var spacing = 11;
 
-  cats.forEach(function(c){
+  graph.groupNames.forEach(function(c){
     graph[c].forEach(function(d, i){
       eventYpos[d.recordId] = offset + i * spacing
     });
@@ -82,13 +61,20 @@ d3.json('data/'+config.corpus.json, function(error, data) {
     .attr('width', w)
     .attr('height', h)
 
+  // range input event
+  d3.select("#zoom").on("input", function() {
+    linkSpacing = this.value;
+    update();
+  });
 
+  // draw viz at launch
+  create();
 
   // attributes formulas
   function sourceY(d){ return eventYpos[d.source.recordId] }
   function targetY(d){ return eventYpos[d.target.recordId] }
-  function relX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
-  function relTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
+  function linkX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
+  function linkTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
   function focusOn(d){
@@ -123,7 +109,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
       .attr('y', function(d){return eventYpos[d.recordId]})
       .attr('transform', 'translate(0, 4)')
       .text(function(d){return d.shortName})
-      .style('color',relTypeColor)
+      .style('color',linkTypeColor)
       .append('title')
       .text(function(d) { return d.typeName})
 
@@ -181,7 +167,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
     // edges
     event.append('line')
       .attr('class', 'edges')
-      .style('stroke',relTypeColor)
+      .style('stroke',linkTypeColor)
       .attr('y1', sourceY)
       .attr('y2', targetY)
 
@@ -189,7 +175,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
     event.append('circle')
       .attr('class','node source' )
       .attr('cy', sourceY)
-      .style('fill',relTypeColor)
+      .style('fill',linkTypeColor)
       .attr('r', 4)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
@@ -198,7 +184,7 @@ d3.json('data/'+config.corpus.json, function(error, data) {
     event.append('circle')
       .attr('class','node target')
       .attr('cy', targetY)
-      .style('fill', relTypeColor)
+      .style('fill', linkTypeColor)
       .attr('r', 4)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
@@ -211,41 +197,33 @@ d3.json('data/'+config.corpus.json, function(error, data) {
 
     // year label
     d3.selectAll('.yearLabel')
-      .attr('x',relX)
+      .attr('x',linkX)
       .attr('y', function(d,i){ return 10+ (d.startDate%6) * 10})
 
     // year mark
     d3.selectAll('.yearMark')
-      .attr('x1', relX)
-      .attr('x2', relX)
+      .attr('x1', linkX)
+      .attr('x2', linkX)
 
     // edges
     d3.selectAll('.edges')
-      .attr('x1', relX)
-      .attr('x2', relX)
+      .attr('x1', linkX)
+      .attr('x2', linkX)
       .style('stroke-width', function(d){
         return linkSpacing < 4 ? 0 : 1
       })
 
     // source node
     d3.selectAll('.source.node')
-      .attr('cx', relX)
+      .attr('cx', linkX)
 
     // target node
     d3.selectAll('.target.node')
-      .attr('cx', relX)
+      .attr('cx', linkX)
 
   }
 
-  // range input event
-  d3.select("#zoom").on("input", function() {
-    linkSpacing = this.value;
-    update();
-  });
+}
 
-  // draw viz at launch
-  create();
-
-})
 
 
