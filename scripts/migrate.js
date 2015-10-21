@@ -25,9 +25,9 @@ _.forEach(config.corpus, function(data, key){
     console.log('html page saved.');
   });
 
-  // wget
-  //   .download(req, '../app/data/'+data.json)
-  //   .on('end', function(json){ console.log(key, json) });
+  wget
+    .download(req, '../app/data/'+data.json)
+    .on('end', function(json){ console.log(key, json) });
 
 });
 
