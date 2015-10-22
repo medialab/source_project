@@ -63,6 +63,7 @@ gulp.task('serve', ['less', 'dotwatch', 'templates'], function() {
     gulp.watch('./app/assets/less/*.less', ['less']);
     gulp.watch('./app/templates/*.hbs', ['templates']);
 
+    gulp.watch("*.json").on('change', browserSync.reload);
     gulp.watch("app/*.html").on('change', browserSync.reload);
     gulp.watch("app/assets/js/*.js").on('change', browserSync.reload);
 });

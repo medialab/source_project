@@ -1,11 +1,11 @@
+
 var config  = {}, graph = {};
 
 d3.json('../config.json', function(error, config){
   graph.conf = config;
-  graph.corpus = _(config.corpus).filter(function(value, key) {
-    return key === corpusId;
-  }).first();
-
+  graph.corpus = _(config.corpus)
+    .filter(function(value, key) {return key === corpusId;})
+    .first();
   d3.json('data/'+graph.corpus.template+'_'+ corpusId +'.json', onData);
 });
 
@@ -23,7 +23,12 @@ function onData(error, data) {
     linkOffset = 250, linkSpacing = 6;
 
   // get relations with a source and a target
-  graph.links = Sutils.getValidLinks(data);
+  graph.links = _(Sutils.getValidLinks(data))
+    .filter(graph.corpus.rels.filter)
+    .reject(graph.corpus.rels.reject || {'all':0} )
+    .sortByOrder(graph.corpus.rels.sortBy, graph.corpus.rels.sortOrder)
+    .value();
+  ;
 
   // get linked nodes
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
@@ -36,22 +41,31 @@ function onData(error, data) {
     graph[g.name] = _(graph.nodes)
     .filter(g.filter)
     .reject(g.reject || {'all':0} )
-    .sortBy(g.sortBy)
+    .sortByOrder(g.sortBy, g.sortOrder)
     .value();
   })
 
+  // get groups names
   graph.groupNames = _.map(graph.corpus.groups, 'name');
 
-  // matching tables
-  var eventYpos = {};
+  //
+  graph.nested = Sutils.nest(graph.links, [
+    function(d){ return d.startDate },
+    function(d){ return d.source.recordId },
+    function(d){ return d.target.recordId }
+  ]);
+
+  var eventPosY = {}, eventPosX = {};
   var offset = 80;
   var spacing = 11;
 
   graph.groupNames.forEach(function(c){
+
     graph[c].forEach(function(d, i){
-      eventYpos[d.recordId] = offset + i * spacing
+      eventPosY[d.recordId] = offset + i * spacing
     });
-    offset += (graph[c].length) * spacing + spacing;
+
+    offset += (graph[c].length) * spacing + spacing*2;
   });
 
   console.log(graph);
@@ -71,8 +85,8 @@ function onData(error, data) {
   create();
 
   // attributes formulas
-  function sourceY(d){ return eventYpos[d.source.recordId] }
-  function targetY(d){ return eventYpos[d.target.recordId] }
+  function sourceY(d){ return eventPosY[d.source.recordId] }
+  function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
   function linkTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
@@ -106,7 +120,7 @@ function onData(error, data) {
 
     list.append('text')
       .attr('x', 20)
-      .attr('y', function(d){return eventYpos[d.recordId]})
+      .attr('y', function(d){return eventPosY[d.recordId]})
       .attr('transform', 'translate(0, 4)')
       .text(function(d){return d.shortName})
       .style('color',linkTypeColor)
@@ -116,9 +130,9 @@ function onData(error, data) {
 
     list.append('line')
       .attr('x1', 100)
-      .attr('y1', function(d){return eventYpos[d.recordId]})
+      .attr('y1', function(d){return eventPosY[d.recordId]})
       .attr('x2', w)
-      .attr('y2', function(d){return eventYpos[d.recordId]})
+      .attr('y2', function(d){return eventPosY[d.recordId]})
       .attr('class','axis' )
       .style('stroke', 'grey')
       .attr('transform', 'translate(-80)')

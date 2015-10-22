@@ -64,7 +64,8 @@
         return _.includes(Sutils.getAllRecId(data), d.target)
             && _.includes(Sutils.getAllRecId(data), d.source);
       })
-      .sortBy('startDate')
+      .sortByAll(['startDate','typeId'])
+      // .shuffle()
       .forEach(function(d){
         d.source = _(data).filter('recordId', d.source).value()[0];
         d.target = _(data).filter('recordId', d.target).value()[0];
