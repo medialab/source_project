@@ -18,17 +18,47 @@ function onData(error, data) {
 
   var w = 2500, h = 3500,
     color = d3.scale.category20();
-    start = Sutils.getTimeBounds(data).start,
-    end = Sutils.getTimeBounds(data).end,
-    linkOffset = 250, linkSpacing = 6;
+    offsetX = 250, spacingX = 10,
+    offsetY = 80, spacingY = 11,
+    spacingYear = 50,
+    eventPosY = {},eventPosX = {};
+
+  function filterArray(d){
+    // for (var values in d) {
+    //   console.log(values);
+    //   values.every(function(value){
+    //     return (d[key] === value);
+    //   });
+    // };
+    return true
+  };
+
 
   // get relations with a source and a target
   graph.links = _(Sutils.getValidLinks(data))
-    .filter(graph.corpus.rels.filter)
+    .filter(filterArray)
     .reject(graph.corpus.rels.reject || {'all':0} )
     .sortByOrder(graph.corpus.rels.sortBy, graph.corpus.rels.sortOrder)
     .value();
   ;
+
+  // merge links with same year, target or source, type
+
+  var rank = 0;
+  graph.linksToMergeS =
+  Sutils.nest(graph.links,[
+    'startDate',
+    function(d){ return d.typeId+'_'+d.source.recordId }
+  ]);
+
+  _.forEach(graph.linksToMergeS,function(year){
+    _.forEach(year,function(group){
+      rank++;
+      group.forEach(function(d){
+        d.rank = rank;
+      });
+    });
+  })
 
   // get linked nodes
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
@@ -55,17 +85,13 @@ function onData(error, data) {
     function(d){ return d.target.recordId }
   ]);
 
-  var eventPosY = {}, eventPosX = {};
-  var offset = 80;
-  var spacing = 11;
-
   graph.groupNames.forEach(function(c){
 
     graph[c].forEach(function(d, i){
-      eventPosY[d.recordId] = offset + i * spacing
+      eventPosY[d.recordId] = offsetY + i * spacingY
     });
 
-    offset += (graph[c].length) * spacing + spacing*2;
+    offsetY += (graph[c].length) * spacingY + spacingY*2;
   });
 
   console.log(graph);
@@ -77,7 +103,7 @@ function onData(error, data) {
 
   // range input event
   d3.select("#zoom").on("input", function() {
-    linkSpacing = this.value;
+    spacingYear = this.value;
     update();
   });
 
@@ -87,7 +113,7 @@ function onData(error, data) {
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
-  function linkX(d,i){  return linkOffset + i * linkSpacing } // index event per target i > (d.startDate-start)
+  function linkX(d,i){  return offsetX + (d.startDate-graph.linksTimeBounds.start) * spacingYear + d.rank * spacingX } // index event per target i >
   function linkTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
 
   // event handlers
@@ -212,7 +238,7 @@ function onData(error, data) {
     // year label
     d3.selectAll('.yearLabel')
       .attr('x',linkX)
-      .attr('y', function(d,i){ return 10+ (d.startDate%6) * 10})
+      .attr('y', function(d,i){ return 10+ (d.startDate%4) * 10})
 
     // year mark
     d3.selectAll('.yearMark')
@@ -224,7 +250,7 @@ function onData(error, data) {
       .attr('x1', linkX)
       .attr('x2', linkX)
       .style('stroke-width', function(d){
-        return linkSpacing < 4 ? 0 : 1
+        return spacingX < 4 ? 0 : 1
       })
 
     // source node

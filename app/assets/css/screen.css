@@ -6771,6 +6771,10 @@ body {
   margin: 0;
   padding: 0;
 }
+html a,
+body a {
+  color: royalblue;
+}
 h1 {
   text-align: center;
 }

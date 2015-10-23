@@ -14,9 +14,11 @@
     {{#each corpus}}
       <div class="row">
         <div class="col-sm-5">
+
           <h4><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
           <blockquote><p>{{description}}</p></blockquote>
           <pre><a href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">{{query}}</a></pre>
+
         </div>
         <div class="col-sm-1">
           {{template}}<br> <a href="data/{{template}}_{{@key}}.json"  target="_blank">json</a>
