@@ -6811,3 +6811,14 @@ h1 {
 #explo .event .node {
   stroke-width: 0;
 }
+#explo .taxis {
+  color: red;
+}
+#explo .taxis path {
+  display: none;
+}
+#explo .taxis line {
+  shape-rendering: crispEdges;
+  stroke: #000;
+  stroke-dasharray: 1,20;
+}
