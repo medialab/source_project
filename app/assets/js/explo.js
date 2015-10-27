@@ -116,7 +116,7 @@ function onData(error, data) {
   // timeToPos = d3.scale.linear().domain([s, e]).range([0, w]),
   // timeScale = d3.time.scale().domain([s, e]).range([0, w]).nice(),
   // timeAxis = d3.svg.axis(timeScale).scale(timeToPos).tickSize(100).orient( "left" )
-  //   .ticks((e-s) / 2).tickFormat(dateFormat);
+  // .ticks((e-s) / 2).tickFormat(dateFormat);
 
 
   // draw viz at launch
