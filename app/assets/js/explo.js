@@ -88,12 +88,22 @@ function onData(error, data) {
   function nodeTypeColor(d){return color(_.indexOf(graph.nodeType, d.typeId));}
 
   // event handlers
-  function focusOn(d){
+  function focusOn(e){
+
     d3.select(this).style('stroke', 'grey');
-    if(d.source){
-      d3.select('#l'+d.target.recordId).style('stroke', 'grey');
-      d3.select('#l'+d.source.recordId).style('stroke', 'grey');
+    if(e.source){
+      d3.select('#l'+e.target.recordId).style('stroke', 'grey');
+      d3.select('#l'+e.source.recordId).style('stroke', 'grey');
     }
+
+    d3.selectAll('.node, .edges').filter(function(d, i){
+      var testRel = false;
+      if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
+      return ! (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
+    })
+    .style('stroke-width',0 )
+    .style('opacity', 0);
+
   }
   function focusOff(d){
     d3.select(this).style('stroke', 'white');
@@ -101,6 +111,8 @@ function onData(error, data) {
       d3.select('#l'+d.target.recordId).style('stroke', 'white');
       d3.select('#l'+d.source.recordId).style('stroke', 'white');
     }
+    d3.selectAll('.node, .edges').style('opacity', 1)
+    d3.selectAll('.edges').style('stroke-width',1);
   }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
@@ -109,6 +121,7 @@ function onData(error, data) {
   function yearLabelOff(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 1);
   }
+
   // create nodes
   function create(){
 
@@ -142,7 +155,7 @@ function onData(error, data) {
       .on('mouseout', focusOff);
 
     list.append('line')
-      .attr('x1', offsetX - 20)
+      .attr('x1', offsetX - spacingY)
       .attr('y1', function(d){return eventPosY[d.recordId]})
       .attr('x2', w)
       .attr('y2', function(d){return eventPosY[d.recordId]})
