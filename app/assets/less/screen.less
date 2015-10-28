@@ -17,9 +17,9 @@ h1 { text-align: center;}
   font-size: 11px;
 
   .axis {
-    shape-rendering: crispEdges;
+    // shape-rendering: crispEdges;
     opacity: 0.15;
-    stroke-width:8px;
+    stroke-width:11px;
   }
 
   .listItem { font-weight: bold;}
@@ -35,19 +35,24 @@ h1 { text-align: center;}
     &.newYear {
      .yearMark, .yearLabel {
         display: inherit;
-        stroke-dasharray: 1,4;
+      }
+      .yearMark {
+        stroke-width: 1px;
+        stroke: black;
+        opacity: .2;
       }
     }
 
+
+
     .edges {stroke-width:1;}
     .node {stroke-width:0}
-
   }
 
   .taxis { color: red;}
   .taxis path { display: none; }
   .taxis line {
-    shape-rendering: crispEdges;
+    // shape-rendering: crispEdges;
     stroke: #000;
     stroke-dasharray: 1,20;
   }

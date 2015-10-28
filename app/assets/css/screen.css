@@ -6785,9 +6785,8 @@ h1 {
   shape-rendering: crispEdges;
 }
 #explo .axis {
-  shape-rendering: crispEdges;
   opacity: 0.15;
-  stroke-width: 8px;
+  stroke-width: 11px;
 }
 #explo .listItem {
   font-weight: bold;
@@ -6806,7 +6805,11 @@ h1 {
 #explo .event.newYear .yearMark,
 #explo .event.newYear .yearLabel {
   display: inherit;
-  stroke-dasharray: 1,4;
+}
+#explo .event.newYear .yearMark {
+  stroke-width: 1px;
+  stroke: black;
+  opacity: .2;
 }
 #explo .event .edges {
   stroke-width: 1;
@@ -6821,7 +6824,6 @@ h1 {
   display: none;
 }
 #explo .taxis line {
-  shape-rendering: crispEdges;
   stroke: #000;
   stroke-dasharray: 1,20;
 }

@@ -15,25 +15,14 @@ function onData(error, data) {
   console.log("\n== data report == \n",Sutils.dataCheck(data),"\n== end ==\n\n");
 
   var w = 5000, h = 3500,
-    color = d3.scale.category20();
+    color = d3.scale.category10();
     offsetX = 250, spacingX = 10,
-    offsetY = 80, spacingY = 12,
+    offsetY = 50, spacingY = 12,
     spacingYear = 50,
     eventPosY = {},eventPosX = {};
 
-  function filterArray(d){
-    // for (var values in d) {
-    //   console.log(values);
-    //   values.every(function(value){
-    //     return (d[key] === value);
-    //   });
-    // };
-    return true
-  };
-
   // get relations with a source and a target
   graph.links = _(Sutils.getValidLinks(data, graph.conf))
-    .filter(filterArray)
     .reject(graph.corpus.rels.reject || {'all':0} )
     .sortByOrder(graph.corpus.rels.sortBy, graph.corpus.rels.sortOrder)
     .value();
@@ -71,6 +60,9 @@ function onData(error, data) {
 
   console.log(graph, Sutils.dataCheck(graph.links));
 
+  graph.linkType = Sutils.getTypes(graph.links, {'recordTypeId':1});
+  graph.nodeType = Sutils.getTypes(graph.nodes,'',{'recordTypeId':1});
+
   var svg = d3.select('#explo')
     .append('svg:svg')
     .attr('width', w)
@@ -90,27 +82,33 @@ function onData(error, data) {
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){
     return offsetX + d.rank * spacingX
-      // + ((d.startDate-graph.linksPeriod.start) * spacingYear)
-
+        // + ((d.startDate - graph.linksPeriod.start) * spacingYear)
   } // index event per target i >
-  function linkTypeColor(d){return color(_.indexOf(Sutils.getTypes(data,{'recordTypeId':1}), d.typeId));}
+  function linkTypeColor(d){return color(_.indexOf(graph.linkType, d.typeId));}
+  function nodeTypeColor(d){return color(_.indexOf(graph.nodeType, d.typeId));}
 
   // event handlers
   function focusOn(d){
-    d3.select(this).style('stroke', 'red');
-    if(d.source){
-      d3.select('#l'+d.target.recordId).style('stroke', 'red');
-      d3.select('#l'+d.source.recordId).style('stroke', 'red');
-    }
-  }
-  function focusOff(d){
     d3.select(this).style('stroke', 'grey');
-    if(d.target){
+    if(d.source){
       d3.select('#l'+d.target.recordId).style('stroke', 'grey');
       d3.select('#l'+d.source.recordId).style('stroke', 'grey');
     }
   }
-
+  function focusOff(d){
+    d3.select(this).style('stroke', 'white');
+    if(d.target){
+      d3.select('#l'+d.target.recordId).style('stroke', 'white');
+      d3.select('#l'+d.source.recordId).style('stroke', 'white');
+    }
+  }
+  function yearLabelOn(d){
+    d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
+    d3.select(this).transition().style('opacity', 1);
+  }
+  function yearLabelOff(d){
+    d3.selectAll('.yearLabel').transition().style('opacity', 1);
+  }
   // create nodes
   function create(){
 
@@ -125,9 +123,9 @@ function onData(error, data) {
     list.append('text')
       .attr('x', 20)
       .attr('y', function(d){return eventPosY[d.recordId]})
-      .attr('transform', 'translate(0, 4)')
+      .attr('transform', 'translate(3, 4)')
       .text(function(d){return _.trunc(d.shortName)})
-      .style('color',linkTypeColor)
+      .style('fill', nodeTypeColor)
       .append('title')
       .text(function(d) { return d.typeName})
 
@@ -137,11 +135,20 @@ function onData(error, data) {
       .attr('x2', w)
       .attr('y2', function(d){return eventPosY[d.recordId]})
       .attr('class','axis' )
-      .style('stroke', 'grey')
+      .style('stroke', 'white')
       .attr('transform', 'translate(-80)')
       .attr('id',function(d){ return 'l'+d.recordId } )
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
+
+    list.append('line')
+      .attr('x1', offsetX - 20)
+      .attr('y1', function(d){return eventPosY[d.recordId]})
+      .attr('x2', w)
+      .attr('y2', function(d){return eventPosY[d.recordId]})
+      .style('stroke', 'black')
+      .style('opacity', '0.2')
+      .attr('id',function(d){ return 'l'+d.recordId } )
 
     svg.selectAll('.groupLabel')
       .data(graph.groups).enter()
@@ -181,15 +188,21 @@ function onData(error, data) {
     event.append('text')
       .attr('class', 'yearLabel')
       .text(function(d){return d.startDate})
-      .attr('transform', 'translate(' + 5 + ',' + 0 + ')')
-      .attr('text-anchor', 'left');
+      .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
+      .attr('text-anchor', 'middle')
+      .attr('y', 10)
+      .attr('width', 0)
+      .on('mouseover', yearLabelOn)
+      .on('mouseout', yearLabelOff)
 
     // year mark
     event.append('line')
       .attr('class', 'yearMark')
       .attr('y1', 0)
       .attr('y2', h)
+      .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
+      ;
     // edges
     event.append('line')
       .attr('class', 'edges')
@@ -202,7 +215,7 @@ function onData(error, data) {
       .attr('class','node source' )
       .attr('cy', sourceY)
       .style('fill',linkTypeColor)
-      .attr('r', 4)
+      .attr('r', 5)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
 
@@ -211,7 +224,7 @@ function onData(error, data) {
       .attr('class','node target')
       .attr('cy', targetY)
       .style('fill', linkTypeColor)
-      .attr('r', 4)
+      .attr('r', 3)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
 
@@ -224,7 +237,6 @@ function onData(error, data) {
     // year label
     d3.selectAll('.yearLabel')
       .attr('x',linkX)
-      .attr('y', function(d,i){ return 10+ (d.startDate%4) * 10})
 
     // year mark
     d3.selectAll('.yearMark')

@@ -105,9 +105,12 @@
     // apply a common rank for event who should be merged
     _.forEach(graph.linksToMergeS,function(year){
       _.forEach(year,function(group){
+        rank++;
         group.forEach(function(d){ d.rank = rank; });
         rank++;
+
       });
+
     })
 
     return links;
@@ -121,10 +124,11 @@
   }
 
   // return type from a query
-  Sutils.getTypes = function(data,q){
+  Sutils.getTypes = function(data,q,r){
     return _(data)
       .sortBy('typeName')
       .where(q)
+      .reject(r| {'all':0} )
       .map(function(d){return d.typeId})
       .uniq()
       .value();
