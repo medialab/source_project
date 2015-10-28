@@ -29,7 +29,9 @@
 
     })
     // types
-    r.recordsByTypes = Sutils.nest(data, ['recordTypeName','typeName'])
+    r.recordsByTypes = Sutils.nest(data, ['recordTypeName',function(d){
+      return d.typeId+': ' + d.typeName ;
+    }])
 
     return r;
   }
@@ -57,8 +59,8 @@
   };
 
   // get valid relations
-  Sutils.getValidLinks = function(data){
-    return _(data)
+  Sutils.getValidLinks = function(data, conf){
+    var links = _(data)
       .filter('recordTypeId', 1)
       .filter(function(d){
         return _.includes(Sutils.getAllRecId(data), d.target)
@@ -69,8 +71,34 @@
       .forEach(function(d){
         d.source = _(data).filter('recordId', d.source).value()[0];
         d.target = _(data).filter('recordId', d.target).value()[0];
+        d.typeName = (''+d.typeName).toLowerCase();
       })
       .value();
+
+    _.forEach(conf.relationTypePairing, function(p){
+
+      var toTypeId = parseInt(Object.keys(p[0])[0]);
+
+      _(links)
+        .filter('typeId',  parseInt(Object.keys(p[1])[0]))
+        .forEach(function(l){
+          console.log(l.typeName,"to",p[0][toTypeId])
+          // rewrite link props
+          l.typeId = toTypeId;
+          l.typeName = p[0][toTypeId];
+
+          var source = l.source;
+          var target = l.target;
+
+          l.target = source;
+          l.source = target;
+
+          console.log(l.source.recordId,l.target.recordId)
+
+        }).value();
+    })
+
+      return links;
   };
 
   // get linked nodes

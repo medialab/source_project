@@ -6792,6 +6792,9 @@ h1 {
 #explo .listItem {
   font-weight: bold;
 }
+#explo .groupLabel {
+  text-transform: uppercase;
+}
 #explo .event .yearMark,
 #explo .event .yearLabel {
   display: none;

@@ -1,4 +1,3 @@
-
 var config  = {}, graph = {};
 
 d3.json('../config.json', function(error, config){
@@ -9,7 +8,6 @@ d3.json('../config.json', function(error, config){
   d3.json('data/'+graph.corpus.template+'_'+ corpusId +'.json', onData);
 });
 
-
 function onData(error, data) {
 
   if (error) throw error;
@@ -19,7 +17,7 @@ function onData(error, data) {
   var w = 5000, h = 3500,
     color = d3.scale.category20();
     offsetX = 250, spacingX = 10,
-    offsetY = 80, spacingY = 11,
+    offsetY = 80, spacingY = 12,
     spacingYear = 50,
     eventPosY = {},eventPosX = {};
 
@@ -33,9 +31,8 @@ function onData(error, data) {
     return true
   };
 
-
   // get relations with a source and a target
-  graph.links = _(Sutils.getValidLinks(data))
+  graph.links = _(Sutils.getValidLinks(data, graph.conf))
     .filter(filterArray)
     .reject(graph.corpus.rels.reject || {'all':0} )
     .sortByOrder(graph.corpus.rels.sortBy, graph.corpus.rels.sortOrder)
@@ -43,27 +40,26 @@ function onData(error, data) {
   ;
 
   // merge links with same year, target or source, type
-
   var rank = 0;
-  graph.linksToMergeS =
-  Sutils.nest(graph.links,[
-    'startDate',
+  graph.linksToMergeS = Sutils.nest(graph.links,['startDate',
     function(d){ return d.typeId+'_'+d[graph.corpus.mergeDirection].recordId }
   ]);
 
+  // apply a common rank for event who should be merged
   _.forEach(graph.linksToMergeS,function(year){
     _.forEach(year,function(group){
-
-      group.forEach(function(d){
-        d.rank = rank;
-      });
+      group.forEach(function(d){ d.rank = rank; });
       rank++;
-
     });
   })
 
   // get linked nodes
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
+
+  // get nodes time bounds
+  // _(graph.nodes).forEach(function(){
+
+  // })
 
   // get bounds
   graph.linksPeriod = Sutils.getTimeBounds(graph.links),
@@ -78,25 +74,16 @@ function onData(error, data) {
   })
 
   // get groups names
-  graph.groupNames = _.map(graph.corpus.groups, 'name');
-
-  //
-  graph.nested = Sutils.nest(graph.links, [
-    function(d){ return d.startDate },
-    function(d){ return d.source.recordId },
-    function(d){ return d.target.recordId }
-  ]);
-
-  graph.groupNames.forEach(function(c){
-
-    graph[c].forEach(function(d, i){
+  graph.groups = graph.corpus.groups;
+  graph.groups.forEach(function(g){
+    g.offsetY = offsetY;
+    graph[g.name].forEach(function(d, i){
       eventPosY[d.recordId] = offsetY + i * spacingY
     });
-
-    offsetY += (graph[c].length) * spacingY + spacingY*2;
+    offsetY += (graph[g.name].length) * spacingY + spacingY*2;
   });
 
-  console.log(graph);
+  console.log(graph, Sutils.dataCheck(graph.links));
 
   var svg = d3.select('#explo')
     .append('svg:svg')
@@ -108,16 +95,6 @@ function onData(error, data) {
     spacingX = this.value;
     update();
   });
-
-  // var s = graph.linksPeriod.start;
-  // var e = graph.linksPeriod.end;
-
-  // dateFormat = d3.format('04d'),
-  // timeToPos = d3.scale.linear().domain([s, e]).range([0, w]),
-  // timeScale = d3.time.scale().domain([s, e]).range([0, w]).nice(),
-  // timeAxis = d3.svg.axis(timeScale).scale(timeToPos).tickSize(100).orient( "left" )
-  // .ticks((e-s) / 2).tickFormat(dateFormat);
-
 
   // draw viz at launch
   create();
@@ -151,17 +128,11 @@ function onData(error, data) {
   // create nodes
   function create(){
 
-  // time axis
-    // svg.append('g')
-    //   .attr('class', 'timeAxis taxis')
-    //   .call(timeAxis);
-
   //
-  // draw organisations, document and state list
+  // draw group list
   //
-    var list = svg.selectAll('.org')
-      .data(graph.nodes)
-      .enter()
+    var list = svg.selectAll('.entities')
+      .data(graph.nodes).enter()
       .append('g')
       .attr('class','listItem')
 
@@ -169,11 +140,10 @@ function onData(error, data) {
       .attr('x', 20)
       .attr('y', function(d){return eventPosY[d.recordId]})
       .attr('transform', 'translate(0, 4)')
-      .text(function(d){return d.shortName})
+      .text(function(d){return _.trunc(d.shortName)})
       .style('color',linkTypeColor)
       .append('title')
       .text(function(d) { return d.typeName})
-
 
     list.append('line')
       .attr('x1', 100)
@@ -186,6 +156,14 @@ function onData(error, data) {
       .attr('id',function(d){ return 'l'+d.recordId } )
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
+
+    svg.selectAll('.groupLabel')
+      .data(graph.groups).enter()
+      .append('text')
+      .attr('x', 5)
+      .attr('y', function(d){return d.offsetY -  spacingY})
+      .attr('class', 'groupLabel')
+      .text(function(d){ return d.name });
 
   //
   // draw events
@@ -250,26 +228,6 @@ function onData(error, data) {
       .attr('r', 4)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
-
-
-
-
-    // var axis =svg.append('g')
-    //   .data(years)
-    //   .enter();
-
-    //   // year label
-    //   axis.append('text')
-    //     // .attr('class', 'yearLabel')
-    //     .text(function(y){return y})
-    //     .attr('text-anchor', 'middle');
-
-    //   // year mark
-    //   axis.append('line')
-    //     // .attr('class', 'yearMark')
-    //     .attr('y1', function(y){return (15+ (y%6) * 10)})
-    //     .attr('y2', h)
-
 
     update();
   }
