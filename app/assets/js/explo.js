@@ -32,9 +32,21 @@ function onData(error, data) {
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
 
   // get nodes time bounds
-  // _(graph.nodes).forEach(function(){
+  graph.lines = _(graph.nodes).map(function(n){
 
-  // })
+    var dates = _(graph.links).filter(function(d){
+     return d.target.recordId === n.recordId || d.source.recordId === n.recordId;
+    })
+    .sortBy('startDates')
+    .value();
+
+    return {
+      recordId: n.recordId,
+      endId:_.last(dates).recordId,
+      startId:_.first(dates).recordId
+    }
+
+  }).value();
 
   // get bounds
   graph.linksPeriod = Sutils.getTimeBounds(graph.links),
@@ -57,6 +69,10 @@ function onData(error, data) {
     });
     offsetY += (graph[g.name].length) * spacingY + spacingY*2;
   });
+
+  // indexes
+
+  graph.linksIndex = _.groupBy(graph.links,'recordId');
 
   console.log(graph, Sutils.dataCheck(graph.links));
 
@@ -102,7 +118,7 @@ function onData(error, data) {
       return ! (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
     })
     .style('stroke-width',0 )
-    .style('opacity', 0);
+    .style('opacity', 0.2);
 
   }
   function focusOff(d){
@@ -124,6 +140,24 @@ function onData(error, data) {
 
   // create nodes
   function create(){
+
+
+    var lines = svg.selectAll('.lines')
+      .data(graph.lines).enter()
+      .append('g')
+      .attr('class','line')
+
+      lines.append('line')
+        .attr('x1', function(d){ return offsetX + graph.linksIndex[d.startId][0].rank * spacingX})
+        .attr('x2', function(d){ return offsetX + graph.linksIndex[d.endId][0].rank * spacingX})
+
+        .attr('y1', function(d){ return eventPosY[d.recordId]})
+        .attr('y2', function(d){ return eventPosY[d.recordId]})
+        .style('stroke', 'blue')
+        .style('stroke-width', 5)
+        .style('opacity', .2)
+        .attr('id',function(d){ return 'l'+d.recordId } )
+        .attr('class','lengthLine' )
 
   //
   // draw group list
@@ -246,6 +280,10 @@ function onData(error, data) {
 
   // update attributes
   function update(){
+
+    d3.selectAll('.lengthLine')
+      .attr('x1', function(d){ return offsetX + graph.linksIndex[d.startId][0].rank * spacingX})
+      .attr('x2', function(d){ return offsetX + graph.linksIndex[d.endId][0].rank * spacingX})
 
     // year label
     d3.selectAll('.yearLabel')

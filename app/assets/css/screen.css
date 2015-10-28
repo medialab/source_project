@@ -6785,7 +6785,8 @@ h1 {
   shape-rendering: crispEdges;
 }
 #explo .axis {
-  opacity: 0.15;
+  shape-rendering: crispEdges;
+  opacity: 0;
   stroke-width: 13px;
 }
 #explo .listItem {
@@ -6797,10 +6798,6 @@ h1 {
 #explo .event .yearMark,
 #explo .event .yearLabel {
   display: none;
-}
-#explo .event .yearMark {
-  stroke-width: 1;
-  stroke: black;
 }
 #explo .event.newYear .yearMark,
 #explo .event.newYear .yearLabel {

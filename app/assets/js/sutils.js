@@ -106,7 +106,13 @@
     _.forEach(graph.linksToMergeS,function(year){
       _.forEach(year,function(group){
         rank++;
-        group.forEach(function(d){ d.rank = rank; });
+
+        var relRank = 0 ;
+        group.forEach(function(d){
+          relRank ++;
+          d.rank = rank;
+          d.relRank = relRank;
+        });
         rank++;
 
       });

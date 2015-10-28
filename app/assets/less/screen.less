@@ -17,8 +17,8 @@ h1 { text-align: center;}
   font-size: 11px;
 
   .axis {
-    // shape-rendering: crispEdges;
-    opacity: 0.15;
+    shape-rendering: crispEdges;
+    opacity: 0;
     stroke-width:13px;
   }
 
@@ -27,10 +27,6 @@ h1 { text-align: center;}
 
   .event {
     .yearMark, .yearLabel { display: none;}
-    .yearMark {
-      stroke-width:1;
-      stroke:black
-    }
 
     &.newYear {
      .yearMark, .yearLabel {
