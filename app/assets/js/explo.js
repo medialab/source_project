@@ -39,20 +39,6 @@ function onData(error, data) {
     .value();
   ;
 
-  // merge links with same year, target or source, type
-  var rank = 0;
-  graph.linksToMergeS = Sutils.nest(graph.links,['startDate',
-    function(d){ return d.typeId+'_'+d[graph.corpus.mergeDirection].recordId }
-  ]);
-
-  // apply a common rank for event who should be merged
-  _.forEach(graph.linksToMergeS,function(year){
-    _.forEach(year,function(group){
-      group.forEach(function(d){ d.rank = rank; });
-      rank++;
-    });
-  })
-
   // get linked nodes
   graph.nodes = Sutils.getLinkedNodes(data, graph.links);
 

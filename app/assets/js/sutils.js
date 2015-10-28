@@ -82,7 +82,6 @@
       _(links)
         .filter('typeId',  parseInt(Object.keys(p[1])[0]))
         .forEach(function(l){
-          console.log(l.typeName,"to",p[0][toTypeId])
           // rewrite link props
           l.typeId = toTypeId;
           l.typeName = p[0][toTypeId];
@@ -93,12 +92,25 @@
           l.target = source;
           l.source = target;
 
-          console.log(l.source.recordId,l.target.recordId)
-
         }).value();
     })
 
-      return links;
+
+    // merge links with same year, target or source, type
+
+    var rank = 0;
+
+    graph.linksToMergeS = Sutils.nest(links,['startDate', function(d){ return d.typeId+'_'+d[graph.corpus.mergeDirection].recordId}]);
+
+    // apply a common rank for event who should be merged
+    _.forEach(graph.linksToMergeS,function(year){
+      _.forEach(year,function(group){
+        group.forEach(function(d){ d.rank = rank; });
+        rank++;
+      });
+    })
+
+    return links;
   };
 
   // get linked nodes
