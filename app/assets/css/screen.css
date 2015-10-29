@@ -6788,13 +6788,16 @@ h1 {
   shape-rendering: crispEdges;
   opacity: 0;
   stroke: gold;
-  stroke-width: 12px;
+  stroke-width: 13px;
 }
 #explo .listItem {
   font-weight: bold;
 }
 #explo .groupLabel {
   text-transform: uppercase;
+}
+#explo .eventCaption {
+  fill: black;
 }
 #explo .event .yearMark,
 #explo .event .yearLabel {

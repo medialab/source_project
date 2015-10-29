@@ -14,10 +14,9 @@ function onData(error, data) {
 
   console.log("\n== data report == \n",Sutils.dataCheck(data),"\n== end ==\n\n");
 
-  var w = 5000, h = 3500,
-    color = d3.scale.category10();
-    offsetX = 250, spacingX = 10,
-    offsetY = 50, spacingY = 12,
+  var color = d3.scale.category20();
+    offsetX = 250, spacingX = 8,
+    offsetY = 100, spacingY = 13,
     spacingYear = 50,
     eventPosY = {},eventPosX = {};
 
@@ -48,18 +47,21 @@ function onData(error, data) {
   // get groups names
   g.groups = g.corpus.groups;
   g.groups.forEach(function(group){
-    console.log(group)
     group.offsetY = offsetY;
     g[group.name].forEach(function(d, i){
       eventPosY[d.recordId] = offsetY + i * spacingY
     });
     offsetY += (g[group.name].length) * spacingY + spacingY*2;
   });
-
   // indexes
   g.idx = {};
   g.idx.linksId = _.groupBy(g.links,'recordId');
+  g.idx.linksTypeId = _.groupBy(g.links,'typeId');
 
+
+  var w = _(g.links).map('rank').max() * (spacingX+5) + offsetX , h = offsetY;
+
+  console.log(w,h);
   console.log(g, Sutils.dataCheck(g.links));
 
   g.linkType = Sutils.getTypes(g.links, {'recordTypeId':1});
@@ -83,12 +85,18 @@ function onData(error, data) {
   function linkX(d,i){ return offsetX + d.rank * spacingX }// + ((d.startDate - g.linksPeriod.start) * spacingYear)
   function linkTypeColor(d){return color(_.indexOf(g.linkType, d.typeId));}
   function nodeTypeColor(d){return color(_.indexOf(g.nodeType, d.typeId));}
-
+  function genInfo(d){
+        return  + d.startDate + '\n'
+        + d.source.shortName + ' '
+        + d.typeName + ' '
+        + d.target.shortName
+        +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
+  }
   // event handlers
   function focusOn(e){
 
-    d3.select(this).style('opacity', .5);
     if(e.source) d3.select('#l'+e.target.recordId+', #l'+e.source.recordId).style('opacity', .5);
+    else d3.select(this).style('opacity', .2);
 
     d3.selectAll('.node, .edges').filter(function(d, i){
       var testRel = false;
@@ -96,12 +104,22 @@ function onData(error, data) {
       return ! (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
     })
     .style('stroke-width',0)
-    .style('opacity', 0.2)
+    .style('opacity', 0)
+    ;
+
+    d3.selectAll('.listItem text').filter(function(d, i){
+      if(e.recordTypeId !== 1 ) return e.recordId !== d.recordId;
+      return e.target.recordId !== d.recordId && e.source.recordId !== d.recordId;
+
+    })
+    .style('opacity',0.3)
+    ;
   }
   function focusOff(e){
     d3.selectAll('.hoverZoneLines').style('opacity', 0)
     d3.selectAll('.node, .edges').style('opacity', 1)
     d3.selectAll('.edges').style('stroke-width',1);
+    d3.selectAll('.listItem text').style('opacity', 1);
   }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
@@ -123,8 +141,8 @@ function onData(error, data) {
     .attr('y1', function(d){ return eventPosY[d.recordId]})
     .attr('y2', function(d){ return eventPosY[d.recordId]})
     .style('stroke', nodeTypeColor)
-    .style('stroke-width', 1)
-    .style('opacity', 1)
+    .style('stroke-width', 2)
+    .style('opacity', .5)
     .attr('id',function(d){ return 'l'+d.recordId } )
     .attr('class','nodeTimeline' )
 
@@ -143,6 +161,7 @@ function onData(error, data) {
       .text(function(d){return _.trunc(d.shortName)})
       .style('fill', nodeTypeColor)
       .append('title')
+      .attr('class','nodeTypeLabel')
       .text(function(d) { return d.typeName})
 
     list.append('line')
@@ -173,6 +192,25 @@ function onData(error, data) {
       .attr('class', 'groupLabel')
       .text(function(d){ return d.name });
 
+    var itemPerCol = 2;
+    svg.selectAll('.linkTypeCaption')
+      .data(g.linkType).enter()
+      .append('g')
+      .append('text')
+      .attr('x', function(d,  i){return 250 + _.floor(i/itemPerCol)*100})
+      .attr('y', function(d,  i){return 10 + (i%itemPerCol)*spacingY})
+      .text(function(d){
+        return g.idx.linksTypeId[d][0].typeName;
+      })
+      .style('fill', function(d,i){return color(i);})
+
+      .on('mouseover', function(e){
+        d3.selectAll('.node, .edges').filter(function(d){
+          return e !== d.typeId;
+        }).style('opacity',0)
+      })
+      .on('mouseout', focusOff);
+      ;
   //
   // draw events
   //
@@ -196,7 +234,6 @@ function onData(error, data) {
         + d.typeName + ' '
         + d.target.shortName
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
-
       })
 
     // year label
@@ -205,7 +242,7 @@ function onData(error, data) {
       .text(function(d){return d.startDate})
       .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
       .attr('text-anchor', 'middle')
-      .attr('y', 10)
+      .attr('y', 60)
       .attr('width', 0)
       .on('mouseover', yearLabelOn)
       .on('mouseout', yearLabelOff)
@@ -213,7 +250,7 @@ function onData(error, data) {
     // year mark
     var yearMark = event.append('line')
       .attr('class', 'yearMark')
-      .attr('y1', 0)
+      .attr('y1', 50)
       .attr('y2', h)
       .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
