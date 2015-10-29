@@ -53,15 +53,13 @@ function onData(error, data) {
     });
     offsetY += (g[group.name].length) * spacingY + spacingY*2;
   });
+
   // indexes
   g.idx = {};
   g.idx.linksId = _.groupBy(g.links,'recordId');
   g.idx.linksTypeId = _.groupBy(g.links,'typeId');
 
-
   var w = _(g.links).map('rank').max() * (spacingX+5) + offsetX , h = offsetY;
-
-  console.log(w,h);
   console.log(g, Sutils.dataCheck(g.links));
 
   g.linkType = Sutils.getTypes(g.links, {'recordTypeId':1});
@@ -78,7 +76,6 @@ function onData(error, data) {
     update();
   });
 
-
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
@@ -86,12 +83,13 @@ function onData(error, data) {
   function linkTypeColor(d){return color(_.indexOf(g.linkType, d.typeId));}
   function nodeTypeColor(d){return color(_.indexOf(g.nodeType, d.typeId));}
   function genInfo(d){
-        return  + d.startDate + '\n'
-        + d.source.shortName + ' '
-        + d.typeName + ' '
-        + d.target.shortName
-        +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
+    return  d.startDate + '\n'
+      + d.source.shortName + ' '
+      + d.typeName + ' '
+      + d.target.shortName
+      +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
   }
+
   // event handlers
   function focusOn(e){
 
@@ -129,11 +127,11 @@ function onData(error, data) {
     d3.selectAll('.yearLabel').transition().style('opacity', 1);
   }
 
+  // lines from the first to the last event
   var nodeTimelines = svg.selectAll('.nodeTimelines')
     .data(g.nodeTimelines).enter()
     .append('g')
-    .attr('class','nodeTimelines')
-
+    .attr('class','nodeTimelines');
   var lengthLine = nodeTimelines.append('line')
     .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
     .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
@@ -144,87 +142,83 @@ function onData(error, data) {
     .style('stroke-width', 2)
     .style('opacity', .5)
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .attr('class','nodeTimeline' )
+    .attr('class','nodeTimeline' );
 
-  //
-  // draw group list
-  //
-    var list = svg.selectAll('.entities')
-      .data(g.nodes).enter()
-      .append('g')
-      .attr('class','listItem')
+  // list nodes
+  var list = svg.selectAll('.entities')
+    .data(g.nodes).enter()
+    .append('g')
+    .attr('class','listItem')
 
     list.append('text')
-      .attr('x', 20)
-      .attr('y', function(d){return eventPosY[d.recordId]})
-      .attr('transform', 'translate(3, 4)')
-      .text(function(d){return _.trunc(d.shortName)})
-      .style('fill', nodeTypeColor)
-      .append('title')
-      .attr('class','nodeTypeLabel')
-      .text(function(d) { return d.typeName})
-
+    .attr('x', 20)
+    .attr('y', function(d){return eventPosY[d.recordId]})
+    .attr('transform', 'translate(3, 4)')
+    .text(function(d){return _.trunc(d.shortName)})
+    .style('fill', nodeTypeColor)
+    .append('title')
+    .attr('class','nodeTypeLabel')
+    .text(function(d) { return d.typeName})
     list.append('line')
-      .attr('x1', 100)
-      .attr('y1', function(d){return eventPosY[d.recordId]})
-      .attr('x2', w)
-      .attr('y2', function(d){return eventPosY[d.recordId]})
-      .attr('class','hoverZoneLines' )
-      .attr('transform', 'translate(-80)')
-      .attr('id',function(d){ return 'l'+d.recordId } )
-      .on('mouseover', focusOn)
-      .on('mouseout', focusOff);
+    .attr('x1', 100)
+    .attr('y1', function(d){return eventPosY[d.recordId]})
+    .attr('x2', w)
+    .attr('y2', function(d){return eventPosY[d.recordId]})
+    .attr('class','hoverZoneLines' )
+    .attr('transform', 'translate(-80)')
+    .attr('id',function(d){ return 'l'+d.recordId } )
+    .on('mouseover', focusOn)
+    .on('mouseout', focusOff);
+   list.append('line')
+    .attr('x1', offsetX - spacingY)
+    .attr('y1', function(d){return eventPosY[d.recordId]})
+    .attr('x2', w)
+    .attr('y2', function(d){return eventPosY[d.recordId]})
+    .style('stroke', 'black')
+    .style('opacity', '0.2')
+    .attr('id',function(d){ return 'l'+d.recordId } )
 
-    list.append('line')
-      .attr('x1', offsetX - spacingY)
-      .attr('y1', function(d){return eventPosY[d.recordId]})
-      .attr('x2', w)
-      .attr('y2', function(d){return eventPosY[d.recordId]})
-      .style('stroke', 'black')
-      .style('opacity', '0.2')
-      .attr('id',function(d){ return 'l'+d.recordId } )
+  // node group labels
+  var groupLabel = svg.selectAll('.groupLabel')
+    .data(g.groups).enter()
+    .append('text')
+    .attr('x', 5)
+    .attr('y', function(d){return d.offsetY -  spacingY})
+    .attr('class', 'groupLabel')
+    .text(function(d){ return d.name });
 
-    svg.selectAll('.groupLabel')
-      .data(g.groups).enter()
-      .append('text')
-      .attr('x', 5)
-      .attr('y', function(d){return d.offsetY -  spacingY})
-      .attr('class', 'groupLabel')
-      .text(function(d){ return d.name });
+  // links type labels
+  var linkTypeCaption = svg.selectAll('.linkTypeCaption')
+    .data(g.linkType).enter()
+    .append('g')
+    .append('text')
+    .attr('x', function(d,  i){return 250 + _.floor(i/2)*100})
+    .attr('y', function(d,  i){return 10 + (i%2)*spacingY})
+    .text(function(d){
+      return g.idx.linksTypeId[d][0].typeName;
+    })
+    .style('fill', function(d,i){return color(i);})
 
-    var itemPerCol = 2;
-    svg.selectAll('.linkTypeCaption')
-      .data(g.linkType).enter()
-      .append('g')
-      .append('text')
-      .attr('x', function(d,  i){return 250 + _.floor(i/itemPerCol)*100})
-      .attr('y', function(d,  i){return 10 + (i%itemPerCol)*spacingY})
-      .text(function(d){
-        return g.idx.linksTypeId[d][0].typeName;
-      })
-      .style('fill', function(d,i){return color(i);})
+    .on('mouseover', function(e){
+      d3.selectAll('.node, .edges').filter(function(d){
+        return e !== d.typeId;
+      }).style('opacity',0)
+    })
+    .on('mouseout', focusOff);
+    ;
 
-      .on('mouseover', function(e){
-        d3.selectAll('.node, .edges').filter(function(d){
-          return e !== d.typeId;
-        }).style('opacity',0)
-      })
-      .on('mouseout', focusOff);
-      ;
-  //
   // draw events
-  //
-    var prevDate;
-    var event = svg.selectAll('.event')
-      .data(g.links)
-      .enter()
-      .append('g')
-      .attr('id',function(d){ return d.recordId } )
-      .attr('class', function(d){
-        var isShown = prevDate !== d.startDate;
-        prevDate = d.startDate;
-        return isShown ? 'event newYear':'event';
-      });
+  var prevDate;
+  var event = svg.selectAll('.event')
+    .data(g.links)
+    .enter()
+    .append('g')
+    .attr('id',function(d){ return d.recordId } )
+    .attr('class', function(d){
+      var isShown = prevDate !== d.startDate;
+      prevDate = d.startDate;
+      return isShown ? 'event newYear':'event';
+    });
 
     // event title info
     event.append('title')
@@ -236,58 +230,58 @@ function onData(error, data) {
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
       })
 
-    // year label
-    var yearLabel = event.append('text')
-      .attr('class', 'yearLabel')
-      .text(function(d){return d.startDate})
-      .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
-      .attr('text-anchor', 'middle')
-      .attr('y', 60)
-      .attr('width', 0)
-      .on('mouseover', yearLabelOn)
-      .on('mouseout', yearLabelOff)
+  // year label
+  var yearLabel = event.append('text')
+    .attr('class', 'yearLabel')
+    .text(function(d){return d.startDate})
+    .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
+    .attr('text-anchor', 'middle')
+    .attr('y', 60)
+    .attr('width', 0)
+    .on('mouseover', yearLabelOn)
+    .on('mouseout', yearLabelOff)
 
-    // year mark
-    var yearMark = event.append('line')
-      .attr('class', 'yearMark')
-      .attr('y1', 50)
-      .attr('y2', h)
-      .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
+  // year mark
+  var yearMark = event.append('line')
+    .attr('class', 'yearMark')
+    .attr('y1', 50)
+    .attr('y2', h)
+    .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
-      ;
-    // edges
-    var edges = event.append('line')
-      .attr('class', 'edges')
-      .style('stroke',linkTypeColor)
-      .attr('y1', sourceY)
-      .attr('y2', targetY)
+    ;
+  // edges
+  var edges = event.append('line')
+    .attr('class', 'edges')
+    .style('stroke',linkTypeColor)
+    .attr('y1', sourceY)
+    .attr('y2', targetY)
 
-    // source node
-    var sourceNode = event.append('circle')
-      .attr('class','node source' )
-      .attr('cy', sourceY)
-      .style('fill',linkTypeColor)
-      .attr('r', 8)
-      .on('mouseover', focusOn)
-      .on('mouseout', focusOff);
+  // source node
+  var sourceNode = event.append('circle')
+    .attr('class','node source' )
+    .attr('cy', sourceY)
+    .style('fill',linkTypeColor)
+    .attr('r', 8)
+    .on('mouseover', focusOn)
+    .on('mouseout', focusOff);
 
-    // target node
-    var targetNode = event.append('circle')
-      .attr('class','node target')
-      .attr('cy', targetY)
-      .style('fill', linkTypeColor)
-      .attr('r', 4)
-      .on('mouseover', focusOn)
-      .on('mouseout', focusOff);
+  // target node
+  var targetNode = event.append('circle')
+    .attr('class','node target')
+    .attr('cy', targetY)
+    .style('fill', linkTypeColor)
+    .attr('r', 4)
+    .on('mouseover', focusOn)
+    .on('mouseout', focusOff);
 
-    update();
+  update();
 
   // update attributes
   function update(){
 
-  lengthLine
-    .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
-    .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
+    lengthLine
+      .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
+      .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
     d3.selectAll('.lengthLine')
       .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
@@ -314,7 +308,6 @@ function onData(error, data) {
 
     // target node
     sourceNode.attr('cx', linkX)
-
   }
 
 }
