@@ -99,11 +99,10 @@
     // merge links with same year, target or source, type
 
     var rank = 0;
-
-    graph.linksToMergeS = Sutils.nest(links,['startDate', function(d){ return d.typeId+'_'+d[graph.corpus.mergeDirection].recordId}]);
+    var linksToMergeS = Sutils.nest(links,['startDate', function(d){ return d.typeId+'_'+d[g.corpus.mergeDirection].recordId}]);
 
     // apply a common rank for event who should be merged
-    _.forEach(graph.linksToMergeS,function(year){
+    _.forEach(linksToMergeS,function(year){
       _.forEach(year,function(group){
         rank++;
 
@@ -128,6 +127,27 @@
     _.forEach(rel, function(d){linkedNodes.push(d.source, d.target);});
     return _.uniq(linkedNodes);
   }
+
+  // get node lines
+  Sutils.getNodeLines = function(nodes, links){
+    return _(nodes).map(function(n){
+
+      var dates = _(links).filter(function(d){
+       return d.target.recordId === n.recordId || d.source.recordId === n.recordId;
+      })
+      .sortBy('startDates')
+      .value();
+
+      return {
+        recordId: n.recordId,
+        typeId: n.typeId,
+        endId:_.last(dates).recordId,
+        startId:_.first(dates).recordId
+      }
+
+    }).value();
+  }
+
 
   // return type from a query
   Sutils.getTypes = function(data,q,r){

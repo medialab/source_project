@@ -1,11 +1,11 @@
-var config  = {}, graph = {};
+var config  = {}, g = {};
 
 d3.json('../config.json', function(error, config){
-  graph.conf = config;
-  graph.corpus = _(config.corpus)
+  g.conf = config;
+  g.corpus = _(config.corpus)
     .filter(function(value, key) {return key === corpusId;})
     .first();
-  d3.json('data/'+graph.corpus.template+'_'+ corpusId +'.json', onData);
+  d3.json('data/'+g.corpus.template+'_'+ corpusId +'.json', onData);
 });
 
 function onData(error, data) {
@@ -22,62 +22,48 @@ function onData(error, data) {
     eventPosY = {},eventPosX = {};
 
   // get relations with a source and a target
-  graph.links = _(Sutils.getValidLinks(data, graph.conf))
-    .reject(graph.corpus.rels.reject || {'all':0} )
-    .sortByOrder(graph.corpus.rels.sortBy, graph.corpus.rels.sortOrder)
+  g.links = _(Sutils.getValidLinks(data, g.conf))
+    .reject(g.corpus.rels.reject || {'all':0} )
+    .sortByOrder(g.corpus.rels.sortBy, g.corpus.rels.sortOrder)
     .value();
-  ;
 
   // get linked nodes
-  graph.nodes = Sutils.getLinkedNodes(data, graph.links);
+  g.nodes = Sutils.getLinkedNodes(data, g.links);
 
   // get nodes time bounds
-  graph.lines = _(graph.nodes).map(function(n){
-
-    var dates = _(graph.links).filter(function(d){
-     return d.target.recordId === n.recordId || d.source.recordId === n.recordId;
-    })
-    .sortBy('startDates')
-    .value();
-
-    return {
-      recordId: n.recordId,
-      endId:_.last(dates).recordId,
-      startId:_.first(dates).recordId
-    }
-
-  }).value();
+  g.nodeTimelines = Sutils.getNodeLines(g.nodes, g.links)
 
   // get bounds
-  graph.linksPeriod = Sutils.getTimeBounds(graph.links),
+  g.linksPeriod = Sutils.getTimeBounds(g.links),
 
   // group from config
-  graph.corpus.groups.forEach(function(g){
-    graph[g.name] = _(graph.nodes)
-    .filter(g.filter)
-    .reject(g.reject || {'all':0} )
-    .sortByOrder(g.sortBy, g.sortOrder)
+  g.corpus.groups.forEach(function(group){
+    g[group.name] = _(g.nodes)
+    .filter(group.filter)
+    .reject(group.reject || {'all':0} )
+    .sortByOrder(group.sortBy, group.sortOrder)
     .value();
   })
 
   // get groups names
-  graph.groups = graph.corpus.groups;
-  graph.groups.forEach(function(g){
-    g.offsetY = offsetY;
-    graph[g.name].forEach(function(d, i){
+  g.groups = g.corpus.groups;
+  g.groups.forEach(function(group){
+    console.log(group)
+    group.offsetY = offsetY;
+    g[group.name].forEach(function(d, i){
       eventPosY[d.recordId] = offsetY + i * spacingY
     });
-    offsetY += (graph[g.name].length) * spacingY + spacingY*2;
+    offsetY += (g[group.name].length) * spacingY + spacingY*2;
   });
 
   // indexes
+  g.idx = {};
+  g.idx.linksId = _.groupBy(g.links,'recordId');
 
-  graph.linksIndex = _.groupBy(graph.links,'recordId');
+  console.log(g, Sutils.dataCheck(g.links));
 
-  console.log(graph, Sutils.dataCheck(graph.links));
-
-  graph.linkType = Sutils.getTypes(graph.links, {'recordTypeId':1});
-  graph.nodeType = Sutils.getTypes(graph.nodes,'',{'recordTypeId':1});
+  g.linkType = Sutils.getTypes(g.links, {'recordTypeId':1});
+  g.nodeType = Sutils.getTypes(g.nodes,'',{'recordTypeId':1});
 
   var svg = d3.select('#explo')
     .append('svg:svg')
@@ -90,43 +76,30 @@ function onData(error, data) {
     update();
   });
 
-  // draw viz at launch
-  create();
 
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
-  function linkX(d,i){
-    return offsetX + d.rank * spacingX
-        // + ((d.startDate - graph.linksPeriod.start) * spacingYear)
-  } // index event per target i >
-  function linkTypeColor(d){return color(_.indexOf(graph.linkType, d.typeId));}
-  function nodeTypeColor(d){return color(_.indexOf(graph.nodeType, d.typeId));}
+  function linkX(d,i){ return offsetX + d.rank * spacingX }// + ((d.startDate - g.linksPeriod.start) * spacingYear)
+  function linkTypeColor(d){return color(_.indexOf(g.linkType, d.typeId));}
+  function nodeTypeColor(d){return color(_.indexOf(g.nodeType, d.typeId));}
 
   // event handlers
   function focusOn(e){
 
-    d3.select(this).style('stroke', 'grey');
-    if(e.source){
-      d3.select('#l'+e.target.recordId).style('stroke', 'grey');
-      d3.select('#l'+e.source.recordId).style('stroke', 'grey');
-    }
+    d3.select(this).style('opacity', .5);
+    if(e.source) d3.select('#l'+e.target.recordId+', #l'+e.source.recordId).style('opacity', .5);
 
     d3.selectAll('.node, .edges').filter(function(d, i){
       var testRel = false;
       if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
       return ! (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
     })
-    .style('stroke-width',0 )
-    .style('opacity', 0.2);
-
+    .style('stroke-width',0)
+    .style('opacity', 0.2)
   }
-  function focusOff(d){
-    d3.select(this).style('stroke', 'white');
-    if(d.target){
-      d3.select('#l'+d.target.recordId).style('stroke', 'white');
-      d3.select('#l'+d.source.recordId).style('stroke', 'white');
-    }
+  function focusOff(e){
+    d3.selectAll('.hoverZoneLines').style('opacity', 0)
     d3.selectAll('.node, .edges').style('opacity', 1)
     d3.selectAll('.edges').style('stroke-width',1);
   }
@@ -138,32 +111,28 @@ function onData(error, data) {
     d3.selectAll('.yearLabel').transition().style('opacity', 1);
   }
 
-  // create nodes
-  function create(){
+  var nodeTimelines = svg.selectAll('.nodeTimelines')
+    .data(g.nodeTimelines).enter()
+    .append('g')
+    .attr('class','nodeTimelines')
 
+  var lengthLine = nodeTimelines.append('line')
+    .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
+    .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
-    var lines = svg.selectAll('.lines')
-      .data(graph.lines).enter()
-      .append('g')
-      .attr('class','line')
-
-      lines.append('line')
-        .attr('x1', function(d){ return offsetX + graph.linksIndex[d.startId][0].rank * spacingX})
-        .attr('x2', function(d){ return offsetX + graph.linksIndex[d.endId][0].rank * spacingX})
-
-        .attr('y1', function(d){ return eventPosY[d.recordId]})
-        .attr('y2', function(d){ return eventPosY[d.recordId]})
-        .style('stroke', 'blue')
-        .style('stroke-width', 5)
-        .style('opacity', .2)
-        .attr('id',function(d){ return 'l'+d.recordId } )
-        .attr('class','lengthLine' )
+    .attr('y1', function(d){ return eventPosY[d.recordId]})
+    .attr('y2', function(d){ return eventPosY[d.recordId]})
+    .style('stroke', nodeTypeColor)
+    .style('stroke-width', 1)
+    .style('opacity', 1)
+    .attr('id',function(d){ return 'l'+d.recordId } )
+    .attr('class','nodeTimeline' )
 
   //
   // draw group list
   //
     var list = svg.selectAll('.entities')
-      .data(graph.nodes).enter()
+      .data(g.nodes).enter()
       .append('g')
       .attr('class','listItem')
 
@@ -181,8 +150,7 @@ function onData(error, data) {
       .attr('y1', function(d){return eventPosY[d.recordId]})
       .attr('x2', w)
       .attr('y2', function(d){return eventPosY[d.recordId]})
-      .attr('class','axis' )
-      .style('stroke', 'white')
+      .attr('class','hoverZoneLines' )
       .attr('transform', 'translate(-80)')
       .attr('id',function(d){ return 'l'+d.recordId } )
       .on('mouseover', focusOn)
@@ -198,7 +166,7 @@ function onData(error, data) {
       .attr('id',function(d){ return 'l'+d.recordId } )
 
     svg.selectAll('.groupLabel')
-      .data(graph.groups).enter()
+      .data(g.groups).enter()
       .append('text')
       .attr('x', 5)
       .attr('y', function(d){return d.offsetY -  spacingY})
@@ -210,7 +178,7 @@ function onData(error, data) {
   //
     var prevDate;
     var event = svg.selectAll('.event')
-      .data(graph.links)
+      .data(g.links)
       .enter()
       .append('g')
       .attr('id',function(d){ return d.recordId } )
@@ -232,7 +200,7 @@ function onData(error, data) {
       })
 
     // year label
-    event.append('text')
+    var yearLabel = event.append('text')
       .attr('class', 'yearLabel')
       .text(function(d){return d.startDate})
       .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
@@ -243,7 +211,7 @@ function onData(error, data) {
       .on('mouseout', yearLabelOff)
 
     // year mark
-    event.append('line')
+    var yearMark = event.append('line')
       .attr('class', 'yearMark')
       .attr('y1', 0)
       .attr('y2', h)
@@ -251,51 +219,53 @@ function onData(error, data) {
 
       ;
     // edges
-    event.append('line')
+    var edges = event.append('line')
       .attr('class', 'edges')
       .style('stroke',linkTypeColor)
       .attr('y1', sourceY)
       .attr('y2', targetY)
 
     // source node
-    event.append('circle')
+    var sourceNode = event.append('circle')
       .attr('class','node source' )
       .attr('cy', sourceY)
       .style('fill',linkTypeColor)
-      .attr('r', 5)
+      .attr('r', 8)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
 
     // target node
-    event.append('circle')
+    var targetNode = event.append('circle')
       .attr('class','node target')
       .attr('cy', targetY)
       .style('fill', linkTypeColor)
-      .attr('r', 3)
+      .attr('r', 4)
       .on('mouseover', focusOn)
       .on('mouseout', focusOff);
 
     update();
-  }
 
   // update attributes
   function update(){
 
+  lengthLine
+    .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
+    .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
+
     d3.selectAll('.lengthLine')
-      .attr('x1', function(d){ return offsetX + graph.linksIndex[d.startId][0].rank * spacingX})
-      .attr('x2', function(d){ return offsetX + graph.linksIndex[d.endId][0].rank * spacingX})
+      .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
+      .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
     // year label
-    d3.selectAll('.yearLabel')
-      .attr('x',linkX)
+    yearLabel.attr('x',linkX)
 
     // year mark
-    d3.selectAll('.yearMark')
+    yearMark
       .attr('x1', linkX)
       .attr('x2', linkX)
 
     // edges
-    d3.selectAll('.edges')
+    edges
       .attr('x1', linkX)
       .attr('x2', linkX)
       .style('stroke-width', function(d){
@@ -303,12 +273,10 @@ function onData(error, data) {
       })
 
     // source node
-    d3.selectAll('.source.node')
-      .attr('cx', linkX)
+    targetNode.attr('cx', linkX)
 
     // target node
-    d3.selectAll('.target.node')
-      .attr('cx', linkX)
+    sourceNode.attr('cx', linkX)
 
   }
 
