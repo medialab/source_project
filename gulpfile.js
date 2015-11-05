@@ -45,6 +45,12 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('./app/templates/'));
 });
 
+// copy fonts
+gulp.task('fonts', function() {
+  return gulp.src(['./bower_components/bootstrap/dist/fonts/glyphicons*.*'])
+          .pipe(gulp.dest('app/assets/fonts/'));
+});
+
 // dot render
 gulp.task('dot', function(){
   // exec('node gen_treaty.js', function (err, stdout, stderr) { console.log(stdout,stderr);});
@@ -57,7 +63,7 @@ gulp.task('dotwatch', function(){
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
 
-gulp.task('serve', ['less', 'dotwatch', 'templates'], function() {
+gulp.task('serve', ['less', 'dotwatch', 'templates','fonts'], function() {
     browserSync.init({server: "./"});
 
     gulp.watch('./app/assets/less/*.less', ['less']);
@@ -69,4 +75,4 @@ gulp.task('serve', ['less', 'dotwatch', 'templates'], function() {
 });
 
 
-gulp.task('default', [ 'less', 'build','templates']);
+gulp.task('default', [ 'less', 'fonts', 'build','templates']);
