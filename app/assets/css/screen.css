@@ -6812,12 +6812,12 @@ h1 {
   stroke-width: 1px;
   stroke: black;
 }
-#explo .event .edges,
-#explo .event .nodeTimeline {
-  stroke-linecap: round;
+#explo .node {
+  stroke-width: 1px;
 }
-#explo .event .node {
-  stroke-width: 0;
+#explo .edges,
+#explo .nodeTimeline {
+  stroke-linecap: round;
 }
 #explo .taxis {
   color: red;

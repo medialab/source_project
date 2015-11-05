@@ -75,7 +75,7 @@
       })
       .value();
 
-    _.forEach(conf.relationTypePairing, function(p){
+    _.forEach(conf.relMerges, function(p){
 
       var toTypeId = parseInt(Object.keys(p[0])[0]);
 
