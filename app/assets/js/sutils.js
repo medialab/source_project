@@ -138,12 +138,10 @@
       .sortBy('startDates')
       .value();
 
-      return {
-        recordId: n.recordId,
-        typeId: n.typeId,
+      return _.merge(n,{
         endId:_.last(dates).recordId,
         startId:_.first(dates).recordId
-      }
+      })
 
     }).value();
   }

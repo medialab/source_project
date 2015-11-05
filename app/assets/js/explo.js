@@ -14,15 +14,31 @@ function onData(error, data) {
 
   console.log("\n== data report == \n",Sutils.dataCheck(data),"\n== end ==\n\n");
 
-  var color = d3.scale.category20();
+  var color = d3.scale.category10();
     offsetX = 250, spacingX = 8,
     offsetY = 100, spacingY = 13,
     spacingYear = 50,
     eventPosY = {},eventPosX = {};
 
+  var param = typeof g.corpus.param !== 'undefined' ? g.corpus.param : {};
+
+  var edgesWidth = typeof param.edgesWidth !== 'undefined' ? param.edgesWidth : 2;
+  var existsWidth = typeof param.existsWidth !== 'undefined' ? param.existsWidth : 2;
+  var rSource = typeof param.rSource !== 'undefined' ? param.rSource : 8;
+  var rTarget = typeof param.rTarget !== 'undefined' ? param.rTarget : 4;
+
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
-    .reject(g.corpus.rels.reject || {'all':0} )
+    .filter(function(d){
+      var res = true;
+      _.forEach(g.corpus.rels.reject, function(n, key){
+        console.log(n, key);
+        n.forEach(function(val){
+         res = (res && d[key] !== val);
+        })
+      })
+      return res
+    })
     .sortByOrder(g.corpus.rels.sortBy, g.corpus.rels.sortOrder)
     .value();
 
@@ -80,8 +96,16 @@ function onData(error, data) {
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){ return offsetX + d.rank * spacingX }// + ((d.startDate - g.linksPeriod.start) * spacingYear)
-  function linkTypeColor(d){return color(_.indexOf(g.linkType, d.typeId));}
-  function nodeTypeColor(d){return color(_.indexOf(g.nodeType, d.typeId));}
+  function linkTypeColor(d){
+    if(g.corpus.layout === 1 ) return color(d.source.recordTypeId)
+    return color(_.indexOf(g.linkType, d.typeId));
+  }
+  function nodeTypeColor(d,i){}
+  function nodeTypeColor(d){
+    if(g.corpus.layout === 1 ) return color(d.recordTypeId);
+    return color(_.indexOf(g.nodeType, d.typeId));
+  }
+
   function genInfo(d){
     return  d.startDate + '\n'
       + d.source.shortName + ' '
@@ -116,7 +140,7 @@ function onData(error, data) {
   function focusOff(e){
     d3.selectAll('.hoverZoneLines').style('opacity', 0)
     d3.selectAll('.node, .edges').style('opacity', 1)
-    d3.selectAll('.edges').style('stroke-width',1);
+    d3.selectAll('.edges').style('stroke-width',edgesWidth);
     d3.selectAll('.listItem text').style('opacity', 1);
   }
   function yearLabelOn(d){
@@ -132,15 +156,15 @@ function onData(error, data) {
     .data(g.nodeTimelines).enter()
     .append('g')
     .attr('class','nodeTimelines');
-  var lengthLine = nodeTimelines.append('line')
+  var existsLine = nodeTimelines.append('line')
     .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
     .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
     .attr('y1', function(d){ return eventPosY[d.recordId]})
     .attr('y2', function(d){ return eventPosY[d.recordId]})
     .style('stroke', nodeTypeColor)
-    .style('stroke-width', 2)
-    .style('opacity', .5)
+    .style('stroke-width', existsWidth)
+    .style('opacity', 1)
     .attr('id',function(d){ return 'l'+d.recordId } )
     .attr('class','nodeTimeline' );
 
@@ -261,7 +285,7 @@ function onData(error, data) {
     .attr('class','node source' )
     .attr('cy', sourceY)
     .style('fill',linkTypeColor)
-    .attr('r', 8)
+    .attr('r', rSource)
     .on('mouseover', focusOn)
     .on('mouseout', focusOff);
 
@@ -270,7 +294,7 @@ function onData(error, data) {
     .attr('class','node target')
     .attr('cy', targetY)
     .style('fill', linkTypeColor)
-    .attr('r', 4)
+    .attr('r', rTarget)
     .on('mouseover', focusOn)
     .on('mouseout', focusOff);
 
@@ -279,11 +303,11 @@ function onData(error, data) {
   // update attributes
   function update(){
 
-    lengthLine
+    existsLine
       .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
       .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
-    d3.selectAll('.lengthLine')
+    d3.selectAll('.existsLine')
       .attr('x1', function(d){ return offsetX + g.idx.linksId[d.startId][0].rank * spacingX})
       .attr('x2', function(d){ return offsetX + g.idx.linksId[d.endId][0].rank * spacingX})
 
@@ -300,7 +324,7 @@ function onData(error, data) {
       .attr('x1', linkX)
       .attr('x2', linkX)
       .style('stroke-width', function(d){
-        return spacingX < 4 ? 0 : 1
+        return spacingX < 4 ? 0 : edgesWidth
       })
 
     // source node
@@ -311,6 +335,3 @@ function onData(error, data) {
   }
 
 }
-
-
-
