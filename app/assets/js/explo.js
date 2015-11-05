@@ -218,17 +218,24 @@ function onData(error, data) {
     .append('text')
     .attr('x', function(d,  i){return 250 + _.floor(i/2)*100})
     .attr('y', function(d,  i){return 10 + (i%2)*spacingY})
+    .attr('active',0)
     .text(function(d){
       return g.idx.linksTypeId[d][0].typeName;
     })
     .style('fill', function(d,i){return color(i);})
 
-    .on('mouseover', function(e){
+    .on('click', function(e){
+
+      var state = d3.select(this).attr("active");
+      d3.select(this).attr("active", 1-state)
+
+      console.log(e, state);
+
       d3.selectAll('.node, .edges').filter(function(d){
-        return e !== d.typeId;
-      }).style('opacity',0)
+        return e === d.typeId;
+      }).style('opacity',state)
+
     })
-    .on('mouseout', focusOff);
     ;
 
   // draw events

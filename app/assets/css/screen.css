@@ -6775,6 +6775,9 @@ html a,
 body a {
   color: royalblue;
 }
+text[active="0"] {
+  text-decoration: underline;
+}
 h1 {
   text-align: center;
 }
