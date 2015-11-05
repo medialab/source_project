@@ -16,6 +16,16 @@
     });
   };
 
+  // multi value filter
+  Sutils.multiValueFilter =  function(d, obj, way){
+    var res = true;
+    _.forEach(obj, function(n, key){
+      n.forEach(function(val){ res = (res && d[key] !== val);})
+    })
+    if(way) return res;
+    if(!way) return !res;
+  }
+
   //
   Sutils.dataCheck = function(data){
 

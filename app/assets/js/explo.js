@@ -12,23 +12,18 @@ d3.json('../config.json', function(error, config){
 
 function onData(error, data) {
 
-  console.log("\n== data report == \n",Sutils.dataCheck(data),"\n== end ==\n\n");
 
   var color = d3.scale.category10(),
       eventPosY = {}, eventPosX = {},
-      l = _.defaults(g.corpus.layout, g.conf.layout)
+      l = _.defaults(g.layout, g.conf.layout);
 
+  console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
+  console.log('current layout',l)
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
 
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
-    .filter(function(d){
-      var res = true;
-      _.forEach(g.corpus.rels.reject, function(n, key){
-        n.forEach(function(val){ res = (res && d[key] !== val);})
-      })
-      return res
-    })
+    // .filter(function(d){return Sutils.multiValueFilter(d, g.corpus.rels.reject, false)})
     .sortByOrder(g.corpus.rels.sortBy, g.corpus.rels.sortOrder)
     .value();
 
@@ -77,7 +72,7 @@ function onData(error, data) {
     .attr('height', h)
 
   // range input event
-  d3.select("#zoom").on("input", function() {
+  d3.select('#zoom').on('input', function() {
     l.spacingX = this.value;
     update();
   });
@@ -87,12 +82,12 @@ function onData(error, data) {
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){ return l.offsetX + d.rank * l.spacingX }// + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
   function linkTypeColor(d){
-    if(g.corpus.layout.mode === 1 ) return color(d.source.recordTypeId)
+    if(l.mode === 1 ) return color(d.source.recordTypeId)
     return color(_.indexOf(g.linkType, d.typeId));
   }
   function nodeTypeColor(d,i){}
   function nodeTypeColor(d){
-    if(g.corpus.layout.mode === 1 ) return color(d.recordTypeId);
+    if(l.mode === 1 ) return color(d.recordTypeId);
     return color(_.indexOf(g.nodeType, d.typeId));
   }
 
@@ -133,8 +128,8 @@ function onData(error, data) {
   }
 
   function onClick(e){
-    var state = d3.select(this).attr("active");
-    d3.select(this).attr("active", 1-state);
+    var state = d3.select(this).attr('active');
+    d3.select(this).attr('active', 1-state);
 
     d3.selectAll('.node').filter(function(d, i){
       var testRel = false;
@@ -186,6 +181,7 @@ function onData(error, data) {
     .attr('active',0)
     .on('click', onClick)
 
+    // labels
     list.append('text')
     .attr('x', 20)
     .attr('y', function(d){return eventPosY[d.recordId]})
@@ -196,6 +192,7 @@ function onData(error, data) {
     .attr('class','nodeTypeLabel')
     .text(function(d) { return d.typeName})
 
+    // hover invisible zone
     list.append('line')
     .attr('x1', 200)
     .attr('y1', function(d){return eventPosY[d.recordId]})
@@ -205,7 +202,8 @@ function onData(error, data) {
     .attr('transform', 'translate(-80)')
     .attr('id',function(d){ return 'l'+d.recordId } )
 
-   list.append('line')
+    // horizontal grid
+    list.append('line')
     .attr('x1', l.offsetX - l.spacingY)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
@@ -234,9 +232,9 @@ function onData(error, data) {
     .text(function(d){ return g.idx.linksTypeId[d][0].typeName;})
     .style('fill', function(d,i){return color(i);})
     .on('click', function(e){
-      var state = d3.select(this).attr("active");
+      var state = d3.select(this).attr('active');
 
-      d3.select(this).attr("active", 1-state)
+      d3.select(this).attr('active', 1-state)
       d3.selectAll('.node, .edges').filter(function(d){
         return e === d.typeId;
       }).style('opacity',state)
