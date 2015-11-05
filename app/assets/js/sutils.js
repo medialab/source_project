@@ -95,9 +95,7 @@
         }).value();
     })
 
-
     // merge links with same year, target or source, type
-
     var rank = 0;
     var linksToMergeS = Sutils.nest(links,['startDate', function(d){ return d.typeId+'_'+d[g.corpus.mergeDirection].recordId}]);
 
@@ -113,11 +111,8 @@
           d.relRank = relRank;
         });
         rank++;
-
       });
-
     })
-
     return links;
   };
 
@@ -146,7 +141,6 @@
     }).value();
   }
 
-
   // return type from a query
   Sutils.getTypes = function(data,q,r){
     return _(data)
@@ -157,7 +151,6 @@
       .uniq()
       .value();
   };
-
 
   Sutils.getTimedLinks = function (element, q){
    return _(Sutils.getValidLinks(data))

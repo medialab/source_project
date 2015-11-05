@@ -23,16 +23,16 @@ function onData(error, data) {
   var param = typeof g.corpus.param !== 'undefined' ? g.corpus.param : {};
 
   var edgesWidth = typeof param.edgesWidth !== 'undefined' ? param.edgesWidth : 2;
-  var existsWidth = typeof param.existsWidth !== 'undefined' ? param.existsWidth : 2;
+  var existsWidth = typeof param.existsWidth !== 'undefined' ? param.existsWidth : 8;
   var rSource = typeof param.rSource !== 'undefined' ? param.rSource : 8;
   var rTarget = typeof param.rTarget !== 'undefined' ? param.rTarget : 4;
+  var gridOpacity = typeof param.gridOpacity !== 'undefined' ? param.gridOpacity : 0.1;
 
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
     .filter(function(d){
       var res = true;
       _.forEach(g.corpus.rels.reject, function(n, key){
-        console.log(n, key);
         n.forEach(function(val){
          res = (res && d[key] !== val);
         })
@@ -120,7 +120,7 @@ function onData(error, data) {
     if(e.source) d3.select('#l'+e.target.recordId+', #l'+e.source.recordId).style('opacity', .5);
     else d3.select(this).style('opacity', .2);
 
-    d3.selectAll('.node, .edges').filter(function(d, i){
+    d3.selectAll('.node, .edges, .nodeTimeline').filter(function(d, i){
       var testRel = false;
       if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
       return ! (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
@@ -142,6 +142,28 @@ function onData(error, data) {
     d3.selectAll('.node, .edges').style('opacity', 1)
     d3.selectAll('.edges').style('stroke-width',edgesWidth);
     d3.selectAll('.listItem text').style('opacity', 1);
+  }
+
+  function onClick(e){
+    var state = d3.select(this).attr("active");
+    d3.select(this).attr("active", 1-state);
+
+    d3.selectAll('.node').filter(function(d, i){
+      var testRel = false;
+
+      if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
+      if(d.source) testRel = testRel || d.source.recordId === e.recordId || d.target.recordId === e.recordId
+      return  testRel
+    })
+    .style('opacity',state)
+
+    d3.selectAll('.edges').filter(function(d, i){
+      return d.source.recordId === e.recordId || d.target.recordId === e.recordId
+    }).style('stroke-width',state * edgesWidth)
+
+    d3.selectAll('.nodeTimeline').filter(function(d,i){
+      return d.recordId === e.recordId
+    }).style('stroke-width',state * existsWidth);
   }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
@@ -166,13 +188,15 @@ function onData(error, data) {
     .style('stroke-width', existsWidth)
     .style('opacity', 1)
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .attr('class','nodeTimeline' );
+    .attr('class','nodeTimeline');
 
   // list nodes
   var list = svg.selectAll('.entities')
     .data(g.nodes).enter()
     .append('g')
     .attr('class','listItem')
+    .attr('active',0)
+    .on('click', onClick)
 
     list.append('text')
     .attr('x', 20)
@@ -183,23 +207,23 @@ function onData(error, data) {
     .append('title')
     .attr('class','nodeTypeLabel')
     .text(function(d) { return d.typeName})
+
     list.append('line')
-    .attr('x1', 100)
+    .attr('x1', 200)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
     .attr('class','hoverZoneLines' )
     .attr('transform', 'translate(-80)')
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .on('mouseover', focusOn)
-    .on('mouseout', focusOff);
+
    list.append('line')
     .attr('x1', offsetX - spacingY)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
     .style('stroke', 'black')
-    .style('opacity', '0.2')
+    .style('opacity', gridOpacity)
     .attr('id',function(d){ return 'l'+d.recordId } )
 
   // node group labels
@@ -219,24 +243,16 @@ function onData(error, data) {
     .attr('x', function(d,  i){return 250 + _.floor(i/2)*100})
     .attr('y', function(d,  i){return 10 + (i%2)*spacingY})
     .attr('active',0)
-    .text(function(d){
-      return g.idx.linksTypeId[d][0].typeName;
-    })
+    .text(function(d){ return g.idx.linksTypeId[d][0].typeName;})
     .style('fill', function(d,i){return color(i);})
-
     .on('click', function(e){
-
       var state = d3.select(this).attr("active");
+
       d3.select(this).attr("active", 1-state)
-
-      console.log(e, state);
-
       d3.selectAll('.node, .edges').filter(function(d){
         return e === d.typeId;
       }).style('opacity',state)
-
-    })
-    ;
+    });
 
   // draw events
   var prevDate;
@@ -277,6 +293,7 @@ function onData(error, data) {
     .attr('class', 'yearMark')
     .attr('y1', 50)
     .attr('y2', h)
+    .style('opacity',gridOpacity)
     .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
     ;
@@ -330,9 +347,7 @@ function onData(error, data) {
     edges
       .attr('x1', linkX)
       .attr('x2', linkX)
-      .style('stroke-width', function(d){
-        return spacingX < 4 ? 0 : edgesWidth
-      })
+      .style('stroke-width', function(d){ return spacingX < 4 ? 0 : edgesWidth})
 
     // source node
     targetNode.attr('cx', linkX)

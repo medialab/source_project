@@ -6775,8 +6775,9 @@ html a,
 body a {
   color: royalblue;
 }
-text[active="0"] {
-  text-decoration: underline;
+text[active="0"],
+*[active="0"] text {
+  font-weight: bold;
 }
 h1 {
   text-align: center;
@@ -6792,9 +6793,6 @@ h1 {
   opacity: 0;
   stroke: gold;
   stroke-width: 13px;
-}
-#explo .listItem {
-  font-weight: bold;
 }
 #explo .groupLabel {
   text-transform: uppercase;
@@ -6813,10 +6811,10 @@ h1 {
 #explo .event.newYear .yearMark {
   stroke-width: 1px;
   stroke: black;
-  opacity: .2;
 }
-#explo .event .edges {
-  stroke-width: 1;
+#explo .event .edges,
+#explo .event .nodeTimeline {
+  stroke-linecap: round;
 }
 #explo .event .node {
   stroke-width: 0;
