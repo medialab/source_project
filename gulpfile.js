@@ -63,7 +63,7 @@ gulp.task('dotwatch', function(){
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
 
-gulp.task('serve', ['less', 'dotwatch', 'templates','fonts'], function() {
+gulp.task('serve', ['less', 'templates','fonts'], function() {
     browserSync.init({server: "./"});
 
     gulp.watch('./app/assets/less/*.less', ['less']);
