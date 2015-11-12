@@ -6,6 +6,7 @@ var gulp = require('gulp'),
     exec = require('child_process').exec,
     handlebars = require('gulp-handlebars'),
     wrap = require('gulp-wrap'),
+    jsonlint = require("gulp-jsonlint"),
     browserSync = require('browser-sync').create();
 
 
@@ -63,11 +64,19 @@ gulp.task('dotwatch', function(){
   gulp.watch('./app/assets/js/source.js', ['dot']);
 })
 
-gulp.task('serve', ['less', 'templates','fonts'], function() {
+// validate json
+gulp.task('json', function(){
+  gulp.src("./config.json")
+      .pipe(jsonlint())
+      .pipe(jsonlint.reporter());
+})
+
+gulp.task('serve', ['less', 'templates','fonts','json'], function() {
     browserSync.init({server: "./"});
 
     gulp.watch('./app/assets/less/*.less', ['less']);
     gulp.watch('./app/templates/*.hbs', ['templates']);
+    gulp.watch('./**/*.json', ['json']);
 
     gulp.watch("*.json").on('change', browserSync.reload);
     gulp.watch("app/*.html").on('change', browserSync.reload);
