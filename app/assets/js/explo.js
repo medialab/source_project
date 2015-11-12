@@ -12,7 +12,6 @@ d3.json('../config.json', function(error, config){
 
 function onData(error, data) {
 
-
   var color = d3.scale.category10(),
       eventPosY = {}, eventPosX = {},
       l = _.defaults(g.layout, g.conf.layout);
@@ -69,6 +68,20 @@ function onData(error, data) {
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
   })
 
+  var layout = {nodes:{},links: _(g.links).indexBy('typeId').value()}
+
+  _(g.corpus.rels.layouts).forEach(function(customLayout){
+    customLayout.typeIds.forEach(function(id){
+      layout.links[id] = customLayout.layout;
+    })
+  }).value()
+
+  function getProp(d, prop){
+    return _.defaults(layout.links[d.typeId],l)[prop];
+  }
+
+  console.log(layout.links)
+
   var w = _(g.links).map('rank').max() * (l.spacingX+5) + l.offsetX , h = l.offsetY;
   console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
 
@@ -122,7 +135,7 @@ function onData(error, data) {
   function focusOff(e){
     d3.selectAll('.hoverZoneLines').style('opacity', 0)
     d3.selectAll('.node, .edges').style('opacity', 1)
-    d3.selectAll('.edges').style('stroke-width',l.edgesWidth);
+    d3.selectAll('.edges').style('stroke-width',function(d){getProp(d, "edgesWidth")});
     d3.selectAll('.listItem text').style('opacity', 1);
   }
 
@@ -141,11 +154,11 @@ function onData(error, data) {
 
     d3.selectAll('.edges').filter(function(d, i){
       return d.source.recordId === e.recordId || d.target.recordId === e.recordId
-    }).style('stroke-width',state * l.edgesWidth)
+    }).style('stroke-width', function(d){return state * getProp(d, "edgesWidth")})
 
     d3.selectAll('.nodeTimeline').filter(function(d,i){
       return d.recordId === e.recordId
-    }).style('stroke-width',state * l.existsWidth);
+    }).style('stroke-width',state * l.entityLineWidth);
   }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
@@ -161,14 +174,12 @@ function onData(error, data) {
     .append('g')
     .filter(function(d){ return d.startId !== d.endId})
     .attr('class','nodeTimelines');
-  var existsLine = nodeTimelines.append('line')
-    .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
-    .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
 
+  var existsLine = nodeTimelines.append('line')
     .attr('y1', function(d){ return eventPosY[d.recordId]})
     .attr('y2', function(d){ return eventPosY[d.recordId]})
     .style('stroke', nodeColor)
-    .style('stroke-width', l.existsWidth)
+    .style('stroke-width', l.entityLineWidth)
     .style('opacity', 1)
     .attr('id',function(d){ return 'l'+d.recordId } )
     .attr('class','nodeTimeline');
@@ -222,9 +233,6 @@ function onData(error, data) {
     .text(function(d){ return d.name });
 
   // links type labels
-  console.log(">>",recTypes.links[l.colorBy.link],'<<<');
-
-
   var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.colorBy.link]).enter()
     .append('g')
@@ -302,8 +310,8 @@ function onData(error, data) {
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', l.rSource)
-    .on('mouseover', focusOn)
-    .on('mouseout', focusOff);
+    // .on('mouseover', focusOn)
+    // .on('mouseout', focusOff);
 
   // target node
   var targetNode = event.append('circle')
@@ -311,8 +319,8 @@ function onData(error, data) {
     .attr('cy', targetY)
     .style('fill', linkColor)
     .attr('r', l.rTarget)
-    .on('mouseover', focusOn)
-    .on('mouseout', focusOff);
+    // .on('mouseover', focusOn)
+    // .on('mouseout', focusOff);
 
   update();
 
@@ -339,7 +347,7 @@ function onData(error, data) {
     edges
       .attr('x1', linkX)
       .attr('x2', linkX)
-      .style('stroke-width', function(d){ return l.spacingX < 4 ? 0 : l.edgesWidth})
+      .style('stroke-width', function(d){ return l.spacingX < 4 ? 0 : getProp(d, "edgesWidth") })
 
     // source node
     targetNode.attr('cx', linkX)
