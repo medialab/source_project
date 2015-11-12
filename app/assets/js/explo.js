@@ -55,16 +55,22 @@ function onData(error, data) {
     l.offsetY += (g[group.name].length) * l.spacingY + l.spacingY*2;
   });
 
+  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId'];
+
   // indexes
-  g.idx = {};
-  g.idx.linksId = _.groupBy(g.links,'recordId');
-  g.idx.linksTypeId = _.groupBy(g.links,'typeId');
+  var indexes = {nodes:{},links:{}};
+  var recTypes = {nodes:{},links:{}};
+
+  _.forEach(indexType, function(d){
+    indexes.nodes[d] = _.indexBy(g.nodes, d);
+    indexes.links[d] = _.indexBy(g.links, d);
+
+    recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
+    recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
+  })
 
   var w = _(g.links).map('rank').max() * (l.spacingX+5) + l.offsetX , h = l.offsetY;
-  console.log(g, Sutils.dataCheck(g.links));
-
-  g.linkType = Sutils.getTypes(g.links, {'recordTypeId':1});
-  g.nodeType = Sutils.getTypes(g.nodes,'',{'recordTypeId':1});
+  console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
 
   var svg = d3.select('#explo')
     .append('svg:svg')
@@ -81,15 +87,8 @@ function onData(error, data) {
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){ return l.offsetX + d.rank * l.spacingX }// + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
-  function linkTypeColor(d){
-    if(l.mode === 1 ) return color(d.source.recordTypeId)
-    return color(_.indexOf(g.linkType, d.typeId));
-  }
-  function nodeTypeColor(d,i){}
-  function nodeTypeColor(d){
-    if(l.mode === 1 ) return color(d.recordTypeId);
-    return color(_.indexOf(g.nodeType, d.typeId));
-  }
+  function linkColor(d){ return color(_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
+  function nodeColor(d){ return color(_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
 
   function genInfo(d){
     return  d.startDate + '\n'
@@ -160,14 +159,15 @@ function onData(error, data) {
   var nodeTimelines = svg.selectAll('.nodeTimelines')
     .data(g.nodeTimelines).enter()
     .append('g')
+    .filter(function(d){ return d.startId !== d.endId})
     .attr('class','nodeTimelines');
   var existsLine = nodeTimelines.append('line')
-    .attr('x1', function(d){ return l.offsetX + g.idx.linksId[d.startId][0].rank * l.spacingX})
-    .attr('x2', function(d){ return l.offsetX + g.idx.linksId[d.endId][0].rank * l.spacingX})
+    .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
+    .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
 
     .attr('y1', function(d){ return eventPosY[d.recordId]})
     .attr('y2', function(d){ return eventPosY[d.recordId]})
-    .style('stroke', nodeTypeColor)
+    .style('stroke', nodeColor)
     .style('stroke-width', l.existsWidth)
     .style('opacity', 1)
     .attr('id',function(d){ return 'l'+d.recordId } )
@@ -187,7 +187,7 @@ function onData(error, data) {
     .attr('y', function(d){return eventPosY[d.recordId]})
     .attr('transform', 'translate(3, 4)')
     .text(function(d){return _.trunc(d.shortName)})
-    .style('fill', nodeTypeColor)
+    .style('fill', nodeColor)
     .append('title')
     .attr('class','nodeTypeLabel')
     .text(function(d) { return d.typeName})
@@ -222,15 +222,21 @@ function onData(error, data) {
     .text(function(d){ return d.name });
 
   // links type labels
+  console.log(">>",recTypes.links[l.colorBy.link],'<<<');
+
+
   var linkTypeCaption = svg.selectAll('.linkTypeCaption')
-    .data(g.linkType).enter()
+    .data(recTypes.links[l.colorBy.link]).enter()
     .append('g')
     .append('text')
-    .attr('x', function(d,  i){return 250 + _.floor(i/2)*100})
-    .attr('y', function(d,  i){return 10 + (i%2)*l.spacingY})
+    .attr('x', function(d, i){return 250 + _.floor(i/2)*100})
+    .attr('y', function(d, i){return 10 + (i%2)*l.spacingY})
     .attr('active',0)
-    .text(function(d){ return g.idx.linksTypeId[d][0].typeName;})
-    .style('fill', function(d,i){return color(i);})
+    .text(function(d, i){
+      var sample = _.find(g.links, {"typeId":d})
+      return sample ? sample.typeName : d;
+    })
+    .style('fill', function(d,i){return color(i)})
     .on('click', function(e){
       var state = d3.select(this).attr('active');
 
@@ -286,7 +292,7 @@ function onData(error, data) {
   // edges
   var edges = event.append('line')
     .attr('class', 'edges')
-    .style('stroke',linkTypeColor)
+    .style('stroke',linkColor)
     .attr('y1', sourceY)
     .attr('y2', targetY)
 
@@ -294,7 +300,7 @@ function onData(error, data) {
   var sourceNode = event.append('circle')
     .attr('class','node source' )
     .attr('cy', sourceY)
-    .style('fill',linkTypeColor)
+    .style('fill', linkColor)
     .attr('r', l.rSource)
     .on('mouseover', focusOn)
     .on('mouseout', focusOff);
@@ -303,7 +309,7 @@ function onData(error, data) {
   var targetNode = event.append('circle')
     .attr('class','node target')
     .attr('cy', targetY)
-    .style('fill', linkTypeColor)
+    .style('fill', linkColor)
     .attr('r', l.rTarget)
     .on('mouseover', focusOn)
     .on('mouseout', focusOff);
@@ -314,12 +320,12 @@ function onData(error, data) {
   function update(){
 
     existsLine
-      .attr('x1', function(d){ return l.offsetX + g.idx.linksId[d.startId][0].rank * l.spacingX})
-      .attr('x2', function(d){ return l.offsetX + g.idx.linksId[d.endId][0].rank * l.spacingX})
+      .attr('x1', function(d,i){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
+      .attr('x2', function(d,i){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
 
     d3.selectAll('.existsLine')
-      .attr('x1', function(d){ return l.offsetX + g.idx.linksId[d.startId][0].rank * l.spacingX})
-      .attr('x2', function(d){ return l.offsetX + g.idx.linksId[d.endId][0].rank * l.spacingX})
+      .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
+      .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
 
     // year label
     yearLabel.attr('x',linkX)

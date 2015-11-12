@@ -81,6 +81,7 @@
       .forEach(function(d){
         d.source = _(data).filter('recordId', d.source).value()[0];
         d.target = _(data).filter('recordId', d.target).value()[0];
+
         d.typeName = (''+d.typeName).toLowerCase();
       })
       .value();
