@@ -12,17 +12,16 @@ d3.json('../config.json', function(error, config){
 
 function onData(error, data) {
 
-  var color = d3.scale.category10(),
+  var color = d3.scale.category20(),
       eventPosY = {}, eventPosX = {},
       l = _.defaults(g.layout, g.conf.layout);
 
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
-  console.log('current layout',l)
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
 
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
-    // .filter(function(d){return Sutils.multiValueFilter(d, g.corpus.rels.reject, false)})
+    .filter(function(d){return g.corpus.rels.reject ? Sutils.multiValueFilter(d, g.corpus.rels.reject, false) : true})
     .sortByOrder(g.corpus.rels.sortBy, g.corpus.rels.sortOrder)
     .value();
 
@@ -48,22 +47,18 @@ function onData(error, data) {
   g.groups = g.corpus.groups;
   g.groups.forEach(function(group){
     group.offsetY = l.offsetY;
-    g[group.name].forEach(function(d, i){
-      eventPosY[d.recordId] = l.offsetY + i * l.spacingY
-    });
+    g[group.name].forEach(function(d, i){ eventPosY[d.recordId] = l.offsetY + i * l.spacingY});
     l.offsetY += (g[group.name].length) * l.spacingY + l.spacingY*2;
   });
 
-  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId'];
-
-  // indexes
-  var indexes = {nodes:{},links:{}};
-  var recTypes = {nodes:{},links:{}};
+  // indexes and layout overide
+  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId'],
+      indexes = {nodes:{},links:{}},
+      recTypes = {nodes:{},links:{}};
 
   _.forEach(indexType, function(d){
     indexes.nodes[d] = _.indexBy(g.nodes, d);
     indexes.links[d] = _.indexBy(g.links, d);
-
     recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
   })
@@ -76,26 +71,6 @@ function onData(error, data) {
     })
   }).value()
 
-  function getProp(d, prop){
-    return _.defaults(layout.links[d.typeId],l)[prop];
-  }
-
-  console.log(layout.links)
-
-  var w = _(g.links).map('rank').max() * (l.spacingX+5) + l.offsetX , h = l.offsetY;
-  console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
-
-  var svg = d3.select('#explo')
-    .append('svg:svg')
-    .attr('width', w)
-    .attr('height', h)
-
-  // range input event
-  d3.select('#zoom').on('input', function() {
-    l.spacingX = this.value;
-    update();
-  });
-
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
@@ -103,17 +78,11 @@ function onData(error, data) {
   function linkColor(d){ return color(_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
   function nodeColor(d){ return color(_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
 
-  function genInfo(d){
-    return  d.startDate + '\n'
-      + d.source.shortName + ' '
-      + d.typeName + ' '
-      + d.target.shortName
-      +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
-  }
+  function getProp(d, prop){ return _.defaults(layout.links[d.typeId],l)[prop] }
 
   // event handlers
+  function onZoomChange(){ l.spacingX = this.value; update() }
   function focusOn(e){
-
     if(e.source) d3.select('#l'+e.target.recordId+', #l'+e.source.recordId).style('opacity', .5);
     else d3.select(this).style('opacity', .2);
 
@@ -131,14 +100,12 @@ function onData(error, data) {
     })
     .style('opacity',0.3);
   }
-
   function focusOff(e){
     d3.selectAll('.hoverZoneLines').style('opacity', 0)
     d3.selectAll('.node, .edges').style('opacity', 1)
     d3.selectAll('.edges').style('stroke-width',function(d){getProp(d, "edgesWidth")});
     d3.selectAll('.listItem text').style('opacity', 1);
   }
-
   function onClick(e){
     var state = d3.select(this).attr('active');
     d3.select(this).attr('active', 1-state);
@@ -149,8 +116,7 @@ function onData(error, data) {
       if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
       if(d.source) testRel = testRel || d.source.recordId === e.recordId || d.target.recordId === e.recordId
       return  testRel
-    })
-    .style('opacity',state)
+    }).style('opacity',state)
 
     d3.selectAll('.edges').filter(function(d, i){
       return d.source.recordId === e.recordId || d.target.recordId === e.recordId
@@ -160,6 +126,13 @@ function onData(error, data) {
       return d.recordId === e.recordId
     }).style('stroke-width',state * l.entityLineWidth);
   }
+  function onLinkTypeClick(e){
+    var state = d3.select(this).attr('active');
+    d3.select(this).attr('active', 1-state)
+    d3.selectAll('.node, .edges').filter(function(d){
+      return e === d.typeId;
+    }).style('opacity',state)
+  }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
     d3.select(this).transition().style('opacity', 1);
@@ -167,6 +140,12 @@ function onData(error, data) {
   function yearLabelOff(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 1);
   }
+
+  var w = _(g.links).map('rank').max() * (l.spacingX+5) + l.offsetX , h = l.offsetY,
+      svg = d3.select('#explo').append('svg:svg').attr('width', w).attr('height', h)
+
+  // range input event
+  d3.select('#zoom').on('input', onZoomChange);
 
   // lines from the first to the last event
   var nodeTimelines = svg.selectAll('.nodeTimelines')
@@ -245,14 +224,7 @@ function onData(error, data) {
       return sample ? sample.typeName : d;
     })
     .style('fill', function(d,i){return color(i)})
-    .on('click', function(e){
-      var state = d3.select(this).attr('active');
-
-      d3.select(this).attr('active', 1-state)
-      d3.selectAll('.node, .edges').filter(function(d){
-        return e === d.typeId;
-      }).style('opacity',state)
-    });
+    .on('click', onLinkTypeClick);
 
   // draw events
   var prevDate;
@@ -262,8 +234,7 @@ function onData(error, data) {
     .append('g')
     .attr('id',function(d){ return d.recordId } )
     .attr('class', function(d){
-      var isShown = prevDate !== d.startDate;
-      prevDate = d.startDate;
+      var isShown = prevDate !== d.startDate; prevDate = d.startDate;
       return isShown ? 'event newYear':'event';
     });
 
