@@ -12,7 +12,7 @@ d3.json('../config.json', function(error, config){
 
 function onData(error, data) {
 
-  var color = d3.scale.category20(),
+  var colors = [d3.scale.category20(), d3.scale.ordinal().range(Sutils.colors[1])],
       eventPosY = {}, eventPosX = {},
       l = _.defaults(g.layout, g.conf.layout);
 
@@ -75,8 +75,8 @@ function onData(error, data) {
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){ return l.offsetX + d.rank * l.spacingX }// + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
-  function linkColor(d){ return color(_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
-  function nodeColor(d){ return color(_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
+  function linkColor(d){ return colors[0](_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
+  function nodeColor(d){ return colors[1](_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
 
   function getProp(d, prop){ return _.defaults(layout.links[d.typeId],l)[prop] }
 
@@ -223,7 +223,7 @@ function onData(error, data) {
       var sample = _.find(g.links, {"typeId":d})
       return sample ? sample.typeName : d;
     })
-    .style('fill', function(d,i){return color(i)})
+    .style('fill', function(d,i){return colors[0](i)})
     .on('click', onLinkTypeClick);
 
   // draw events

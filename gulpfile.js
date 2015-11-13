@@ -16,6 +16,7 @@ var jsFiles = [
   './bower_components/d3/d3.js',
   './bower_components/lodash/lodash.js',
   './bower_components/handlebars/handlebars.js',
+  './bower_components/colorbrewer/colorbrewer.js'
   ];
 
 gulp.task('less', function() {
@@ -32,7 +33,7 @@ gulp.task('build', function() {
     .pipe(concat('lib.js'))
     // .pipe(gulp.dest('./app/assets/js/'))
     .pipe(rename('lib.min.js'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('./app/assets/js/'));
 });
 
