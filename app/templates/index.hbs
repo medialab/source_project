@@ -13,35 +13,17 @@
     <hr>
     {{#each corpus}}
       <div class="row">
-        <div class="col-sm-5">
-
+        <div class="col-sm-4">
           <h4><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
-          <blockquote><p>{{description}}</p></blockquote>
-          <pre><a href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">{{query}}</a></pre>
-
+        </div>
+        <div class="col-sm-4">
+          <p>{{description}}</p>
         </div>
         <div class="col-sm-1">
-          {{template}}<br> <a href="data/{{template}}_{{@key}}.json"  target="_blank">json</a>
+          {{template}}<br> <a href="data/{{template}}_{{@key}}.json"  target="_blank">json DATA</a>
         </div>
-        <div class="col-sm-6">
-          <table  class="table table-condensed table-striped">
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>select</th>
-                <th>exclude</th>
-                <th>sort</th>
-              </tr>
-            </thead>
-            {{#each groups}}
-            <tr>
-              <td>{{name}}</td>
-              <td>{{#each filter}} {{@key}}:{{this}} {{/each}}</td>
-              <td>{{#each reject}} {{@key}}:{{this}} {{/each}}</td>
-              <td>{{sortBy}} </td>
-            </tr>
-            {{/each}}
-          </table>
+        <div class="col-sm-3">
+          <pre><a href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">{{query}}</a></pre>
         </div>
       </div>
       <hr>
