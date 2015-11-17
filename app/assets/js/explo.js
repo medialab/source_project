@@ -21,8 +21,8 @@ function onData(error, data) {
 
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
-    .filter(function(d){return g.corpus.rels.reject ? Sutils.multiValueFilter(d, g.corpus.rels.reject, false) : true})
-    .sortByOrder(g.corpus.rels.sortBy, g.corpus.rels.sortOrder)
+    .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, false) : true})
+    .sortByOrder(g.corpus.links.sortBy, g.corpus.links.sortOrder)
     .value();
 
   // get linked nodes
@@ -35,7 +35,7 @@ function onData(error, data) {
   g.linksPeriod = Sutils.getTimeBounds(g.links),
 
   // group from config
-  g.corpus.groups.forEach(function(group){
+  g.corpus.nodes.groups.forEach(function(group){
     g[group.name] = _(g.nodes)
     .filter(group.filter)
     .reject(group.reject || {'all':0} )
@@ -44,7 +44,7 @@ function onData(error, data) {
   })
 
   // get groups names
-  g.groups = g.corpus.groups;
+  g.groups = g.corpus.nodes.groups;
   g.groups.forEach(function(group){
     group.offsetY = l.offsetY;
     g[group.name].forEach(function(d, i){ eventPosY[d.recordId] = l.offsetY + i * l.spacingY});
@@ -63,16 +63,12 @@ function onData(error, data) {
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
   })
 
-  var layout = {nodes:{},links: _(g.links).indexBy('typeId').value()}
+  var layout = {
+    nodes: Sutils.getCustomLayout(g, 'nodes'),
+    links: Sutils.getCustomLayout(g, 'links')
+  }
 
-  _(g.corpus.rels.layouts).forEach(function(customLayout){
-    customLayout.typeIds.forEach(function(id){
-      layout.links[id] = customLayout.layout;
-    })
-  }).value()
-
-    console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
-
+  console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
 
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
@@ -81,34 +77,11 @@ function onData(error, data) {
   function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
   function nodeColor(d){ return colors[0](_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
 
-  function getProp(d, prop){ return _.defaults(layout.links[d.typeId],l)[prop] }
+  function linkLayout(d, prop){ return _.defaults(layout.links[d.typeId],l)[prop] }
+  function nodeLayout(d, prop){ return _.defaults(layout.nodes[d.typeId],l)[prop] }
 
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
-  function focusOn(e){
-    if(e.source) d3.select('#l'+e.target.recordId+', #l'+e.source.recordId).style('opacity', .5);
-    else d3.select(this).style('opacity', .2);
-
-    d3.selectAll('.node, .edges, .nodeTimeline').filter(function(d, i){
-      var testRel = false;
-      if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
-      return (d.source.recordId === e.recordId || d.target.recordId === e.recordId || testRel )
-    })
-    .style('stroke-width',0)
-    .style('opacity', 0);
-
-    d3.selectAll('.listItem text').filter(function(d, i){
-      if(e.recordTypeId !== 1 ) return e.recordId !== d.recordId;
-      return e.target.recordId !== d.recordId && e.source.recordId !== d.recordId;
-    })
-    .style('opacity',0.3);
-  }
-  function focusOff(e){
-    d3.selectAll('.hoverZoneLines').style('opacity', 0)
-    d3.selectAll('.node, .edges').style('opacity', 1)
-    d3.selectAll('.edges').style('stroke-width',function(d){getProp(d, "edgesWidth")});
-    d3.selectAll('.listItem text').style('opacity', 1);
-  }
   function onClick(e){
     var state = d3.select(this).attr('active');
     d3.select(this).attr('active', 1-state);
@@ -123,7 +96,7 @@ function onData(error, data) {
 
     d3.selectAll('.edges').filter(function(d, i){
       return d.source.recordId === e.recordId || d.target.recordId === e.recordId
-    }).style('stroke-width', function(d){return state * getProp(d, "edgesWidth")})
+    }).style('stroke-width', function(d){return state * linkLayout(d, "edgesWidth")})
 
     d3.selectAll('.nodeTimeline').filter(function(d,i){
       return d.recordId === e.recordId
@@ -161,7 +134,7 @@ function onData(error, data) {
     .attr('y1', function(d){ return eventPosY[d.recordId]})
     .attr('y2', function(d){ return eventPosY[d.recordId]})
     .style('stroke', nodeColor)
-    .style('stroke-width', l.entityLineWidth)
+    .style('stroke-width', function(d){return nodeLayout(d, "entityLineWidth")})
     .style('opacity', 1)
     .attr('id',function(d){ return 'l'+d.recordId } )
     .attr('class','nodeTimeline');
@@ -284,8 +257,6 @@ function onData(error, data) {
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', l.rSource)
-    // .on('mouseover', focusOn)
-    // .on('mouseout', focusOff);
 
   // target node
   var targetNode = event.append('circle')
@@ -293,8 +264,6 @@ function onData(error, data) {
     .attr('cy', targetY)
     .style('fill', linkColor)
     .attr('r', l.rTarget)
-    // .on('mouseover', focusOn)
-    // .on('mouseout', focusOff);
 
   update();
 
@@ -321,7 +290,7 @@ function onData(error, data) {
     edges
       .attr('x1', linkX)
       .attr('x2', linkX)
-      .style('stroke-width', function(d){ return l.spacingX < 4 ? 0 : getProp(d, "edgesWidth") })
+      .style('stroke-width', function(d){ return l.spacingX < 4 ? 0 : linkLayout(d, "edgesWidth") })
 
     // source node
     targetNode.attr('cx', linkX)

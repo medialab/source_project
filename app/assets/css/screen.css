@@ -6812,9 +6812,6 @@ h1 {
   stroke-width: 1px;
   stroke: black;
 }
-#explo .node {
-  stroke-width: 1px;
-}
 #explo .edges,
 #explo .nodeTimeline {
   stroke-linecap: round;
