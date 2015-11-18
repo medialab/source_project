@@ -20,7 +20,7 @@ function onData(error, data) {
 
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
-    .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, false) : true})
+    .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, true) : true})
     .sortByOrder(g.corpus.links.sortBy, g.corpus.links.sortOrder)
     .value();
 
@@ -35,9 +35,11 @@ function onData(error, data) {
 
   // group from config
   g.corpus.nodes.groups.forEach(function(group){
+    console.log(group)
     g[group.name] = _(g.nodes)
     .filter(group.filter)
-    .reject(group.reject || {'all':0} )
+    // .reject(group.reject || {'all':0} )
+    .filter(function(d){return group.reject ? Sutils.multiValueFilter(d, group.reject, true) : true})
     .sortByOrder(group.sortBy, group.sortOrder)
     .value();
   })
@@ -75,12 +77,10 @@ function onData(error, data) {
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
-  function linkX(d,i){ return l.offsetX + d.rank * l.spacingX }// + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
+  function linkX(d,i){ return l.offsetX + d.rank * l.spacingX } // + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
   function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
   function nodeColor(d){ return colors[0](_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
-  function getLayout(d, type, prop){
-    return _.defaults(layout[type][d.typeId],l)[prop]
-  }
+  function getLayout(d, type, prop){ return _.defaults(layout[type][d.typeId],l)[prop] }
 
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
@@ -97,31 +97,27 @@ function onData(error, data) {
 
     d3.selectAll('.edges').filter(function(d, i){
       return d.source.recordId === e.recordId || d.target.recordId === e.recordId
-    }).attr('visibility', function(d){ return state ? 'visible' : 'hidden'} )
+    }).attr('visibility', function(d){ return isVisible(state)} )
 
-    d3.selectAll('.nodeTimeline').filter(function(d,i){
-      console.log(d.recordId === e.recordId ? d.recordId+':'+e.recordId : '')
-      return d.recordId === e.recordId
-    }).attr('visibility', function(d){ return state ? 'visible' : 'hidden' })
+    d3.selectAll('.nodeTimeline').filter(function(d,i){ return d.recordId === e.recordId})
+      .attr('visibility', function(d){ return isVisible(state) })
   }
   function onLinkTypeClick(e){
-
     var state = parseInt(d3.select(this).attr('active'));
     d3.select(this).attr('active', 1-state)
 
     d3.selectAll('.node, .edges').filter(function(d){
       return e === d.typeId;
-    }).attr('visibility', function(d){return state ? 'visible' : 'hidden'})
+    }).attr('visibility', function(d){return isVisible(state)})
   }
+  function isVisible(v){ return v ? 'visible' : 'hidden'}
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
     d3.select(this).transition().style('opacity', 1);
   }
-  function yearLabelOff(d){
-    d3.selectAll('.yearLabel').transition().style('opacity', 1);
-  }
+  function yearLabelOff(d){ d3.selectAll('.yearLabel').transition().style('opacity', 1);}
 
-  var w = _(g.links).map('rank').max() * (l.spacingX+5) + l.offsetX , h = l.offsetY,
+  var w = _(g.links).map('rank').max() * (l.spacingX+10) + l.offsetX , h = l.offsetY,
       svg = d3.select('#explo').append('svg:svg').attr('width', w).attr('height', h)
 
   // range input event
@@ -160,7 +156,7 @@ function onData(error, data) {
     .style('fill', nodeColor)
     .append('title')
     .attr('class','nodeTypeLabel')
-    .text(function(d) { return d.typeName})
+    .text(function(d) { return d.typeName +' ('+d.recordTypeId+'—'+d.typeId+')'})
 
     // hover invisible zone
     list.append('line')
@@ -204,7 +200,12 @@ function onData(error, data) {
       return sample ? sample.typeName : d;
     })
     .style('fill', function(d,i){return colors[1](i)})
-    .on('click', onLinkTypeClick);
+    .on('click', onLinkTypeClick)
+    .append('title')
+    .text(function(d) {
+      var sample = _.find(g.links, {'typeId':d})
+      if(sample) return sample.typeId;
+    })
 
   // draw events
   var prevDate;
@@ -223,7 +224,7 @@ function onData(error, data) {
       .text(function(d) {
         return  + d.startDate + '\n'
         + d.source.shortName + ' '
-        + d.typeName + ' '
+        + d.typeName + '(' + d.typeId + ')'
         + d.target.shortName
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
       })
@@ -252,8 +253,10 @@ function onData(error, data) {
   var edges = event.append('line')
     .attr('class', 'edges')
     .style('stroke',linkColor)
+    .style('opacity', function(d){ return getLayout(d, 'links', 'edgesOpacity') })
     .attr('y1', sourceY)
     .attr('y2', targetY)
+    .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
 
   // source node
   var sourceNode = event.append('circle')
