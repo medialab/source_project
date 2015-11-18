@@ -1,5 +1,6 @@
 //@import "variables.less";
 @import "../../../bower_components/bootstrap/less/bootstrap.less";
+@import (less) "../../../bower_components/tipsy/src/stylesheets/tipsy.css";
 
 html, body {
   width: 100%;
@@ -17,14 +18,17 @@ text[active="0"], *[active="0"] text {
 h1 { text-align: center;}
 
 #explo {
-  line {shape-rendering: crispEdges; }
+  // line {shape-rendering: crispEdges; }
   font-size: 11px;
+
+  .yearMark, .grid {
+    stroke-dasharray:1,1;
+  }
 
   .hoverZoneLines {
     shape-rendering: crispEdges;
     opacity: 0;
     stroke:gold;
-    stroke-width:13px;
   }
 
   .listItem { }

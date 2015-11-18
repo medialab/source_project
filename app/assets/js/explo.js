@@ -58,8 +58,8 @@ function onData(error, data) {
       recTypes = {nodes:{},links:{}};
 
   _.forEach(indexType, function(d){
-    indexes.nodes[d] = _.indexBy(g.nodes, d);
-    indexes.links[d] = _.indexBy(g.links, d);
+    indexes.nodes[d] = _.groupBy(g.nodes, d);
+    indexes.links[d] = _.groupBy(g.links, d);
     recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
   })
@@ -72,7 +72,7 @@ function onData(error, data) {
     d3.scale.ordinal().range(Sutils.colors[0])
   ];
   console.log('layout', layout)
-  console.log(g, indexes, recTypes, Sutils.dataCheck(g.links));
+  console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
 
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
@@ -111,6 +111,15 @@ function onData(error, data) {
     }).attr('visibility', function(d){return isVisible(state)})
   }
   function isVisible(v){ return v ? 'visible' : 'hidden'}
+
+  function nodeMouseOver(e){
+      d3.selectAll('.grid')
+        .filter(function(d){return e.source.recordId === d.recordId || e.target.recordId === d.recordId})
+        .style('opacity',1)
+  }
+  function nodeMouseOut(e){
+      d3.selectAll('.grid').style('opacity', l.gridOpacity )
+  }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
     d3.select(this).transition().style('opacity', 1);
@@ -160,17 +169,18 @@ function onData(error, data) {
 
     // hover invisible zone
     list.append('line')
-    .attr('x1', 200)
+    .attr('x1', 0)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
     .attr('class','hoverZoneLines' )
-    .attr('transform', 'translate(-80)')
     .attr('id',function(d){ return 'l'+d.recordId } )
+    .style('stroke-width', l.spacingY-1)
 
     // horizontal grid
     list.append('line')
-    .attr('x1', l.offsetX - l.spacingY)
+    .attr('class','grid')
+    .attr('x1', 0 + l.spacingY)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
@@ -192,12 +202,12 @@ function onData(error, data) {
     .data(recTypes.links[l.colorBy.link]).enter()
     .append('g')
     .append('text')
-    .attr('x', function(d, i){return 250 + _.floor(i/2)*100})
+    .attr('x', function(d, i){return 250 + _.floor(i/2)*120})
     .attr('y', function(d, i){return 10 + (i%2)*l.spacingY})
     .attr('active',0)
     .text(function(d, i){
       var sample = _.find(g.links, {'typeId':d})
-      return sample ? sample.typeName : d;
+      return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
     .style('fill', function(d,i){return colors[1](i)})
     .on('click', onLinkTypeClick)
@@ -224,8 +234,8 @@ function onData(error, data) {
       .text(function(d) {
         return  + d.startDate + '\n'
         + d.source.shortName + ' '
-        + d.typeName + '(' + d.typeId + ')'
-        + d.target.shortName
+        + '\n\t['+ d.typeName + ' — ' + d.typeId + ']\n'
+        + '\t\t' + d.target.shortName
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
       })
 
@@ -264,6 +274,8 @@ function onData(error, data) {
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', function(d){return getLayout(d,'links', 'rSource')})
+    .on('mouseover', nodeMouseOver)
+    .on('mouseout', nodeMouseOut)
 
   // target node
   var targetNode = event.append('circle')
@@ -271,6 +283,9 @@ function onData(error, data) {
     .attr('cy', targetY)
     .style('fill', linkColor)
     .attr('r', function(d){return getLayout(d,'links', 'rTarget')})
+    .on('mouseover', nodeMouseOver)
+    .on('mouseout', nodeMouseOut)
+
 
   update();
 
@@ -278,12 +293,12 @@ function onData(error, data) {
   function update(){
 
     existsLine
-      .attr('x1', function(d,i){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
-      .attr('x2', function(d,i){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
+      .attr('x1', function(d,i){ return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX})
+      .attr('x2', function(d,i){ return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX})
 
     d3.selectAll('.existsLine')
-      .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId].rank * l.spacingX})
-      .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId].rank * l.spacingX})
+      .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX})
+      .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX})
 
     // year label
     yearLabel.attr('x',linkX)
@@ -297,7 +312,7 @@ function onData(error, data) {
     edges
       .attr('x1', linkX)
       .attr('x2', linkX)
-      .style('stroke-width', function(d){ return l.spacingX < 4 ? 0 : getLayout(d, 'links', 'edgesWidth') })
+      .style('stroke-width', function(d){ return l.spacingX < 3 ? 0 : getLayout(d, 'links', 'edgesWidth') })
 
     // source node
     targetNode.attr('cx', linkX)
