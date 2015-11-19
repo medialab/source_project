@@ -41,8 +41,7 @@
     _.forEach(obj, function(n, key){
       n.forEach(function(val){ res = (res && d[key] !== val);})
     })
-    if(way) return res;
-    if(!way) return !res;
+    return way ? res : !res
   }
 
   //

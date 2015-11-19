@@ -65,7 +65,7 @@ function onData(error, data) {
   })
 
   var layout = { nodes: Sutils.getCustomLayout(g, 'nodes'), links: Sutils.getCustomLayout(g, 'links')};
-  var typeCount = Object.keys(indexes.nodes[l.colorBy.node]).length;
+  var typeCount = _.keys(indexes.nodes[l.nodesColors]).length;
 
   var colors = [
     typeCount < 10 ? d3.scale.category10() : d3.scale.category20(),
@@ -78,9 +78,16 @@ function onData(error, data) {
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
   function linkX(d,i){ return l.offsetX + d.rank * l.spacingX } // + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
-  function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.colorBy.link], d[l.colorBy.link])) }
-  function nodeColor(d){ return colors[0](_.indexOf(recTypes.nodes[l.colorBy.node], d[l.colorBy.node])) }
-  function getLayout(d, type, prop){ return _.defaults(layout[type][d.typeId],l)[prop] }
+  function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.linksColors], d[l.linksColors])) }
+  function nodeColor(d){
+    return colors[0](
+      _.indexOf(
+        recTypes.nodes[getLayout(d,'nodes', 'nodesColors')],
+        d[getLayout(d,'nodes', 'nodesColors')]
+      )
+    )
+  }
+  function getLayout(d, type, prop){return _.defaults(layout[type][d.typeId],l)[prop] }
 
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
@@ -210,10 +217,10 @@ function onData(error, data) {
 
   // links type labels
   var linkTypeCaption = svg.selectAll('.linkTypeCaption')
-    .data(recTypes.links[l.colorBy.link]).enter()
+    .data(recTypes.links[l.linksColors]).enter()
     .append('g')
     .append('text')
-    .attr('x', function(d, i){return 250 + _.floor(i/2)*120})
+    .attr('x', function(d, i){return 250 + _.floor(i/2)*150})
     .attr('y', function(d, i){return 10 + (i%2)*l.spacingY})
     .attr('active',0)
     .text(function(d, i){
