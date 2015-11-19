@@ -154,7 +154,7 @@
   }
 
   // get node lines
-  Sutils.getNodeLines = function(nodes, links){
+  Sutils.getNodeLines = function(nodes, links, layout){
     return _(nodes).map(function(n){
 
       var dates = _(links).filter(function(d){
@@ -163,8 +163,10 @@
       .sortBy('startDates')
       .value();
 
+      var last = _.indexOf(layout.stopRelation,_.last(dates).typeId) < 0 ? _.last(dates).recordId : _(links).sortBy('startDates').last().recordId
+
       return _.merge(n,{
-        endId:_.last(dates).recordId,
+        endId:last,
         startId:_.first(dates).recordId
       })
 

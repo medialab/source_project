@@ -28,7 +28,7 @@ function onData(error, data) {
   g.nodes = Sutils.getLinkedNodes(data, g.links);
 
   // get nodes time bounds
-  g.nodeTimelines = Sutils.getNodeLines(g.nodes, g.links)
+  g.nodeTimelines = Sutils.getNodeLines(g.nodes, g.links, l)
 
   // get bounds
   g.linksPeriod = Sutils.getTimeBounds(g.links),
@@ -295,8 +295,7 @@ function onData(error, data) {
     existsLine
       .attr('x1', function(d,i){ return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX})
       .attr('x2', function(d,i){
-        var rank = (d.endDate === 9999 ? 1000 : indexes.links.recordId[d.endId][0].rank)
-        return l.offsetX + rank * l.spacingX
+        return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX
       })
 
     d3.selectAll('.existsLine')
