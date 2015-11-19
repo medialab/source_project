@@ -162,7 +162,7 @@
       .sortBy('startDates')
       .value();
 
-      var last = _.indexOf(layout.stopRelation,_.last(dates).typeId) < 0 ? _.last(dates).recordId : _(links).sortBy('startDates').last().recordId
+      var last = _.indexOf(layout.stopRelation , _.last(dates).typeId) > -1 ? _.last(dates).recordId : _(links).sortBy('startDates').last().recordId
 
       return _.merge(n,{
         endId:last,
