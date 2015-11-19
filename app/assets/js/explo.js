@@ -84,23 +84,34 @@ function onData(error, data) {
 
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
-  function onClick(e){
+  function onClick(e,f,g,h){
+    var keyDown = window.event.metaKey;
     var state = parseInt(d3.select(this).attr('active'));
-    d3.select(this).attr('active', 1-state)
 
     d3.selectAll('.node').filter(function(d, i){
-      var testRel = false;
-      if(e.recordTypeId === 1) testRel = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
-      if(d.source) testRel = testRel || d.source.recordId === e.recordId || d.target.recordId === e.recordId
-      return testRel
+      var test = false;
+      if(e.recordTypeId === 1) test = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
+      if(d.source) test = test || d.source.recordId === e.recordId || d.target.recordId === e.recordId
+      return keyDown ? !test : test
     }).style('opacity',state)
 
     d3.selectAll('.edges').filter(function(d, i){
-      return d.source.recordId === e.recordId || d.target.recordId === e.recordId
+      var test = (d.source.recordId === e.recordId || d.target.recordId === e.recordId)
+      return keyDown ? !test : test
     }).attr('visibility', function(d){ return isVisible(state)} )
 
-    d3.selectAll('.nodeTimeline').filter(function(d,i){ return d.recordId === e.recordId})
-      .attr('visibility', function(d){ return isVisible(state) })
+    d3.selectAll('.nodeTimeline').filter(function(d,i){
+      var test = d.recordId === e.recordId
+      return keyDown ? !test : test
+    }).attr('visibility', function(d){ return isVisible(state) })
+
+    d3.selectAll('.listItem').filter(function(d,i){
+      var test = d.recordId === e.recordId
+      return keyDown ? !test : test
+    }).attr('active', 1-state)
+
+    d3.select(this).attr('active', 1-state)
+
   }
   function onLinkTypeClick(e){
     var state = parseInt(d3.select(this).attr('active'));
