@@ -1,11 +1,74 @@
 {
-  "server":"http://heurist.sydney.edu.au/",
-  "param":"JSON-structured.tpl",
+  "server":"http://heuristSever.com/viewers/smarty/showReps.php?db=meder_test_to_delete&w=all&q=",
+  "param":"&h4=1&publish=1&debug=0&template=JSON-structured.tpl",
   "corpus": {
-    "all": {
-      "title":"all heurist database",
-      "query": "t:13 OR t:1 OR t:4",
-      "template":["explo"]
+    "aUniqKeyword": {
+      "title":"a title",
+      "description":"a description",
+      "query": "tag:MyTag OR t:1",
+      "mergeDirection": "target",
+      "template":["explo"],
+      "layout":{
+        "edgesWidth":1
+      },
+      "nodes":{
+        "groups":[
+          {
+            "name":"entities",
+            "sortBy":["recordTypeId","typeId","startDate"],
+            "sortOrder":["recordTypeId","asc","asc"]
+          }
+        ],
+        "layouts":[
+          {
+            "typeIds":[5314],
+            "layout":{"entityLineWidth":0}
+          }
+        ]
+      },
+
+      "links": {
+        "sortBy":["startDate"],
+        "sortOrder":["asc"],
+        "layouts":[
+          {
+            "typeIds":[5095,5111,5112,5178,5353,5373],
+            "layout":{"edgesWidth":10, "edgesOpacity":0.3}
+          }
+        ]
+      }
     }
-  }
+  },
+  "layout":{
+
+    "edgesWidth":1,
+    "edgesOpacity":1,
+
+    "entityLineWidth":5,
+    "entityLineOpacity":1,
+
+    "rSource": 6,
+    "rTarget": 3,
+
+    "offsetX":250,
+    "spacingX": 5,
+
+    "offsetY": 80,
+    "spacingY" : 11,
+
+    "gridOpacity":0.1,
+
+    "nodesColors":"typeId",
+    "linksColors":"typeId",
+
+    "edgesHover":false,
+    "stopRelation":[5178,5353,5373]
+  },
+  "relMerges":[
+
+    [
+      {"5242":"refere to"},
+      {"5242":"is refered to by"}
+    ]
+  ]
 }
