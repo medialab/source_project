@@ -18,6 +18,8 @@ function onData(error, data) {
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
 
+  data = Sutils.mergeNodesFromRelation(data, g.conf);
+
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf))
     .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, true) : true})
@@ -35,7 +37,6 @@ function onData(error, data) {
 
   // group from config
   g.corpus.nodes.groups.forEach(function(group){
-    console.log(group)
     g[group.name] = _(g.nodes)
     .filter(group.filter)
     // .reject(group.reject || {'all':0} )

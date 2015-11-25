@@ -86,6 +86,32 @@
     };
   };
 
+  // merge node from relations
+
+  Sutils.mergeNodesFromRelation = function(data, conf){
+
+    var d = data;
+    _.forEach(conf.layout.nodesMergeFromRelation, function(t){
+      _(d)
+        .filter('recordTypeId', 1)
+        .filter('typeId', t)
+        .forEach(function(l){
+          _(d)
+            .filter('source', l.target)
+            .forEach(function(n,i){
+              n.source = l.source;
+            }).value()
+
+          _(d)
+            .filter('target', l.target)
+            .forEach(function(n,i){
+              n.target = l.source;
+            }).value()
+        }).value()
+    })
+    return d
+  }
+
   // get valid relations
   Sutils.getValidLinks = function(data, conf){
     var links = _(data)
@@ -142,13 +168,21 @@
         rank++;
       });
     })
+
+    _(conf.layout.nodesMergeFromRelation).forEach(function(t){
+      links = _(links).reject('typeId',t).value()
+    }).value()
+
     return links;
   };
 
   // get linked nodes
   Sutils.getLinkedNodes = function(data, rel){
     var linkedNodes = [];
-    _.forEach(rel, function(d){linkedNodes.push(d.source, d.target);});
+
+    _.forEach(rel, function(d){
+      linkedNodes.push(d.source, d.target);
+    });
     return _.uniq(linkedNodes);
   }
 
