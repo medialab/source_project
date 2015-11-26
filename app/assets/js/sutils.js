@@ -173,7 +173,7 @@
       links = _(links).reject('typeId',t).value()
     }).value()
 
-    return links;
+    return _.compact(links);
   };
 
   // get linked nodes
@@ -203,7 +203,7 @@
         startId:_.first(dates).recordId
       })
 
-    }).value();
+    }).compact().value();
   }
 
   // return type from a query
