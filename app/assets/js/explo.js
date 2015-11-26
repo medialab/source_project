@@ -65,6 +65,66 @@ function onData(error, data) {
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
   })
 
+  var line = d3.svg.line()
+  .y(function(d,i) {
+    var link = indexes.links.recordId[d[1]][0];
+    return (d[0] ? sourceY(link) : targetY(link)) //+ i *2
+    // var link = _.findIndex(g.links, 'recordId', d[1]);
+    // return link * l.spacingX/2
+  })
+  .x(function(d,i) {
+    var link = indexes.links.recordId[d[1]][0];
+    return linkX(link) //+ i *2
+  })
+  .interpolate(g.layout.pathwayInterpolation);
+  // linear step-before step-after basis basis-open basis-closed
+  // cardinal cardinal-open cardinal-closed monotone
+
+  indexes.byPath =  _(g.nodes).
+      map(function(n){
+        var points = [];
+        _(g.links)
+        .filter(function(l){
+          return l.target.recordId === n.recordId ||  l.source.recordId === n.recordId
+        })
+        .sortBy('startDate')
+        .forEach(function(l){
+          if(g.layout.pathwayCrossTarget)points.push([1, l.recordId, n.recordId])
+          if(g.layout.pathwayCrossSource)points.push([0, l.recordId, n.recordId])
+        }).value()
+
+      return points
+    })
+    .filter(function(d){
+      return d.length > g.layout.pathwayMinSteps
+    })
+    .value()
+
+  g.pathway = _(indexes.byPath)
+    .uniq(function(d){
+      return line(d)
+    })
+    .map(function(d){
+      return _(d).sortBy(function(p){
+        var link = indexes.links.recordId[p[1]][0];
+
+        return _.padLeft( (d[0] ? sourceY(link) : targetY(link)) , 6 , '0') //+'_'+  _.padLeft(linkX(link), 6 , '0')
+
+      }).value()
+    })
+    .value()
+
+  g.clusters = _(indexes.byPath)
+    .groupBy(function(d){return line(d)})
+    .toArray()
+    .forEach(function(c,i){
+      _.forEach(c[0], function(n){
+        indexes.nodes.recordId[n[2]][0].group = i;
+      })
+    })
+    .value()
+
+
   var layout = { nodes: Sutils.getCustomLayout(g, 'nodes'), links: Sutils.getCustomLayout(g, 'links')};
   var typeCount = _.keys(indexes.nodes[l.nodesColors]).length;
 
@@ -118,6 +178,11 @@ function onData(error, data) {
       return keyDown ? !test : test
     }).attr('active', 1-state)
 
+    d3.selectAll('.pathway').filter(function(d,i){
+      var test = d[0][2] === e.recordId
+      return keyDown ? !test : test
+    }).attr('visibility', function(d){ return isVisible(state) })
+
     d3.select(this).attr('active', 1-state)
 
   }
@@ -155,7 +220,7 @@ function onData(error, data) {
   var nodeTimelines = svg.selectAll('.nodeTimelines')
     .data(g.nodeTimelines).enter()
     .append('g')
-    .filter(function(d){ return d.startId !== d.endId})
+    // .filter(function(d){ return d.startId !== d.endId})
     .attr('class','nodeTimelines');
 
   var existsLine = nodeTimelines.append('line')
@@ -305,6 +370,28 @@ function onData(error, data) {
     .on('mouseover', nodeMouseOver)
     .on('mouseout', nodeMouseOut)
 
+  var entityPath = svg.selectAll('.pathway')
+    .data(g.pathway).enter()
+    .append('path')
+    .attr('class','pathway')
+    .attr('d', line)
+    .style('stroke-width', g.layout.pathwayStrokeWidth)
+    .style('stroke', function(d,i){
+      var node = indexes.nodes.recordId[d[0][2]][0];
+      return nodeColor(node)
+    })
+    .style('opacity',g.layout.pathwayOpacity)
+    .style('stroke-linecap', 'round')
+    .style('stroke-linejoin', 'round')
+    .style('fill',function(d,i){
+      var node = indexes.nodes.recordId[d[0][2]][0];
+      return g.layout.pathwayFill ? nodeColor(node) : 'none'
+    })
+
+  entityPath.append('title')
+    .attr('class','pathwayLabek')
+    .text(function(d) { return indexes.nodes.recordId[d[0][2]][0].shortName;})
+
 
   update();
 
@@ -329,6 +416,7 @@ function onData(error, data) {
       .attr('x1', linkX)
       .attr('x2', linkX)
 
+    entityPath.attr('d', line)
     // edges
     edges
       .attr('x1', linkX)
