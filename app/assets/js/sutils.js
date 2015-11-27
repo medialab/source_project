@@ -187,16 +187,16 @@
   }
 
   // get node lines
-  Sutils.getNodeLines = function(g){
-    return _(g.nodes).map(function(n){
+  Sutils.getNodeLines = function(nodes, links, layout){
+    return _(nodes).map(function(n){
 
-      var dates = _(g.links).filter(function(d){
+      var dates = _(links).filter(function(d){
        return d.target.recordId === n.recordId || d.source.recordId === n.recordId;
       })
       .sortBy('startDates')
       .value();
 
-      var last = _.indexOf(g.layout.stopRelation , _.last(dates).typeId) > -1 ? _.last(dates).recordId : _(g.links).sortBy('startDates').last().recordId
+      var last = _.indexOf(layout.stopRelation , _.last(dates).typeId) > -1 ? _.last(dates).recordId : _(links).sortBy('startDates').last().recordId
 
       return _.merge(n,{
         endId:last,
