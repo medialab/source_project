@@ -83,7 +83,7 @@ function onData(error, data) {
   indexes.byPath =  Sutils.indexPathway(g,'recordId');
 
   g.pathway = _(indexes.byPath)
-    .uniq(function(d){ return line(d)})
+    .uniq(function(d){return line(d)})
     .map(function(d){
       return _(d).sortBy(function(p){
         var link = indexes.links.recordId[p[1]][0];
@@ -411,5 +411,4 @@ function onData(error, data) {
     sourceNode
       .attr('cx', linkX)
   }
-
 }
