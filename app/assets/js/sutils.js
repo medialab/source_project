@@ -187,16 +187,16 @@
   }
 
   // get node lines
-  Sutils.getNodeLines = function(nodes, links, layout){
-    return _(nodes).map(function(n){
+  Sutils.getNodeLines = function(g){
+    return _(g.nodes).map(function(n){
 
-      var dates = _(links).filter(function(d){
+      var dates = _(g.links).filter(function(d){
        return d.target.recordId === n.recordId || d.source.recordId === n.recordId;
       })
       .sortBy('startDates')
       .value();
 
-      var last = _.indexOf(layout.stopRelation , _.last(dates).typeId) > -1 ? _.last(dates).recordId : _(links).sortBy('startDates').last().recordId
+      var last = _.indexOf(g.layout.stopRelation , _.last(dates).typeId) > -1 ? _.last(dates).recordId : _(g.links).sortBy('startDates').last().recordId
 
       return _.merge(n,{
         endId:last,
@@ -204,6 +204,29 @@
       })
 
     }).compact().value();
+  }
+
+  // index pathways
+  Sutils.indexPathway = function(g, key){
+     return _(g.nodes).
+      map(function(n){
+        var points = [];
+        _(g.links)
+        .filter(function(l){
+          return l.target[key] === n[key] ||  l.source[key] === n[key]
+        })
+        .sortBy('startDate')
+        .forEach(function(l){
+          if(g.layout.pathwayCrossTarget)points.push([1, l.recordId, n.recordId])
+          if(g.layout.pathwayCrossSource)points.push([0, l.recordId, n.recordId])
+        }).value()
+
+      return points
+    })
+    .filter(function(d){
+      return d.length > g.layout.pathwayMinSteps
+    })
+    .value()
   }
 
   // return type from a query

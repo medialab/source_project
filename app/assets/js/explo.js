@@ -80,50 +80,23 @@ function onData(error, data) {
   // linear step-before step-after basis basis-open basis-closed
   // cardinal cardinal-open cardinal-closed monotone
 
-  indexes.byPath =  _(g.nodes).
-      map(function(n){
-        var points = [];
-        _(g.links)
-        .filter(function(l){
-          return l.target.recordId === n.recordId ||  l.source.recordId === n.recordId
-        })
-        .sortBy('startDate')
-        .forEach(function(l){
-          if(g.layout.pathwayCrossTarget)points.push([1, l.recordId, n.recordId])
-          if(g.layout.pathwayCrossSource)points.push([0, l.recordId, n.recordId])
-        }).value()
-
-      return points
-    })
-    .filter(function(d){
-      return d.length > g.layout.pathwayMinSteps
-    })
-    .value()
+  indexes.byPath =  Sutils.indexPathway(g,'recordId');
 
   g.pathway = _(indexes.byPath)
-    .uniq(function(d){
-      return line(d)
-    })
+    .uniq(function(d){ return line(d)})
     .map(function(d){
       return _(d).sortBy(function(p){
         var link = indexes.links.recordId[p[1]][0];
-
-        return _.padLeft( (d[0] ? sourceY(link) : targetY(link)) , 6 , '0') //+'_'+  _.padLeft(linkX(link), 6 , '0')
-
+        return _.padLeft( (d[0] ? sourceY(link) : targetY(link)) , 6 , '0')
       }).value()
-    })
-    .value()
+    }).value()
 
   g.clusters = _(indexes.byPath)
     .groupBy(function(d){return line(d)})
     .toArray()
     .forEach(function(c,i){
-      _.forEach(c[0], function(n){
-        indexes.nodes.recordId[n[2]][0].group = i;
-      })
-    })
-    .value()
-
+      _.forEach(c[0], function(n){ indexes.nodes.recordId[n[2]][0].group = i;})
+    }).value()
 
   var layout = { nodes: Sutils.getCustomLayout(g, 'nodes'), links: Sutils.getCustomLayout(g, 'links')};
   var typeCount = _.keys(indexes.nodes[l.nodesColors]).length;
@@ -138,7 +111,10 @@ function onData(error, data) {
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
-  function linkX(d,i){ return l.offsetX + d.rank * l.spacingX } // + ((d.startDate - g.linksPeriod.start) * l.spacingYear)
+  function linkX(d,i){
+    if(l.linearTime) return l.offsetX + (d.startDate - g.linksPeriod.start) * l.spacingX*l.YearSpacing
+    return l.offsetX + d.rank * l.spacingX
+  }
   function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.linksColors], d[l.linksColors])) }
   function nodeColor(d){
     return colors[0](
@@ -392,31 +368,35 @@ function onData(error, data) {
     .attr('class','pathwayLabek')
     .text(function(d) { return indexes.nodes.recordId[d[0][2]][0].shortName;})
 
-
   update();
 
   // update attributes
   function update(){
 
     existsLine
-      .attr('x1', function(d,i){ return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX})
+      .attr('x1', function(d,i){
+        var v = indexes.links.recordId[d.startId][0];
+        if(g.layout.linearTime) return l.offsetX + (v.startDate - g.linksPeriod.start) * l.spacingX * l.YearSpacing;
+        return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX
+      })
       .attr('x2', function(d,i){
+        var v = indexes.links.recordId[d.endId][0];
+        if(g.layout.linearTime) return l.offsetX + (v.startDate - g.linksPeriod.start) * l.spacingX * l.YearSpacing;
         return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX
       })
 
-    d3.selectAll('.existsLine')
-      .attr('x1', function(d){ return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX})
-      .attr('x2', function(d){ return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX})
-
     // year label
-    yearLabel.attr('x',linkX)
+    yearLabel
+      .attr('x',linkX)
 
     // year mark
     yearMark
       .attr('x1', linkX)
       .attr('x2', linkX)
 
-    entityPath.attr('d', line)
+    entityPath
+      .attr('d', line)
+
     // edges
     edges
       .attr('x1', linkX)
@@ -424,10 +404,12 @@ function onData(error, data) {
       .style('stroke-width', function(d){ return l.spacingX < 3 ? 0 : getLayout(d, 'links', 'edgesWidth') })
 
     // source node
-    targetNode.attr('cx', linkX)
+    targetNode
+      .attr('cx', linkX)
 
     // target node
-    sourceNode.attr('cx', linkX)
+    sourceNode
+      .attr('cx', linkX)
   }
 
 }
