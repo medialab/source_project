@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="assets/css/screen.css">
+    <meta charset="utf-8">
+  </head>
+  <body id="{{corpus.template}}" class="container-fluid">
+    <hr/>
+      <p class="col-sm-3"><strong><a href="./">{{corpus.title}}</a></strong><br></p>
+      <p class="col-sm-5"><em>{{corpus.description}}</em></p>
+      <p class="col-sm-2">{{update}}</p>
+      <p class="col-sm-2" ><input id="zoom" type="range" value="6" max="20" min="1" step="1"></p>
+    <hr/>
+    <script type="text/javascript" src="assets/js/lib.min.js"></script>
+    <script type="text/javascript" src="assets/js/sutils.js"></script>
+    <script type="text/javascript">var corpusId = '{{id}}';</script>
+    <script type="text/javascript" src="assets/js/{{corpus.template}}.js"></script>
+  </body>
+</html>
