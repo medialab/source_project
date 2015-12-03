@@ -19,80 +19,91 @@ function onData (data) {
     indexes.nodes[d] = _.groupBy(g.nodes, d);
     indexes.links[d] = _.groupBy(g.links, d);
   });
+
+
+  var way = ["source","target"];
+  var way = ["target","source"];
+
+
+  console.log(way[0])
+
   g.pathWays = [
-    _(g.links).groupBy(function(d){return d.source.recordId}).values().value()
-    // ,_(g.links).groupBy(function(d){return d.target.recordId}).values().value()
+    _(g.links).groupBy(function(d){return d[way[0]].recordId}).values().value()
+    // ,
+    // _(g.links).groupBy(function(d){return d[way[1]].recordId}).values().value()
   ]
 
   console.log(g)
 
   g.linksPeriod = Sutils.getTimeBounds(g.links)
 
-  draw(g);
+  draw(g,way);
 }
 
 
 
-function draw(g){
+function draw(g,way){
 
-  var w = 2000 , h = 1500,
-      svg = d3.select('#pathway').append('svg:svg').attr('width', w).attr('height', h)
+  var w = 2500 , h = 2500, spacingX = 25, spacingY = 20, m = [50, 10];
 
+  // function checkPointStartX(d,i){ return m[0] + (d.startDate-g.linksPeriod.start) * spacingX}
+  // function checkPointEndX(d){ return m[0] + (d.endDate-g.linksPeriod.start) * spacingX}
 
-  var spacingX = 80;
-  var spacingY = 20;
-  var m = [100, 100]
-
-
-  function checkPointStartX(d){ return m[0] + (d.startDate-g.linksPeriod.start) * spacingX}
-  function checkPointEndX(d){ return m[0] + (d.endDate-g.linksPeriod.start) * spacingX}
-  function checkPointY(d, i){ return m[1] + _.findIndex(g.nodes, d.target) * spacingY}
+  // // function checkPointY(d, i){ return m[1] + _.findIndex(g.nodes, d.target) * spacingY}
+  // // function checkPointY(d, i){ return m[1] + (_.findIndex(g.nodes, d[way[0]]) + i) * spacingY}
+  // function checkPointY(d, i){ return m[1] + i * spacingY}
 
   var color = d3.scale.category20();
 
+
+  var svg = d3.select('#pathway').append('svg:svg').attr('width', w).attr('height', h)
+
+
+_(g.pathWays).forEach(function(p, entityId){
+
+  console.log(entityId, p)
+
+  function checkPointStartX(d,i){ return m[0] + (d.startDate-g.linksPeriod.start) * spacingX}
+  function checkPointEndX(d){ return m[0] + (d.endDate-g.linksPeriod.start) * spacingX}
+
+  function checkPointY(d, i){ return m[1] + _.findIndex(g.nodes, d.target) * spacingY}
+  function checkPointY(d, i){ return m[1] + (_.findIndex(g.nodes, d[way[entityId]]) + i) * spacingY}
+  function checkPointY(d, i){ return m[1] + (i+entityId) * spacingY}
+
+
   var line = d3.svg.line()
-  .x(checkPointStartX)
-  .y(checkPointY)
-  .interpolate("cardinal");
-
-_(g.pathWays).forEach(function(p, pathwayId){
-
-  console.log(pathwayId)
-  var pathWay = svg.selectAll('.pathWay').data(p).enter()
-    .append('g');
+    .x(checkPointStartX)
+    .y(checkPointY)
+    .interpolate("cardinal");
 
 
-  var path = pathWay
+  var
+  entity = svg.selectAll('.entity').data(p)
+    .enter().append('g').attr('class','entity');
+
+  entity
     .append('path')
-    .attr('class','pathway')
     .attr('d', line)
-    .style('stroke-width',pathwayId ? 3:10)
+    .style('stroke-width',entityId ? 3:10)
     .style('fill', 'none')
+    // .style('opacity','0.3')
     .style('stroke', function(d,i){ return color(i) })
     .style('stroke-linecap', 'round')
     .style('stroke-linejoin', 'round')
 
-  pathWay.append('text')
-    .style('fill','black')
-    .text(function(d,i) { return _.last(d).source.shortName })
+  entity.append('text')
+    .text(function(d,i) { return (entityId ? _.last(d)[way[1]].shortName : _.last(d)[way[0]].shortName) })
     .attr('x', function(d){ return checkPointStartX(_.last(d)) + 10})
     .attr('y', function(d,i){ return checkPointY(_.last(d), d.length-1)})
+    .style('font-weight', 'bold')
     .style('fill', function(d,i){ return color(i)})
 
-  var points = pathWay.selectAll('.checkpoint').data(function(d){return d}).enter();
-
-      points.append('line')
-      .attr('x1', checkPointStartX)
-      .attr('y1', checkPointY)
-      .attr('x2', checkPointEndX)
-      .attr('y2', checkPointY)
-      .style('stroke', '#ccc')
-
+  var points = entity.selectAll('.checkpoint').data(function(d){return d}).enter();
 
   points.append('circle')
     .attr('cx', checkPointStartX)
     .attr('cy', checkPointY)
-    .attr('r',pathwayId ? 2:4)
+    .attr('r',entityId ? 2:4)
     .style('fill', 'white')
     .append('title')
     .text(function(d) {
@@ -102,8 +113,6 @@ _(g.pathWays).forEach(function(p, pathwayId){
         + '\t\t' + d.target.shortName
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
     })
-
-
   }).value()
 
 

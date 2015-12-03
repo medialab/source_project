@@ -20,7 +20,7 @@ _.forEach(config.corpus, function(data, key){
       config: JSON.stringify({ corpus:data, global:config })
     });
 
-  fs.writeFile('../app/explo_'+ key +'.html', result, function (err) {
+  fs.writeFile('../app/'+data.template+'_'+ key +'.html', result, function (err) {
     if (err) throw err;
     console.log('html page saved.');
   });

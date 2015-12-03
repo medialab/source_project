@@ -94,19 +94,16 @@
     _.forEach(conf.layout.nodesMergeFromRelation, function(t){
       _(d)
         .filter('recordTypeId', 1)
-        .sortBy('startDate')
         .filter('typeId', t)
         .forEach(function(l){
           _(d)
             .filter('source', l.target)
-            .sortBy('startDate')
             .forEach(function(n,i){
               n.source = l.source;
             }).value()
 
           _(d)
             .filter('target', l.target)
-            .sortBy('startDate')
             .forEach(function(n,i){
               n.target = l.source;
             }).value()
@@ -267,7 +264,6 @@
     if(d.shortName !== ''  && !_.isUndefined(d.shortName)) return d.shortName
     return d.title
   }
-
 
   if(typeof window === 'undefined' ) module.exports = Sutils; // node
   else window.Sutils = Sutils; // browser

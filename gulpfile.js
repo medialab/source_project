@@ -30,10 +30,8 @@ gulp.task('less', function() {
 
 gulp.task('build', function() {
   return gulp.src(jsFiles,{base: 'bower_components/'})
-    .pipe(concat('lib.js'))
-    // .pipe(gulp.dest('./app/assets/js/'))
-    .pipe(rename('lib.min.js'))
-    // .pipe(uglify())
+    .pipe(concat('lib.min.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('./app/assets/js/'));
 });
 

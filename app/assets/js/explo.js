@@ -2,10 +2,7 @@ var config  = {}, g = {};
 
 d3.json('../config.json', function(error, config){
   g.conf = config;
-  g.corpus = _(config.corpus)
-    .filter(function(value, key) {return key === corpusId;})
-    .first();
-
+  g.corpus = _(config.corpus).filter(function(value, key) {return key === corpusId;}).first();
   g.layout = typeof g.corpus.layout !== 'undefined' ? g.corpus.layout : {};
   d3.json('data/'+g.corpus.template+'_'+ corpusId +'.json', onData);
 });
@@ -16,6 +13,7 @@ function onData(error, data) {
       l = _.defaults(g.layout, g.conf.layout);
 
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
+
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
 
   data = Sutils.mergeNodesFromRelation(data, g.conf);
@@ -108,6 +106,13 @@ function onData(error, data) {
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
 
+  console.log(
+    _.difference(
+      _(data).reject('recordTypeId',1).map('shortName').value(),
+      _.map(g.nodes,'shortName')
+    )
+  )
+
   // attributes formulas
   function sourceY(d){ return eventPosY[d.source.recordId] }
   function targetY(d){ return eventPosY[d.target.recordId] }
@@ -124,7 +129,9 @@ function onData(error, data) {
       )
     )
   }
-  function getLayout(d, type, prop){return _.defaults(layout[type][d.typeId],l)[prop] }
+  function getLayout(d, type, prop){
+    return _.defaults(layout[type][d.typeId],l)[prop]
+  }
 
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
