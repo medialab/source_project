@@ -9,8 +9,10 @@ d3.json('../config.json', function(error, config){
 
 function onData (data) {
 
-  g.links = Sutils.getValidLinks(data, g.conf);
-  g.nodes = Sutils.getLinkedNodes(data, g.links);
+  var l = _.defaults(g.layout, g.conf.layout);
+
+  g.links = Sutils.getValidLinks(data, g.conf, l);
+  g.nodes = Sutils.getLinkedNodes(data, g.links, l);
 
   // indexes and layout overide
   var indexType = ['typeId','typeName','recordTypeId','startDate','recordId'];
@@ -56,7 +58,7 @@ function onData (data) {
 
 function draw(g,way){
 
-  var w = 3500 , h = 3500, spacingX = 30, spacingY = 5, m = [50, 100];
+  var w = 3500 , h = 3500, spacingX = 30, spacingY = 12, m = [50, 10];
   var color = d3.scale.category20();
   var svg = d3.select('#pathway').append('svg:svg').attr('width', w).attr('height', h)
 

@@ -14,8 +14,8 @@ function onData(error, data) {
 
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
 
+  // merge nodes from relation
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
-
   data = Sutils.mergeNodesFromRelation(data, g.conf, l);
 
   // get relations with a source and a target
@@ -120,7 +120,10 @@ function onData(error, data) {
     if(l.linearTime) return l.offsetX + (d.startDate - g.linksPeriod.start) * l.spacingX*l.YearSpacing
     return l.offsetX + d.rank * l.spacingX
   }
-  function linkColor(d){ return colors[1](_.indexOf(recTypes.links[l.linksColors], d[l.linksColors])) }
+  function linkColor(d){
+    if(Sutils.Palettes[l.linksColors][d[l.linksColors]]) return Sutils.Palettes[l.linksColors][d[l.linksColors]];
+    return colors[1](_.indexOf(recTypes.links[l.linksColors], d[l.linksColors]))
+  }
   function nodeColor(d){
     return colors[0](
       _.indexOf(
@@ -193,7 +196,7 @@ function onData(error, data) {
   }
   function yearLabelOff(d){ d3.selectAll('.yearLabel').transition().style('opacity', 1);}
 
-  var w = _(g.links).map('rank').max() * (l.spacingX+10) + l.offsetX , h = l.offsetY,
+  var w = _(g.links).map('rank').max() * (l.spacingX+20) + l.offsetX , h = l.offsetY,
       svg = d3.select('#explo').append('svg:svg').attr('width', w).attr('height', h)
 
   // range input event
@@ -276,7 +279,10 @@ function onData(error, data) {
       var sample = _.find(g.links, {'typeId':d})
       return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
-    .style('fill', function(d,i){return colors[1](i)})
+    .style('fill', function(d,i){
+      if(Sutils.Palettes[l.linksColors][d]) return Sutils.Palettes[l.linksColors][d];
+      return colors[1](i)
+    })
     .on('click', onLinkTypeClick)
     .append('title')
     .text(function(d) {

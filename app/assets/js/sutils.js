@@ -227,6 +227,7 @@
     ;
   }
 
+  // applies type dependant layout
   Sutils.getCustomLayout = function(g, type){
     var index = _(g[type]).indexBy('typeId').value();
     _(g.corpus[type].layouts).forEach(function(customLayout){
@@ -238,13 +239,28 @@
     return index
   }
 
-  function getShortName(d){
-    if(d.shortName !== ''  && !_.isUndefined(d.shortName)) return d.shortName
-    return d.title
-  }
-
   if(typeof window === 'undefined' ) module.exports = Sutils; // node
   else window.Sutils = Sutils; // browser
+
+  Sutils.Palettes ={}
+
+  Sutils.Palettes.typeId = {
+    5092:"#558237",
+    5097:"#CF7AD6",
+    5111:"#DF5251",
+    5112:"#5093BA",
+    5156:"#BE8A2C",
+    5158:"#38A684",
+    5162:"#7D8BDF",
+    5163:"#5BB942",
+    5178:"#DB539A",
+    5241:"#9DA531",
+    5333:"#C96531",
+    5336:"#886CA4",
+    5344:"#C25068",
+    5364:"#BF6E9A",
+  };
+
 
   Sutils.colors = [
     [
