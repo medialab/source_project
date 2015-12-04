@@ -93,6 +93,7 @@
   Sutils.getValidLinks = function(data, conf){
     var links = _(data)
       .filter('recordTypeId', 1)
+      .reject(function(d){ return d.typeId === 5364 && d.startDate > 9000 }) // reject infinite discontinues relations
       .filter(function(d){
         return _.includes(Sutils.getAllRecId(data), d.target)
             && _.includes(Sutils.getAllRecId(data), d.source);
