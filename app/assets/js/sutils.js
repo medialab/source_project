@@ -2,32 +2,12 @@
 
   if(typeof window === 'undefined' ) _ = require('lodash');
 
-  Sutils = {}
+  Sutils = {};
 
-  Sutils.colors = [
-    [
-    '#899EBA','#D4B259','#71463A','#558C64','#E6876A','#41575F',
-    '#E7A5AC','#797937','#76BEA7','#B1C46F','#48898E','#C999C3',
-    '#93646F','#5B593C','#936935','#2C5945','#63BAC4','#94B68B',
-    '#D98481','#BC8499','#98949E','#D89479','#BC7D4B','#4D8773',
-    '#48A398','#B19445','#716736','#778598','#ABABC5','#5B572D'
-    ],
-    ["#CF81CE","#73E13A","#EE5F35","#67E2D5","#A8A048","#7097DA",
-     "#DA8173","#D95FE4","#6ADF9F","#D58943","#65A836","#C7E23F",
-     "#EB58A3","#9183EB","#BEE27F","#79B5CF","#EE576C","#CD86A4",
-     "#61DE6F","#70A967","#59AA94","#C4A6D5","#DFA836","#DACB43"],
-
-    ["#915A72","#4F802D","#AE5A27","#222C1B","#407B88","#7B74B7",
-     "#8D761C","#C84E57","#2A3349","#3C7E5F","#7B6552","#513015",
-     "#803437","#3A4E1E","#34554E","#4278A8","#56263B","#B54E81",
-     "#746D78","#545178","#6B7951","#916099","#80642F","#3B2E30",
-     "#A46053"],
-  ];
   // nest
   // https://gist.github.com/joyrexus/9837596
   Sutils.nest = function (seq, keys) {
-    if (!keys.length)
-        return seq;
+    if (!keys.length) return seq;
     var first = keys[0];
     var rest = keys.slice(1);
     return _.mapValues(_.groupBy(seq, first), function (value) {
@@ -51,15 +31,12 @@
     var fields = ['startDate','endDate','shortName','source','target'];
 
     _.forEach(fields, function(f){
-
-        var und = _.filter(data, function(d){ return _.isUndefined(d[f]) });
-        r['undefined-'+f]= Sutils.nest(und, ['recordTypeName','typeName']);
-
+      var und = _.filter(data, function(d){ return _.isUndefined(d[f]) });
+      r['undefined-'+f]= Sutils.nest(und, ['recordTypeName','typeName']);
     })
+
     // types
-    r.recordsByTypes = Sutils.nest(data, ['recordTypeName',function(d){
-      return d.typeId+': ' + d.typeName ;
-    }])
+    r.recordsByTypes = Sutils.nest(data, ['recordTypeName',function(d){ return d.typeId+': ' + d.typeName; }])
 
     return r;
   }
@@ -268,4 +245,23 @@
   if(typeof window === 'undefined' ) module.exports = Sutils; // node
   else window.Sutils = Sutils; // browser
 
+  Sutils.colors = [
+    [
+    '#899EBA','#D4B259','#71463A','#558C64','#E6876A','#41575F',
+    '#E7A5AC','#797937','#76BEA7','#B1C46F','#48898E','#C999C3',
+    '#93646F','#5B593C','#936935','#2C5945','#63BAC4','#94B68B',
+    '#D98481','#BC8499','#98949E','#D89479','#BC7D4B','#4D8773',
+    '#48A398','#B19445','#716736','#778598','#ABABC5','#5B572D'
+    ],
+    ["#CF81CE","#73E13A","#EE5F35","#67E2D5","#A8A048","#7097DA",
+     "#DA8173","#D95FE4","#6ADF9F","#D58943","#65A836","#C7E23F",
+     "#EB58A3","#9183EB","#BEE27F","#79B5CF","#EE576C","#CD86A4",
+     "#61DE6F","#70A967","#59AA94","#C4A6D5","#DFA836","#DACB43"],
+
+    ["#915A72","#4F802D","#AE5A27","#222C1B","#407B88","#7B74B7",
+     "#8D761C","#C84E57","#2A3349","#3C7E5F","#7B6552","#513015",
+     "#803437","#3A4E1E","#34554E","#4278A8","#56263B","#B54E81",
+     "#746D78","#545178","#6B7951","#916099","#80642F","#3B2E30",
+     "#A46053"],
+  ];
 })();

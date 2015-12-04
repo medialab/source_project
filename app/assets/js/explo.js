@@ -340,7 +340,8 @@ function onData(error, data) {
     .attr('class','node source' )
     .attr('cy', sourceY)
     .style('fill', linkColor)
-    .attr('r', function(d){return getLayout(d,'links', 'rSource')})
+    .attr('r', function(d){return getLayout(d,'links', 'sourceR')})
+    .style('opacity', function(d){return getLayout(d,'links', 'sourceOpacity')})
     .on('mouseover', nodeMouseOver)
     .on('mouseout', nodeMouseOut)
 
@@ -349,7 +350,8 @@ function onData(error, data) {
     .attr('class','node target')
     .attr('cy', targetY)
     .style('fill', linkColor)
-    .attr('r', function(d){return getLayout(d,'links', 'rTarget')})
+    .attr('r', function(d){return getLayout(d,'links', 'targetR')})
+    .style('opacity', function(d){return getLayout(d,'links', 'targetOpacity')})
     .on('mouseover', nodeMouseOver)
     .on('mouseout', nodeMouseOut)
 
