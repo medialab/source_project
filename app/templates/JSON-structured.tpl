@@ -10,6 +10,7 @@
       {if ($r.f2)}  "shortName":"{$r.f2|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Short Name / Acronym*}",{/if}
       {if ($r.f10)} "startDate":{$r.f10|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*Start Date/time*},{/if}
       {if ($r.f11)} "endDate":{$r.f11|regex_replace:'/(.*)([0-9][0-9][0-9][0-9])(.*)$/':'$2'}{*End Date*},{/if}
+      {if ($r.f270)} "category":"{$r.f270.term|escape|escape:'htmlall'|replace:'"':'&quot;'|strip}{*Cluster Timeline >> Term*}",{/if}
 
       {* Organisation *}
       {* --------------------------------------------------*}
