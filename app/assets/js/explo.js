@@ -16,10 +16,10 @@ function onData(error, data) {
 
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
 
-  data = Sutils.mergeNodesFromRelation(data, g.conf);
+  data = Sutils.mergeNodesFromRelation(data, g.conf, l);
 
   // get relations with a source and a target
-  g.links = _(Sutils.getValidLinks(data, g.conf))
+  g.links = _(Sutils.getValidLinks(data, g.conf, l))
     .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, true) : true})
     .sortByOrder(g.corpus.links.sortBy, g.corpus.links.sortOrder)
     .value();

@@ -65,10 +65,10 @@
 
   // merge node from relations
 
-  Sutils.mergeNodesFromRelation = function(data, conf){
+  Sutils.mergeNodesFromRelation = function(data, conf, l){
 
     var d = data;
-    _.forEach(conf.layout.nodesMergeFromRelation, function(t){
+    _.forEach(l.nodesMergeFromRelation, function(t){
       _(d)
         .filter('recordTypeId', 1)
         .filter('typeId', t)
@@ -90,7 +90,7 @@
   }
 
   // get valid relations
-  Sutils.getValidLinks = function(data, conf){
+  Sutils.getValidLinks = function(data, conf, l){
     var links = _(data)
       .filter('recordTypeId', 1)
       .reject(function(d){ return d.typeId === 5364 && d.startDate > 9000 }) // reject infinite discontinues relations
@@ -147,7 +147,7 @@
       });
     })
 
-    _(conf.layout.nodesMergeFromRelation).forEach(function(t){
+    _(l.nodesMergeFromRelation).forEach(function(t){
       links = _(links).reject('typeId',t).value()
     }).value()
 
