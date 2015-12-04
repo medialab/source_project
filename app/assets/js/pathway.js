@@ -26,7 +26,7 @@ function onData (data) {
   });
 
   var way = ["source","target"];
-  // var way = ["target","source"];
+  var way = ["target","source"];
 
   var rank = 0;
   var sorted = _(g.links)
@@ -45,8 +45,8 @@ function onData (data) {
 
   g.pathWays = [
     _(g.links).groupBy(function(d){return d[way[0]].recordId}).values().value()
-    ,
-    _(g.links).groupBy(function(d){return d[way[1]].recordId}).values().value()
+    // ,
+    // _(g.links).groupBy(function(d){return d[way[1]].recordId}).values().value()
   ]
 
   g.linksPeriod = Sutils.getTimeBounds(g.links)
@@ -56,7 +56,7 @@ function onData (data) {
 
 function draw(g,way){
 
-  var w = 2500 , h = 2500, spacingX = 80, spacingY = 20, m = [50, 100];
+  var w = 3500 , h = 3500, spacingX = 30, spacingY = 5, m = [50, 100];
   var color = d3.scale.category20();
   var svg = d3.select('#pathway').append('svg:svg').attr('width', w).attr('height', h)
 
@@ -76,7 +76,7 @@ function draw(g,way){
     var line = d3.svg.line()
       .x(checkPointStartX)
       .y(checkPointY)
-      .interpolate("monotone");
+      .interpolate("step-before");
 
     var
     entity = svg.selectAll('.entity').data(p)
@@ -86,7 +86,7 @@ function draw(g,way){
     entity
       .append('path')
       .attr('d', line)
-      .style('stroke-width',entityId ? 3:20)
+      .style('stroke-width',entityId ? 3:15)
       .style('fill', 'none')
       // .style('opacity','0.5')
       .style('stroke',"white")
@@ -96,7 +96,7 @@ function draw(g,way){
     entity
       .append('path')
       .attr('d', line)
-      .style('stroke-width',entityId ? 3:17)
+      .style('stroke-width',entityId ? 3:13)
       .style('fill', 'none')
       // .style('opacity','0.5')
       .style('stroke', function(d,i){ return color(i) })

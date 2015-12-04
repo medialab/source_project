@@ -52,7 +52,7 @@ function onData(error, data) {
   });
 
   // indexes and layout overide
-  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId'],
+  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId','category'],
       indexes = {nodes:{},links:{}},
       recTypes = {nodes:{},links:{}};
 
