@@ -37,7 +37,6 @@ function onData(error, data) {
   g.corpus.nodes.groups.forEach(function(group){
     g[group.name] = _(g.nodes)
     .filter(group.filter)
-    // .reject(group.reject || {'all':0} )
     .filter(function(d){return group.reject ? Sutils.multiValueFilter(d, group.reject, true) : true})
     .sortByOrder(group.sortBy, group.sortOrder)
     .value();
@@ -52,7 +51,7 @@ function onData(error, data) {
   });
 
   // indexes and layout overide
-  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId','category'],
+  var indexType = ['typeId','typeName','recordTypeId','startDate','recordId','category','typeGroup'],
       indexes = {nodes:{},links:{}},
       recTypes = {nodes:{},links:{}};
 

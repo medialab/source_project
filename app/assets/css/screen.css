@@ -6816,6 +6816,14 @@ h1 {
 #explo {
   font-size: 11px;
 }
+#explo .description,
+#explo .update {
+  opacity: 0;
+}
+#explo .title a {
+  font-size: 2em;
+  color: black;
+}
 #explo .yearMark,
 #explo .grid {
   stroke-dasharray: 1,1;
