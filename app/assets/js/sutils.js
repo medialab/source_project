@@ -170,21 +170,16 @@
 
       var dates = _(links)
         .filter(function(d){return d.target.recordId === n.recordId || d.source.recordId === n.recordId;})
-        .sortBy('startDates')
-        .compact()
-        .value();
+        .sortBy('startDates').value();
 
       var last = _(links).sortBy('startDates').last().recordId;
-      var lastAsTarget =  _(links).sortBy('startDates').filter(function(d){return d.target.recordId === n.recordId;}).last();
+      var lastAsTarget =  _(links).sortBy('startDates').filter(function(d){return d.source.recordId === n.recordId;}).last();
 
-      if(!_.isUndefined(lastAsTarget)) {
+      if(!_.isUndefined(lastAsTarget)){
         last = _.indexOf(layout.stopRelation , lastAsTarget.typeId) > -1 ? lastAsTarget.recordId : last
       }
 
-      return _.merge(n,{
-        endId:last,
-        startId:_.first(dates).recordId
-      })
+      return _.merge(n,{ endId:last, startId:_.first(dates).recordId})
 
     }).compact().value();
   }

@@ -200,6 +200,24 @@ function onData(error, data) {
   var w = _(g.links).map('rank').max() * (l.spacingX+20) + l.offsetX , h = l.offsetY,
       svg = d3.select('#explo').append('svg:svg').attr('width', w).attr('height', h)
 
+
+    defs = svg.append("defs")
+
+    defs.append("marker")
+        .attr({
+          "id":"arrow",
+          "viewBox":"0 -5 10 10",
+          "refX":5,
+          "refY":0,
+          "markerWidth":0.7,
+          "markerHeight":0.7,
+          "orient":"auto"
+        })
+        .append("path")
+          .attr("d", "M0,-5L10,0L0,5")
+          .attr("class","arrowHead")
+          .style('fill','white')
+
   // range input event
   d3.select('#zoom').on('input', onZoomChange);
 
@@ -333,14 +351,6 @@ function onData(error, data) {
     .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
     ;
-  // edges
-  var edges = event.append('line')
-    .attr('class', 'edges')
-    .style('stroke',linkColor)
-    .style('opacity', function(d){ return getLayout(d, 'links', 'edgesOpacity') })
-    .attr('y1', sourceY)
-    .attr('y2', targetY)
-    .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
 
   // source node
   var sourceNode = event.append('circle')
@@ -361,6 +371,15 @@ function onData(error, data) {
     .style('opacity', function(d){return getLayout(d,'links', 'targetOpacity')})
     .on('mouseover', nodeMouseOver)
     .on('mouseout', nodeMouseOut)
+  // edges
+  var edges = event.append('line')
+    .attr('class', 'edges')
+    .style('stroke',linkColor)
+    .style('opacity', function(d){ return getLayout(d, 'links', 'edgesOpacity') })
+    .attr('y1', sourceY)
+    .attr('y2', targetY)
+    .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
+    .attr("marker-end", function(d) { return "url(#arrow)"; });
 
   var entityPath = svg.selectAll('.pathway')
     .data(g.pathway).enter()
