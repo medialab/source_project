@@ -396,7 +396,9 @@ function onData(error, data) {
         return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX
       })
       .attr('x2', function(d,i){
+
         var v = indexes.links.recordId[d.endId][0];
+
         if(g.layout.linearTime) return l.offsetX + (v.startDate - g.linksPeriod.start) * l.spacingX * l.YearSpacing;
         return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX
       })
