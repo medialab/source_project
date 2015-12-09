@@ -9,6 +9,7 @@ d3.json('../config.json', function(error, config){
 
 function onData (data) {
 
+
   var l = _.defaults(g.layout, g.conf.layout);
 
   g.links = Sutils.getValidLinks(data, g.conf, l);

@@ -9,6 +9,8 @@ d3.json('../config.json', function(error, config){
 
 function onData(error, data) {
 
+  console.log('->>',_(data).reject('recordTypeId',1).sortBy('recordId').map('recordId').value());
+
   var eventPosY = {}, eventPosX = {},
       l = _.defaults(g.layout, g.conf.layout);
 
