@@ -366,15 +366,7 @@ function onData(error, data) {
 
     ;
 
-  // source node
-  var sourceNode = event.append('circle')
-    .attr('class','node source' )
-    .attr('cy', sourceY)
-    .style('fill', linkColor)
-    .attr('r', function(d){return getLayout(d,'links', 'sourceR')})
-    .style('opacity', function(d){return getLayout(d,'links', 'sourceOpacity')})
-    .on('mouseover', nodeMouseOver)
-    .on('mouseout', nodeMouseOut)
+
 
   // target node
   var targetNode = event.append('circle')
@@ -405,6 +397,15 @@ function onData(error, data) {
     .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
     .attr("marker-end", function(d) { return "url(#arrow)"; });
 
+  // source node
+  var sourceNode = event.append('circle')
+    .attr('class','node source' )
+    .attr('cy', sourceY)
+    .style('fill', linkColor)
+    .attr('r', function(d){return getLayout(d,'links', 'sourceR')})
+    .style('opacity', function(d){return getLayout(d,'links', 'sourceOpacity')})
+    .on('mouseover', nodeMouseOver)
+    .on('mouseout', nodeMouseOut)
 
   var entityPath = svg.selectAll('.pathway')
     .data(g.pathway).enter()
