@@ -9,10 +9,18 @@ d3.json('../config.json', function(error, config){
 
 function onData (data) {
 
+  var data = data.results;
+
   var l = _.defaults(g.layout, g.conf.layout);
 
   g.links = Sutils.getValidLinks(data, g.conf, l);
   g.nodes = Sutils.getLinkedNodes(data, g.links, l);
+
+  g.issues = _(g.nodes).filter('recordTypeId',14).groupBy('category').value();
+  g.devices = _(g.nodes).filter('recordTypeId',16).value();
+
+
+
 
   console.log(g)
   draw(g);
