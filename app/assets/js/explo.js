@@ -126,8 +126,14 @@ function onData(error, data) {
     return l.offsetX + d.rank * l.spacingX
   }
   function linkColor(d){
-    if(Sutils.Palettes[l.linksColors][d[l.linksColors]]) return Sutils.Palettes[l.linksColors][d[l.linksColors]];
-    return colors[1](_.indexOf(recTypes.links[l.linksColors], d[l.linksColors]))
+
+    var linksColors = l.linksColors;
+
+    if(linksColors === "source" || linksColors === "target") { return nodeColor(d[linksColors]); }
+
+    if(Sutils.Palettes[linksColors][d[linksColors]]) return Sutils.Palettes[linksColors][d[linksColors]];
+
+    return colors[1](_.indexOf(recTypes.links[linksColors], d[linksColors]))
   }
   function nodeColor(d){
     return colors[0](
@@ -291,7 +297,9 @@ function onData(error, data) {
     .text(function(d){ return d.name });
 
   // links type labels
-  var linkTypeCaption = svg.selectAll('.linkTypeCaption')
+
+  if(l.linksColors !== 'source' && l.linksColors !== 'target'){
+    var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.linksColors]).enter()
     .append('g')
     .append('text')
@@ -312,6 +320,8 @@ function onData(error, data) {
       var sample = _.find(g.links, {'typeId':d})
       if(sample) return sample.typeId;
     })
+
+  }
 
   // draw events
   var prevDate;
@@ -375,7 +385,17 @@ function onData(error, data) {
     .style('opacity', function(d){return getLayout(d,'links', 'targetOpacity')})
     .on('mouseover', nodeMouseOver)
     .on('mouseout', nodeMouseOut)
+
   // edges
+  var edgesShadow = event.append('line')
+    .attr('class', 'edges')
+    .style('stroke',"white")
+    .style('opacity', function(d){ return getLayout(d, 'links', 'linksColorsShadowOpacity') })
+    .attr('y1', sourceY)
+    .attr('y2', targetY)
+    .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
+    .attr("marker-end", function(d) { return "url(#arrow)"; });
+
   var edges = event.append('line')
     .attr('class', 'edges')
     .style('stroke',linkColor)
@@ -384,6 +404,7 @@ function onData(error, data) {
     .attr('y2', targetY)
     .attr('visibility', function(d){ return getLayout(d,'links', 'edgesHover') ? 'hidden' : 'visible'})
     .attr("marker-end", function(d) { return "url(#arrow)"; });
+
 
   var entityPath = svg.selectAll('.pathway')
     .data(g.pathway).enter()
@@ -443,6 +464,15 @@ function onData(error, data) {
       .attr('x1', linkX)
       .attr('x2', linkX)
       .style('stroke-width', function(d){ return l.spacingX < 3 ? 0 : getLayout(d, 'links', 'edgesWidth') })
+
+    edgesShadow
+      .attr('x1', linkX)
+      .attr('x2', linkX)
+      .style('stroke-width', function(d){
+
+        return l.spacingX < 3 ? 0 : getLayout(d, 'links', 'edgesWidth') + getLayout(d, 'links', 'linksColorsShadowWidth')
+
+      })
 
     // source node
     targetNode
