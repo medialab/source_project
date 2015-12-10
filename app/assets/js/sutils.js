@@ -28,7 +28,7 @@
   Sutils.dataCheck = function(data){
 
     var r = {}; // report
-    var fields = ['startDate','endDate','shortName','source','target'];
+    var fields = ['startDate','endDate','shortName','source','target','category','typeGroup'];
 
     _.forEach(fields, function(f){
       var und = _.filter(data, function(d){ return _.isUndefined(d[f]) });
@@ -275,10 +275,14 @@
      "#EB58A3","#9183EB","#BEE27F","#79B5CF","#EE576C","#CD86A4",
      "#61DE6F","#70A967","#59AA94","#C4A6D5","#DFA836","#DACB43"],
 
+    // dark
     ["#915A72","#4F802D","#AE5A27","#222C1B","#407B88","#7B74B7",
      "#8D761C","#C84E57","#2A3349","#3C7E5F","#7B6552","#513015",
      "#803437","#3A4E1E","#34554E","#4278A8","#56263B","#B54E81",
      "#746D78","#545178","#6B7951","#916099","#80642F","#3B2E30",
      "#A46053"],
+     // pastel
+     ["#C3C6E9","#D2D881","#90DEC9","#BBB99F","#E6B177","#E8B4C3",
+     "#A9DFA6","#D3D9D5","#9BD7E0","#E9D5AC"]
   ];
 })();

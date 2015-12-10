@@ -102,12 +102,19 @@ function onData(error, data) {
     }).value()
 
   var layout = { nodes: Sutils.getCustomLayout(g, 'nodes'), links: Sutils.getCustomLayout(g, 'links')};
-  var typeCount = _.keys(indexes.nodes[l.nodesColors]).length;
+  var ntCount = _.keys(indexes.nodes[l.nodesColors]).length;
+  var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
-  var colors = [
-    typeCount < 10 ? d3.scale.category10() : d3.scale.category20(),
+  console.log("ltCount",ltCount)
+
+var colors = [
+    d3.scale.category20c(),
     d3.scale.ordinal().range(Sutils.colors[0])
   ];
+
+  var getNodeColor = ntCount < 12 ? d3.scale.ordinal().range(colorbrewer.Set2[ntCount]) : d3.scale.category20c();
+  var getLinkColor = d3.scale.category20c();
+
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
 
@@ -126,17 +133,13 @@ function onData(error, data) {
     return l.offsetX + d.rank * l.spacingX
   }
   function linkColor(d){
-
     var linksColors = l.linksColors;
-
     if(linksColors === "source" || linksColors === "target") { return nodeColor(d[linksColors]); }
-
-    if(Sutils.Palettes[linksColors][d[linksColors]]) return Sutils.Palettes[linksColors][d[linksColors]];
-
-    return colors[1](_.indexOf(recTypes.links[linksColors], d[linksColors]))
+    // if(Sutils.Palettes[linksColors][d[linksColors]]) return Sutils.Palettes[linksColors][d[linksColors]];
+    return getLinkColor(_.indexOf(recTypes.links[linksColors], d[linksColors]))
   }
   function nodeColor(d){
-    return colors[0](
+    return getNodeColor(
       _.indexOf(
         recTypes.nodes[getLayout(d,'nodes', 'nodesColors')],
         d[getLayout(d,'nodes', 'nodesColors')]
