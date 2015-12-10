@@ -28,7 +28,7 @@
   Sutils.dataCheck = function(data){
 
     var r = {}; // report
-    var fields = ['startDate','endDate','shortName','source','target'];
+    var fields = ['startDate','endDate','shortName','source','target','category','typeGroup'];
 
     _.forEach(fields, function(f){
       var und = _.filter(data, function(d){ return _.isUndefined(d[f]) });
