@@ -104,10 +104,16 @@ function onData(error, data) {
   var layout = { nodes: Sutils.getCustomLayout(g, 'nodes'), links: Sutils.getCustomLayout(g, 'links')};
   var typeCount = _.keys(indexes.nodes[l.nodesColors]).length;
 
+  console.log(l.nodesColors,typeCount);
+
   var colors = [
-    typeCount < 10 ? d3.scale.category10() : d3.scale.category20(),
+    typeCount < 12 ?  d3.scale.ordinal().range(colorbrewer.Spectral[typeCount]) : d3.scale.category20c(),
     d3.scale.ordinal().range(Sutils.colors[0])
   ];
+
+  var getNodeColor = typeCount < 12 ?  d3.scale.ordinal().range(colorbrewer.Set2[typeCount]) : d3.scale.category20c();
+  var getNodeLink = d3.scale.ordinal().range(Sutils.colors[0])
+
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
 
@@ -133,10 +139,10 @@ function onData(error, data) {
 
     if(Sutils.Palettes[linksColors][d[linksColors]]) return Sutils.Palettes[linksColors][d[linksColors]];
 
-    return colors[1](_.indexOf(recTypes.links[linksColors], d[linksColors]))
+    return getNodeLink(_.indexOf(recTypes.links[linksColors], d[linksColors]))
   }
   function nodeColor(d){
-    return colors[0](
+    return getNodeColor(
       _.indexOf(
         recTypes.nodes[getLayout(d,'nodes', 'nodesColors')],
         d[getLayout(d,'nodes', 'nodesColors')]
