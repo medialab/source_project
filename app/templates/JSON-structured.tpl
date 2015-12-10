@@ -31,8 +31,8 @@
             "typeId": {$r.f6.internalid} {*Relationship Type >> Internal ID*},
           {/if}
 
-          "source": {$r.f7.recID}{*Source Record >> ID*},
-          "target": {$r.f5.recID}{*Target Record >> ID*},
+          {if ($r.f7)} "source": {$r.f7.recID}{*Source Record >> ID*},{/if}
+          {if ($r.f5)} "target": {$r.f5.recID}{*Target Record >> ID*},{/if}
         {/if}
 
         {* document *}
