@@ -24,4 +24,6 @@ function draw(g){
   var color = d3.scale.category20();
   var svg = d3.select('#pathway').append('svg:svg').attr('width', w).attr('height', h);
 
+  console.log("g", g);
+
 }
