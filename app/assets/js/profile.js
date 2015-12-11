@@ -25,7 +25,7 @@ function onData (data) {
   // min-max date
   g.linksPeriod = Sutils.getTimeBounds(g.links)
   g.linksPeriod.end = g.linksPeriod.end+2;
-
+  g.linksPeriod.start = g.linksPeriod.start-2;
   // link fix
   g.links = _(g.links).forEach(function(d){
     if(_.isUndefined(d.endDate)) d.endDate = g.linksPeriod.end;
