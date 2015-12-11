@@ -24,8 +24,9 @@ function onData (data) {
 
   // min-max date
   g.linksPeriod = Sutils.getTimeBounds(g.links)
-  g.linksPeriod.end = g.linksPeriod.end+3;
+  g.linksPeriod.end = g.linksPeriod.end+2;
 
+  // link fix
   g.links = _(g.links).forEach(function(d){
     if(_.isUndefined(d.endDate)) d.endDate = g.linksPeriod.end;
     if(d.endDate > 9000) d.endDate = g.linksPeriod.end;
@@ -33,7 +34,7 @@ function onData (data) {
   .filter('typeId', 5158)
   .value()
 
-  g.categories = _(g.issues).indexBy('category').map('category').invert().value()
+  // get graphs layers
   g.graphs = _(g.devices).map(function(d){
 
     var yearDefault = _.map(_.range(0, yearToId(g.linksPeriod.end)), function(i){return { x:i, y:0, y0:0, device:d } });
@@ -54,7 +55,12 @@ function onData (data) {
     return { shortName:d.shortName, layers:layers}
   }).value()
 
+  // get max issues for a device
   g.maxIssues = _(g.graphs).map(function(d){ return d.layers.length}).max()
+  g.categories = _(g.issues).indexBy('category').map('category').invert().value()
+
+  // remove device without issues
+  g.graphs =  _(g.graphs).filter(function(d){ return d.layers.length > 0 }).value();
 
   console.log('g.graphs',g);
 
@@ -63,7 +69,7 @@ function onData (data) {
 
 function draw(g,l){
 
-  var m = [120, 50], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingX  + m[1]*2 );
+  var m = [120, 50], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
   var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
 
@@ -80,19 +86,20 @@ function draw(g,l){
   var stack = d3.layout.stack().offset("silhouette");
   var area = d3.svg.area()
     .x(function(d) { return x(g.linksPeriod.start+d.x) })
-    .y0(function(d) { return d.y0 * l.spacingX  })
-    .y1(function(d) { return (d.y0 + d.y) * l.spacingX });
+    .y0(function(d) { return d.y0 * l.spacingY  })
+    .y1(function(d) { return (d.y0 + d.y) * l.spacingY });
 
   // Draw Stuff
-  var device = svg.selectAll('.device').data(g.graphs).enter()
+  var device = svg.selectAll('.device').data(g.graphs)
+      .enter()
       .append('g')
-      .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingX * (g.maxIssues+3)) + m[1] )  + ')'});
+      .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingY * (g.maxIssues+3)) + m[1] )  + ')'});
 
     device.append('rect')
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', width)
-        .attr('height', l.spacingX * (g.maxIssues) )
+        .attr('height', l.spacingY * (g.maxIssues) )
         .attr('class','deviceZone')
 
     // draw issues layers
@@ -121,14 +128,14 @@ function draw(g,l){
     // add device name
     device
       .append('text')
-      .attr('y', (l.spacingX * g.maxIssues) / 2 )
+      .attr('y', (l.spacingY * g.maxIssues) / 2 )
       .attr('x', 20 )
       .text(function(d){ return d.shortName; }).fill('black')
 
     // add year axis
     device.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + l.spacingX + ")")
+      .attr("transform", "translate(0," + l.spacingY + ")")
       .style('opacity',function(d,i){ return i % 3 === 0 ? 1:0 })
       .call(xAxis);
 
