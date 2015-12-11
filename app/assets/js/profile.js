@@ -55,7 +55,7 @@ function onData (data) {
   }).value()
 
   // get max issues for a device
-  g.maxIssues = _(g.graphs).map(function(d){ return d.layers.length}).max()
+  g.maxIssues = _(g.graphs).map(function(d){ return d.layers.length}).max() / 2;
   g.categories = _(g.issues).indexBy('category').map('category').invert().value()
 
   // remove device without issues
