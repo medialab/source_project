@@ -63,7 +63,7 @@ function onData (data) {
 
 function draw(g,l){
 
-  var width = $("#profile").innerWidth() , height = 2000, m = [120, 50];
+  var m = [120, 50], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingX  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
   var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
 
@@ -82,10 +82,8 @@ function draw(g,l){
     .x(function(d) { return x(g.linksPeriod.start+d.x) })
     .y0(function(d) { return d.y0 * l.spacingX  })
     .y1(function(d) { return (d.y0 + d.y) * l.spacingX });
+
   // Draw Stuff
-
-
-
   var device = svg.selectAll('.device').data(g.graphs).enter()
       .append('g')
       .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingX * (g.maxIssues+3)) + m[1] )  + ')'});
@@ -97,6 +95,7 @@ function draw(g,l){
         .attr('height', l.spacingX * (g.maxIssues) )
         .attr('class','deviceZone')
 
+    // draw issues layers
     var issue = device.selectAll(".issue")
       .data(function(d,i){
         return i !== 3 ? stack(d.layers) : stack(g.graphs[0].layers)
@@ -119,12 +118,14 @@ function draw(g,l){
     //   .text(function(d) {  return _.isUndefined(d[0].issue) ? 'none': d[0].issue.shortName})
     //   .style("fill", function(d) { return _.isUndefined(d[0].issue) ? 'red' : color(g.categories[d[0].issue.category]) })
 
+    // add device name
     device
       .append('text')
       .attr('y', (l.spacingX * g.maxIssues) / 2 )
       .attr('x', 20 )
       .text(function(d){ return d.shortName; }).fill('black')
 
+    // add year axis
     device.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + l.spacingX + ")")
