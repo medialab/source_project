@@ -25,7 +25,7 @@ function onData (data) {
   // min-max date
   g.linksPeriod = Sutils.getTimeBounds(g.links)
   g.linksPeriod.end = g.linksPeriod.end+2;
-  g.linksPeriod.start = g.linksPeriod.start-2;
+  g.linksPeriod.start = g.linksPeriod.start-1;
   // link fix
   g.links = _(g.links).forEach(function(d){
     if(_.isUndefined(d.endDate)) d.endDate = g.linksPeriod.end;
@@ -80,7 +80,8 @@ function draw(g,l){
       .scale(x)
       .ticks(( g.linksPeriod.end-g.linksPeriod.start)/2)
       .tickFormat(d3.format('04d'))
-      .orient("top");
+      .tickSize(g.maxIssues *  l.spacingY)
+      .orient("bottom");
 
   var stack = d3.layout.stack().offset("silhouette");
   var area = d3.svg.area()

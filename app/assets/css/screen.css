@@ -6809,6 +6809,7 @@ h1 {
 #profile .axis line {
   shape-rendering: crispEdges;
   stroke: #000;
+  stroke-dasharray: 1,7;
 }
 #explo {
   font-size: 11px;
