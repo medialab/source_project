@@ -14,7 +14,7 @@ function onData (data) {
   var l = _.defaults(g.layout, g.conf.layout);
 
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
-  data = Sutils.mergeNodesFromRelation(data, g.conf, l);
+  // data = Sutils.mergeNodesFromRelation(data, g.conf, l);
 
   g.links = Sutils.getValidLinks(data, g.conf, l);
   g.nodes = Sutils.getLinkedNodes(data, g.links, l);
@@ -55,7 +55,7 @@ function onData (data) {
   }).value()
 
   // get max issues for a device
-  g.maxIssues = _(g.graphs).map(function(d){ return d.layers.length}).max() / 2;
+  g.maxIssues = _(g.graphs).map(function(d){ return d.layers.length}).max()
   g.categories = _(g.issues).indexBy('category').map('category').invert().value()
 
   // remove device without issues
@@ -106,7 +106,7 @@ function draw(g,l){
       .data(function(d,i){
         i === 3 ? console.log("bug:",d) : '';
 
-        return i !== 2 ? stack(d.layers) : stack(g.graphs[0].layers)
+        return i !== 3 ? stack(d.layers) : stack(g.graphs[0].layers)
       })  // record 7 to fix
       .enter()
 
