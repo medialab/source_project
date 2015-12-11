@@ -37,17 +37,16 @@ function onData (data) {
   // get graphs layers
   g.graphs = _(g.devices).map(function(d){
 
-    var yearDefault = _.map(_.range(0, yearToId(g.linksPeriod.end)), function(i){return { x:i, y:0, y0:0, device:d } });
-
     var layers = _(g.links)
       .filter(function(l){return l.source.recordId === d.recordId;})
       .sortBy(function(d){ return d.target.category})
       .map(function(l){
 
-        var yearDefault = _.map(_.range(0, yearToId(g.linksPeriod.end)), function(i){return { x:i, y:0, y0:0, device:d, device:d, issue:l.target } });
-        var year = []
+        var year = [];
+        var yearDefault = _.map(_.range(0, yearToId(g.linksPeriod.end)), function(i){return { x:i, y:0, y0:0, device:l.source, issue:l.target } });
+
         for (var i = yearToId(l.endDate); i >= yearToId(l.startDate); i--) {
-          year[i] = { x:i, y:1, y0:5, shortName:l.target.shortName }
+          year[i] = { x:i, y:1, y0:5, device:l.source, issue:l.target}
         };
 
         return _.defaults(year, yearDefault);
@@ -105,6 +104,8 @@ function draw(g,l){
     // draw issues layers
     var issue = device.selectAll(".issue")
       .data(function(d,i){
+        i === 3 ? console.log("bug:",d) : '';
+
         return i !== 3 ? stack(d.layers) : stack(g.graphs[0].layers)
       })  // record 7 to fix
       .enter()
@@ -118,7 +119,7 @@ function draw(g,l){
           .text(function(d) {  return _.isUndefined(d[0].issue) ? 'none': d[0].issue.shortName})
 
         issuePath
-          .on('mouseover', function(d){ d3.select(this).attr('opacity', .5)})
+          .on('mouseover', function(d){ d3.select(this).attr('opacity', .7)})
           .on('mouseout',  function(d){ d3.select(this).attr('opacity',  1)})
 
     // issue.append('text')

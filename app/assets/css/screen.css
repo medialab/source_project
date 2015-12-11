@@ -6793,7 +6793,7 @@ h1 {
 }
 #profile .deviceZone {
   fill: black;
-  opacity: 0.05;
+  opacity: 0.08;
 }
 #profile .axis {
   opacity: 0.5;
@@ -6809,6 +6809,10 @@ h1 {
 }
 #explo {
   font-size: 11px;
+}
+#explo .edgeShadow {
+  stroke: blue;
+  stroke-opacity: 0.1;
 }
 #explo .description,
 #explo .update {

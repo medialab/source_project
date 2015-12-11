@@ -348,10 +348,6 @@ function onData(error, data) {
     .style('opacity',l.gridOpacity)
     .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
 
-    ;
-
-
-
   // target node
   var targetNode = event.append('circle')
     .attr('class','node target')
@@ -364,8 +360,7 @@ function onData(error, data) {
 
   // edges
   var edgesShadow = event.append('line')
-    .attr('class', 'edges')
-    .style('stroke',"white")
+    .attr('class', 'edges edgeShadow')
     .style('opacity', function(d){ return getLayout(d, 'links', 'linksColorsShadowOpacity') })
     .attr('y1', sourceY)
     .attr('y2', targetY)
