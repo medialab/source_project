@@ -92,7 +92,7 @@ function draw(g,l){
   var device = svg.selectAll('.device').data(g.graphs)
       .enter()
       .append('g')
-      .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingY * (g.maxIssues+3)) + m[1] )  + ')'});
+      .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingY * (g.maxIssues+2)) + m[1] )  + ')'});
 
     device.append('rect')
         .attr('x', 0)
@@ -113,6 +113,7 @@ function draw(g,l){
     var issuePath = issue.append("path")
         .attr("d", area)
         .attr('class','issue')
+        .attr('transform', 'translate(' + 0 + ',' + l.spacingY + ')')
         .style("fill", function(d) { return _.isUndefined(d[0].issue) ? 'red' : color(g.categories[d[0].issue.category]) })
 
         issuePath.append('title')
@@ -137,7 +138,7 @@ function draw(g,l){
     device.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + l.spacingY + ")")
-      .style('opacity',function(d,i){ return i % 3 === 0 ? 1:0 })
+      .style('opacity',function(d,i){ return i % 2 === 0 ? 1:0 })
       .call(xAxis);
 
 
