@@ -68,7 +68,7 @@ function onData (data) {
 
 function draw(g,l){
 
-  var m = [120, 50], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
+  var m = [100, 10], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
   var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
 
@@ -97,7 +97,7 @@ function draw(g,l){
     device.append('rect')
         .attr('x', 0)
         .attr('y', 0)
-        .attr('width', width)
+        .attr('width', width - m[0] + l.spacingY*2)
         .attr('height', l.spacingY * (g.maxIssues) )
         .attr('class','deviceZone')
 
@@ -138,7 +138,7 @@ function draw(g,l){
     device.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + l.spacingY + ")")
-      .style('opacity',function(d,i){ return i % 2 === 0 ? 1:0 })
+      .style('opacity',function(d,i){ return i % 2 === 1 ? 1:0 })
       .call(xAxis);
 
 
