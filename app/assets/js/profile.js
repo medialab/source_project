@@ -68,7 +68,7 @@ function onData (data) {
 
 function draw(g,l){
 
-  var m = [100, 10], width = Math.min($("#profile").innerWidth(), 700) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
+  var m = [200, l.spacingY*2], width = Math.min($("#profile").innerWidth(), 900) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
   var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
 
@@ -97,7 +97,7 @@ function draw(g,l){
     device.append('rect')
         .attr('x', 0)
         .attr('y', 0)
-        .attr('width', width - m[0] + l.spacingY*2)
+        .attr('width', width - l.spacingY)
         .attr('height', l.spacingY * (g.maxIssues) )
         .attr('class','deviceZone')
 
@@ -123,9 +123,12 @@ function draw(g,l){
           .on('mouseover', function(d){ d3.select(this).attr('opacity', .7)})
           .on('mouseout',  function(d){ d3.select(this).attr('opacity',  1)})
 
-    // issue.append('text')
-    //   .text(function(d) {  return _.isUndefined(d[0].issue) ? 'none': d[0].issue.shortName})
-    //   .style("fill", function(d) { return _.isUndefined(d[0].issue) ? 'red' : color(g.categories[d[0].issue.category]) })
+    issue.append('text')
+      .text(function(d) {  return _.isUndefined(d[0].issue) ? 'none': d[0].issue.shortName})
+      .attr('y' ,function(d,i){ return (i+1.7) * l.spacingY  } )
+      .attr('x', width - m[0] + l.spacingY  )
+      .attr('class','issue-caption' )
+      .style("fill", function(d) { return _.isUndefined(d[0].issue) ? 'red' : color(g.categories[d[0].issue.category]) })
 
     // add device name
     device
@@ -137,8 +140,8 @@ function draw(g,l){
     // add year axis
     device.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + l.spacingY + ")")
-      .style('opacity',function(d,i){ return i % 2 === 1 ? 1:0 })
+      .attr("transform", "translate(0," + 0 + ")")
+      // .style('opacity',function(d,i){ return i % 2 === 1 ? 1:0 })
       .call(xAxis);
 
 

@@ -6791,12 +6791,15 @@ h1 {
   stroke-opacity: 0.1;
   stroke-linecap: round;
 }
+#profile .issue-caption {
+  font-size: 9px;
+  text-transform: lowercase;
+}
 #profile .deviceZone {
   fill: black;
   opacity: 0.08;
 }
 #profile .axis {
-  opacity: 0.5;
   font-weight: normal;
   font-size: 10px;
 }
