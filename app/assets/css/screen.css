@@ -6782,6 +6782,31 @@ text[active="0"],
 h1 {
   text-align: center;
 }
+#profile {
+  font-weight: bold;
+}
+#profile .issue {
+  stroke-width: 1px;
+  stroke: blue;
+  stroke-opacity: 0.1;
+  stroke-linecap: round;
+}
+#profile .deviceZone {
+  fill: black;
+  opacity: 0.05;
+}
+#profile .axis {
+  opacity: 0.5;
+  font-weight: normal;
+  font-size: 10px;
+}
+#profile .axis path {
+  display: none;
+}
+#profile .axis line {
+  shape-rendering: crispEdges;
+  stroke: #000;
+}
 #explo {
   font-size: 11px;
 }
