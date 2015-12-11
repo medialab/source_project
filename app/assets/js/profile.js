@@ -68,7 +68,7 @@ function onData (data) {
 
 function draw(g,l){
 
-  var m = [100, 10], width = $("#profile").innerWidth() , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
+  var m = [100, 10], width = Math.min($("#profile").innerWidth(), 700) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
   var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
 
