@@ -12,11 +12,7 @@ function onData(error, data) {
   console.log(data, error);
 
   data = data.results
-
-  console.log('->>',_(data).reject('recordTypeId',1).sortBy('recordId').map('recordId').value());
-  console.log('->>',_(data).keys().value().length)
-  var eventPosY = {}, eventPosX = {},
-      l = _.defaults(g.layout, g.conf.layout);
+  var eventPosY = {}, eventPosX = {}, l = _.defaults(g.layout, g.conf.layout);
 
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
 
@@ -56,13 +52,13 @@ function onData(error, data) {
     l.offsetY += (g[group.name].length) * l.spacingY + l.spacingY*2;
   });
 
-  // indexes and layout overide
+  // indexes
   var indexType = ['typeId','typeName','recordTypeId','startDate','recordId','category','typeGroup'],
       indexes = {nodes:{},links:{}},
       recTypes = {nodes:{},links:{}};
 
   _.forEach(indexType, function(d){
-    indexes.nodes[d] = _.groupBy(g.nodes, d);
+    indexes.nodes[d] = _(g.nodes, d);
     indexes.links[d] = _.groupBy(g.links, d);
     recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
@@ -72,16 +68,11 @@ function onData(error, data) {
   .y(function(d,i) {
     var link = indexes.links.recordId[d[1]][0];
     return (d[0] ? sourceY(link) : targetY(link)) //+ i *2
-    // var link = _.findIndex(g.links, 'recordId', d[1]);
-    // return link * l.spacingX/2
   })
   .x(function(d,i) {
     var link = indexes.links.recordId[d[1]][0];
     return linkX(link) //+ i *2
-  })
-  .interpolate(g.layout.pathwayInterpolation);
-  // linear step-before step-after basis basis-open basis-closed
-  // cardinal cardinal-open cardinal-closed monotone
+  }).interpolate(g.layout.pathwayInterpolation);
 
   indexes.byPath =  Sutils.indexPathway(g,'recordId');
 
@@ -105,15 +96,8 @@ function onData(error, data) {
   var ntCount = _.keys(indexes.nodes[l.nodesColors]).length;
   var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
-  console.log("ltCount",ltCount)
-
-var colors = [
-    d3.scale.category20c(),
-    d3.scale.ordinal().range(Sutils.colors[0])
-  ];
-
-  var getNodeColor = ntCount < 12 ? d3.scale.ordinal().range(colorbrewer.Set2[ntCount]) : d3.scale.category20c();
-  var getLinkColor = d3.scale.category20c();
+  var getNodeColor = ntCount < 8 ? d3.scale.ordinal().range(colorbrewer.Set2[8]) : d3.scale.category20c();
+  var getLinkColor = ltCount < 10 ? d3.scale.category10() : d3.scale.category20();
 
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
@@ -135,7 +119,6 @@ var colors = [
   function linkColor(d){
     var linksColors = l.linksColors;
     if(linksColors === "source" || linksColors === "target") { return nodeColor(d[linksColors]); }
-    // if(Sutils.Palettes[linksColors][d[linksColors]]) return Sutils.Palettes[linksColors][d[linksColors]];
     return getLinkColor(_.indexOf(recTypes.links[linksColors], d[linksColors]))
   }
   function nodeColor(d){
@@ -300,7 +283,6 @@ var colors = [
     .text(function(d){ return d.name });
 
   // links type labels
-
   if(l.linksColors !== 'source' && l.linksColors !== 'target'){
     var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.linksColors]).enter()
@@ -314,8 +296,8 @@ var colors = [
       return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
     .style('fill', function(d,i){
-      if(Sutils.Palettes[l.linksColors][d]) return Sutils.Palettes[l.linksColors][d];
-      return colors[1](i)
+      // if(Sutils.Palettes[l.linksColors][d]) return Sutils.Palettes[l.linksColors][d];
+      return getLinkColor(i)
     })
     .on('click', onLinkTypeClick)
     .append('title')
@@ -323,7 +305,6 @@ var colors = [
       var sample = _.find(g.links, {'typeId':d})
       if(sample) return sample.typeId;
     })
-
   }
 
   // draw events
