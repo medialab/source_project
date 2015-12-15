@@ -6766,8 +6766,6 @@ button.close {
 }
 html,
 body {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -6814,12 +6812,27 @@ h1 {
 #explo {
   font-size: 11px;
 }
+#explo .header {
+  padding: 2em;
+  height: 6em;
+  border-bottom: 1px solid grey;
+}
+#explo svg {
+  margin-top: 0;
+  position: absolute;
+  top: 7em;
+  left: 1.5em;
+}
 #explo .edgeShadow {
   stroke: black;
 }
 #explo .description,
 #explo .update {
   opacity: 0;
+}
+#explo .title {
+  text-transform: uppercase;
+  text-align: center;
 }
 #explo .title a {
   font-size: 1.5em;

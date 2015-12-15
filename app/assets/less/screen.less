@@ -3,8 +3,7 @@
 // @import (less) "../../../bower_components/tipsy/src/stylesheets/tipsy.css";
 
 html, body {
-  width: 100%;
-  height: 100%;
+
   margin: 0;
   padding: 0;
   a { color: royalblue;}
@@ -56,15 +55,33 @@ h1 { text-align: center;}
   // line {shape-rendering: crispEdges; }
   font-size: 11px;
 
+  .header {
+    padding: 2em;
+    height: 6em;
+    border-bottom: 1px solid grey;
+  }
+  svg {
+    margin-top:0;
+    position: absolute;
+    top: 7em;
+    left: 1.5em;
+
+  }
   .edgeShadow {
     stroke: black;
     // stroke-opacity:0.1;
   }
   .description, .update { opacity: 0}
 
-  .title a {
-    font-size: 1.5em;
-    color:black;
+  .title {
+
+    text-transform: uppercase;
+    text-align: center;
+
+    a {
+     font-size: 1.5em;
+     color:black;
+    }
   }
 
   .yearMark, .grid {

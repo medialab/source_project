@@ -58,7 +58,7 @@ function onData(error, data) {
       recTypes = {nodes:{},links:{}};
 
   _.forEach(indexType, function(d){
-    indexes.nodes[d] = _(g.nodes, d);
+    indexes.nodes[d] = _.groupBy(g.nodes, d);
     indexes.links[d] = _.groupBy(g.links, d);
     recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
     recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
@@ -96,8 +96,15 @@ function onData(error, data) {
   var ntCount = _.keys(indexes.nodes[l.nodesColors]).length;
   var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
-  var getNodeColor = ntCount < 8 ? d3.scale.ordinal().range(colorbrewer.Set2[8]) : d3.scale.category20c();
-  var getLinkColor = ltCount < 8 ? d3.scale.category10() : d3.scale.category20();
+  console.log(l.nodesColors, ntCount, l.linksColors , ltCount)
+
+  var filteredColors = _(colorbrewer.Set2[8]).filter(function (d) {
+    return d !== "#fc8d62";
+  }).value();
+
+  console.log(filteredColors)
+  var getNodeColor = (ntCount < 7 ? d3.scale.ordinal().range(filteredColors) : d3.scale.category20() )
+  var getLinkColor = (ltCount < 8 ? d3.scale.category10() : d3.scale.category20() )
 
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
@@ -194,7 +201,7 @@ function onData(error, data) {
   function yearLabelOff(d){ d3.selectAll('.yearLabel').transition().style('opacity', 1);}
 
   var w = _(g.links).map('rank').max() * (l.spacingX+20) + l.offsetX , h = l.offsetY,
-      svg = d3.select('#explo').append('svg:svg').attr('width', w).attr('height', h)
+      svg = d3.select('.graph').append('svg:svg').attr('width', w).attr('height', h)
 
 
     defs = svg.append("defs")
@@ -427,9 +434,7 @@ function onData(error, data) {
         return l.offsetX + indexes.links.recordId[d.startId][0].rank * l.spacingX
       })
       .attr('x2', function(d,i){
-
         var v = indexes.links.recordId[d.endId][0];
-
         if(g.layout.linearTime) return l.offsetX + (v.startDate - g.linksPeriod.start) * l.spacingX * l.YearSpacing;
         return l.offsetX + indexes.links.recordId[d.endId][0].rank * l.spacingX
       })

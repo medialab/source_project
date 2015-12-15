@@ -5,12 +5,13 @@
     <meta charset="utf-8">
   </head>
   <body id="{{corpus.template}}" class="container-fluid">
-    <hr/>
-      <p class="col-sm-5 title"><strong><a href="./">{{corpus.title}}</a></strong><br></p>
-      <p class="col-sm-3 description"><em>{{corpus.description}}</em></p>
-      <p class="col-sm-2 update">{{update}}</p>
-      <p class="col-sm-2 slide" ><input id="zoom" type="range" value="1" max="50" min="1" step="1"></p>
-    <hr/>
+    <div class="row header">
+      <p class="col-sm-offset-1 col-sm-10 title"><strong><a href="./">{{corpus.title}}</a></strong><br></p>
+      <p class="col-sm-1 slide" ><input id="zoom" type="range" value="1" max="50" min="1" step="1"></p>
+    </div>
+    <div class="graph">
+
+    </div>
     <script type="text/javascript" src="assets/js/lib.min.js"></script>
     <script type="text/javascript" src="assets/js/sutils.js"></script>
     <script type="text/javascript">var corpusId = '{{id}}';</script>

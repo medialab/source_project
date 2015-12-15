@@ -175,10 +175,7 @@
       var last = _(links).sortBy('startDates').last().recordId;
       var lastAsTarget =  _(links).sortBy('startDates').filter(function(d){return d.source.recordId === n.recordId;}).last();
 
-      if(!_.isUndefined(lastAsTarget)){
-        last = _.indexOf(layout.stopRelation , lastAsTarget.typeId) > -1 ? lastAsTarget.recordId : last
-      }
-
+      if(!_.isUndefined(lastAsTarget))last = _.indexOf(layout.stopRelation , lastAsTarget.typeId) > -1 ? lastAsTarget.recordId : last
       return _.merge(n,{ endId:last, startId:_.first(dates).recordId})
 
     }).compact().value();
