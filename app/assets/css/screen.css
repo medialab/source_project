@@ -6815,8 +6815,7 @@ h1 {
   font-size: 11px;
 }
 #explo .edgeShadow {
-  stroke: blue;
-  stroke-opacity: 0.1;
+  stroke: black;
 }
 #explo .description,
 #explo .update {
@@ -6828,10 +6827,9 @@ h1 {
 }
 #explo .yearMark,
 #explo .grid {
-  stroke-dasharray: 1,1;
+  shape-rendering: crispEdges;
 }
 #explo .hoverZoneLines {
-  shape-rendering: crispEdges;
   opacity: 0;
   stroke: gold;
 }
@@ -6865,5 +6863,4 @@ h1 {
 }
 #explo .taxis line {
   stroke: #000;
-  stroke-dasharray: 1,20;
 }

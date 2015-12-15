@@ -57,8 +57,8 @@ h1 { text-align: center;}
   font-size: 11px;
 
   .edgeShadow {
-    stroke: blue;
-    stroke-opacity:0.1;
+    stroke: black;
+    // stroke-opacity:0.1;
   }
   .description, .update { opacity: 0}
 
@@ -68,16 +68,20 @@ h1 { text-align: center;}
   }
 
   .yearMark, .grid {
-    stroke-dasharray:1,1;
+    // stroke-dasharray:1,1;
+        shape-rendering: crispEdges;
+
   }
 
   .hoverZoneLines {
-    shape-rendering: crispEdges;
+    // shape-rendering: crispEdges;
     opacity: 0;
     stroke:gold;
   }
 
-  .listItem { }
+  .listItem text{
+
+  }
   .groupLabel { text-transform: uppercase;}
 
   .eventCaption {
@@ -104,6 +108,6 @@ h1 { text-align: center;}
   .taxis path { display: none; }
   .taxis line {
     stroke: #000;
-    stroke-dasharray: 1,20;
+    // stroke-dasharray: 1,20;
   }
 }

@@ -97,7 +97,7 @@ function onData(error, data) {
   var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
   var getNodeColor = ntCount < 8 ? d3.scale.ordinal().range(colorbrewer.Set2[8]) : d3.scale.category20c();
-  var getLinkColor = ltCount < 10 ? d3.scale.category10() : d3.scale.category20();
+  var getLinkColor = ltCount < 8 ? d3.scale.category10() : d3.scale.category20();
 
   console.log('layout', layout)
   console.log('\ng',g, '\nindexes',indexes, '\nrecTypes',recTypes, Sutils.dataCheck(g.links));
@@ -243,10 +243,10 @@ function onData(error, data) {
 
     // labels
     list.append('text')
-    .attr('x', 20)
+    .attr('x', 10)
     .attr('y', function(d){return eventPosY[d.recordId]})
     .attr('transform', 'translate(3, 4)')
-    .text(function(d){return _.trunc(d.shortName)})
+    .text(function(d){return _.trunc(d.shortName, 80)})
     .style('fill', nodeColor)
     .append('title')
     .attr('class','nodeTypeLabel')
@@ -258,14 +258,19 @@ function onData(error, data) {
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
-    .attr('class','hoverZoneLines' )
+    .attr('class','hoverZoneLines')
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .style('stroke-width', l.spacingY-1)
-
+    .style('stroke-width', l.spacingY-3)
+    .on('mouseover', function (d) {
+      d3.select(this).style('opacity',.4)
+    })
+    .on('mouseleave', function (d) {
+      d3.select(this).style('opacity',0)
+    })
     // horizontal grid
     list.append('line')
     .attr('class','grid')
-    .attr('x1', 0 + l.spacingY)
+    .attr('x1', l.offsetX)
     .attr('y1', function(d){return eventPosY[d.recordId]})
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
@@ -352,7 +357,9 @@ function onData(error, data) {
   var targetNode = event.append('circle')
     .attr('class','node target')
     .attr('cy', targetY)
-    .style('fill', linkColor)
+    .style('stroke', linkColor)
+    .style('stroke-width', function(d){return getLayout(d,'links', 'targetR')/3 } )
+    .style('fill', 'none')
     .attr('r', function(d){return getLayout(d,'links', 'targetR')})
     .style('opacity', function(d){return getLayout(d,'links', 'targetOpacity')})
     .on('mouseover', nodeMouseOver)
