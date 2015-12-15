@@ -13,14 +13,11 @@
     <hr>
     {{#each corpus}}
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-8">
           <h4><a href="{{template}}_{{@key}}.html">{{title}}</a> </h4>
         </div>
-        <div class="col-sm-4">
-          <p>{{description}}</p>
-        </div>
         <div class="col-sm-1">
-          {{template}}<br> <a href="data/{{template}}_{{@key}}.json"  target="_blank">json DATA</a>
+          {{template}}<br> <a href="data/{{template}}_{{@key}}.json"  target="_blank">raw DATA</a>
         </div>
         <div class="col-sm-3">
           <pre><a href="http://heurist.sydney.edu.au/h4-ao/?db=meder_test_to_delete&q={{query}}" target="_blank">{{query}}</a></pre>
