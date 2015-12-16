@@ -154,9 +154,9 @@ function onData(error, data) {
       d3.selectAll('.listItem').attr('active', 0);
       d3.selectAll('.node, .edges, .nodeTimeline').attr('visibility', 'hidden');
     }
+
     d3.selectAll('.recordId'+e.recordId+', .sourceRecordId'+e.recordId+', .targetRecordId'+e.recordId).attr('visibility', function(d){ return isVisible(state)} )
     d3.select(this).attr('active', 1-state);
-
   }
   function onLinkTypeClick(e){
     var state = parseInt(d3.select(this).attr('active'));
@@ -169,12 +169,12 @@ function onData(error, data) {
   function isVisible(v){ return v ? 'visible' : 'hidden'}
 
   function nodeMouseOver(e){
-      d3.selectAll('.grid')
+      d3.selectAll('.hoverZoneLines')
         .filter(function(d){return e.source.recordId === d.recordId || e.target.recordId === d.recordId})
-        .style('opacity',1)
+        .style('opacity',0.4)
   }
   function nodeMouseOut(e){
-      d3.selectAll('.grid').style('opacity', l.gridOpacity )
+      d3.selectAll('.hoverZoneLines').style('opacity', 0)
   }
   function yearLabelOn(d){
     d3.selectAll('.yearLabel').transition().style('opacity', 0.2);
@@ -389,7 +389,7 @@ function onData(error, data) {
     .attr('cy', targetY)
     .style('stroke', linkColor)
     .style('stroke-width', function(d){return getLayout(d,'links', 'targetR')/3 } )
-    .style('fill', 'none')
+    .style('fill', 'transparent')
     .attr('r', function(d){return getLayout(d,'links', 'targetR')})
     .style('opacity', function(d){return getLayout(d,'links', 'targetOpacity')})
     .on('mouseover', nodeMouseOver)
