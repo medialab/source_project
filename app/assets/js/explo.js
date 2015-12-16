@@ -308,13 +308,17 @@ function onData(error, data) {
 
     var captionWidth = 180;
     var captionSpacing = 25;
+    svg.append('text')
+      .text('RELATION TYPES COLOR')
+      .attr('x', function(d){ return l.offsetX } )
+      .attr('y', function(d,i){return _(eventPosY).max() + 4 * l.spacingY +3 } )
 
     var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.linksColors]).enter()
     .append('g')
     .attr('transform', function(d,i){
 
-      var x = l.offsetX + _.floor(i/l.linkTypeLabelByline)*captionWidth;
+      var x = l.offsetX + _.floor(i/l.linkTypeLabelByline)*captionWidth + captionWidth ;
       var y = (_(eventPosY).max() + 4 * l.spacingY) + (i%l.linkTypeLabelByline) * (l.spacingY *1.2)
       return 'translate(' + x + ',' + y + ')';
     })
