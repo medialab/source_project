@@ -6812,6 +6812,9 @@ h1 {
 #explo {
   font-size: 11px;
 }
+#explo .t1234 {
+  display: none;
+}
 #explo .header {
   padding: 2em;
   height: 6em;
