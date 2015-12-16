@@ -46,11 +46,7 @@ text[active="0"], *[active="0"] text {
   font-weight: bold;
 }
 
-.title {
-  font-style: italic;
-  text-transform: uppercase;
-  a { font-size: 1em; color:black; text-decoration: underline;}
-}
+
 .header {
   margin:0.5em;
   padding:1em;
@@ -60,6 +56,16 @@ text[active="0"], *[active="0"] text {
     margin-top: 0;
     padding-top: 0;
   }
+  .title {
+    font-style: italic;
+    text-transform: uppercase;
+    color:black;
+    text-decoration: underline;
+    font-size: 2.5em;
+        line-height: 1.3em;
+
+  }
+
   .comment {
     line-height: 1.5em;
     font-style: italic;
@@ -125,6 +131,11 @@ text[active="0"], *[active="0"] text {
 #explo {
   // line {shape-rendering: crispEdges; }
   font-size: 11px;
+
+  font-family: "dejavu_sans_condensed";
+  font-weight: normal;
+  font-style: normal;
+
   .type1234 { display: none;}
 
   .typeId5286 { .forceColor(#ff7f00) } // signs
@@ -185,4 +196,11 @@ text[active="0"], *[active="0"] text {
     stroke: #000;
     // stroke-dasharray: 1,20;
   }
+}
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
 }

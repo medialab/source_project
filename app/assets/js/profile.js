@@ -68,9 +68,9 @@ function onData (data) {
 
 function draw(g,l){
 
-  var m = [200, l.spacingY*2], width = Math.min($("#profile").innerWidth(), 900) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
+  var m = [200, l.spacingY*2], width = Math.min($("#profile").innerWidth(), 750) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
-  var svg = d3.select('.graph').append('svg:svg').attr('width', width).attr('height', height);
+  var svg = d3.select('.graph').append('svg:svg').attr('width', width*2).attr('height', height);
 
   var x = d3.scale.linear()
       .domain([g.linksPeriod.start, g.linksPeriod.end])
@@ -93,7 +93,12 @@ function draw(g,l){
   var device = svg.selectAll('.device').data(g.graphs)
       .enter()
       .append('g')
-      .attr('transform', function(d,i){ return 'translate(' + 0 + ',' + ( i * ( l.spacingY * (g.maxIssues+2)) + m[1] )  + ')'});
+      .attr('transform', function(d,i){
+        var x = Math.floor(i/l.graphPerCol) * width;
+        var y = ( i % l.graphPerCol * ( l.spacingY * (g.maxIssues+2)) + m[1] );
+        return 'translate(' + x + ',' + y  + ')'
+
+      });
 
     device.append('rect')
         .attr('x', 0)

@@ -6807,15 +6807,6 @@ text[active="0"],
 *[active="0"] text {
   font-weight: bold;
 }
-.title {
-  font-style: italic;
-  text-transform: uppercase;
-}
-.title a {
-  font-size: 1em;
-  color: black;
-  text-decoration: underline;
-}
 .header {
   margin: 0.5em;
   padding: 1em;
@@ -6827,6 +6818,14 @@ text[active="0"],
 .header .surtitle {
   margin-top: 0;
   padding-top: 0;
+}
+.header .title {
+  font-style: italic;
+  text-transform: uppercase;
+  color: black;
+  text-decoration: underline;
+  font-size: 2.5em;
+  line-height: 1.3em;
 }
 .header .comment {
   line-height: 1.5em;
@@ -6869,6 +6868,9 @@ text[active="0"],
 }
 #explo {
   font-size: 11px;
+  font-family: "dejavu_sans_condensed";
+  font-weight: normal;
+  font-style: normal;
 }
 #explo .type1234 {
   display: none;
@@ -6978,4 +6980,10 @@ text[active="0"],
 }
 #explo .taxis line {
   stroke: #000;
+}
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
 }
