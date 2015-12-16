@@ -116,10 +116,26 @@ text[active="0"], *[active="0"] text {
   }
 
 }
+
+.typeSet (@color: gold) {
+  &.source, &.typeCaption { fill: @color !important;}
+  &.target, &.edges { stroke: @color !important;}
+}
+
 #explo {
   // line {shape-rendering: crispEdges; }
   font-size: 11px;
-  .t1234 { display: none;}
+  .type1234 { display: none;}
+
+  .type5286 { .typeSet(#ff7f00) } // signs
+  .type5331 { .typeSet(#33a02c) } // applies
+  .type5097 { .typeSet(#6a3d9a) } // has for legal basis
+  .type5110 { .typeSet(grey) } // is contained
+  .type5177 { .typeSet(#fb9a99) } // is integrated
+  .type5365 { .typeSet(red) } // discontinued by
+  .type5112 { .typeSet(#1f78b4) } // create
+  .type5241 { .typeSet(#33a02c) } // refers to
+
 
   .edgeShadow {
     stroke: black;
