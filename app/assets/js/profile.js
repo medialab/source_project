@@ -30,6 +30,10 @@ function onData (data) {
   g.links = _(g.links).forEach(function(d){
     if(_.isUndefined(d.endDate)) d.endDate = g.linksPeriod.end;
     if(d.endDate > 9000) d.endDate = g.linksPeriod.end;
+
+    // aline full function with year
+    d.endDate = d.endDate-1;
+    d.startDate =  d.startDate-1;
   })
   .filter('typeId', 5158)
   .value()
