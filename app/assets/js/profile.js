@@ -70,7 +70,7 @@ function draw(g,l){
 
   var m = [200, l.spacingY*2], width = Math.min($("#profile").innerWidth(), 900) , height = (((g.maxIssues+3) * g.graphs.length) * l.spacingY  + m[1]*2 );
   var color = d3.scale.ordinal().range(colorbrewer.Set2[8]);
-  var svg = d3.select('#profile').append('svg:svg').attr('width', width).attr('height', height);
+  var svg = d3.select('.graph').append('svg:svg').attr('width', width).attr('height', height);
 
   var x = d3.scale.linear()
       .domain([g.linksPeriod.start, g.linksPeriod.end])

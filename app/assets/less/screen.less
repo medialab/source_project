@@ -56,7 +56,7 @@ text[active="0"], *[active="0"] text {
   padding:1em;
   border-bottom: 1px solid grey;
 
-  .title, .disclaimer, .comment {
+  .title, .disclaimer, .comment, .surtitle {
     margin-top: 0;
     padding-top: 0;
   }
@@ -68,6 +68,11 @@ text[active="0"], *[active="0"] text {
   .disclaimer {
     font-size: 10px;
   }
+
+  .surtitle {
+    // margin-top: 20px;
+    // text-align: center;
+  }
 }
 
 .graph {
@@ -76,8 +81,10 @@ text[active="0"], *[active="0"] text {
 
 #profile {
 
-  font-weight: bold;
+  .graph {
+      font-weight: bold;
 
+  }
   .issue {
     stroke-width: 1px;
     stroke: blue;

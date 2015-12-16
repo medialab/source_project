@@ -6822,7 +6822,8 @@ text[active="0"],
 }
 .header .title,
 .header .disclaimer,
-.header .comment {
+.header .comment,
+.header .surtitle {
   margin-top: 0;
   padding-top: 0;
 }
@@ -6836,7 +6837,7 @@ text[active="0"],
 .graph {
   margin: 1em;
 }
-#profile {
+#profile .graph {
   font-weight: bold;
 }
 #profile .issue {

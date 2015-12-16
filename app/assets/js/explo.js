@@ -210,7 +210,7 @@ function onData(error, data) {
   function yearLabelOff(d){ d3.selectAll('.yearLabel').transition().style('opacity', 1);}
 
   var w = _(g.links).map('rank').max() * (l.spacingX+20) + l.offsetX , h = l.offsetY,
-      svg = d3.select('.graph').append('svg:svg').attr('width', w).attr('height', h)
+      svg = d3.select('.graph').append('svg:svg').attr('width', w).attr('height', h + 2 * l.offsetY)
 
 
     defs = svg.append("defs")
@@ -305,28 +305,60 @@ function onData(error, data) {
 
   // links type labels
   if(l.linksColors !== 'source' && l.linksColors !== 'target'){
+
+    var captionWidth = 180;
+    var captionSpacing = 25;
+
     var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.linksColors]).enter()
     .append('g')
-    .append('text')
-    .attr('x', function(d, i){return 250 + _.floor(i/2)*150})
-    .attr('y', function(d, i){return 10 + (i%2)*l.spacingY})
+    .attr('transform', function(d,i){
+
+      var x = l.offsetX + _.floor(i/l.linkTypeLabelByline)*captionWidth;
+      var y = (_(eventPosY).max() + 4 * l.spacingY) + (i%l.linkTypeLabelByline) * (l.spacingY *1.2)
+      return 'translate(' + x + ',' + y + ')';
+    })
+    linkTypeCaption.append('text')
+
     .attr('active',0)
     .text(function(d, i){
       var sample = _.find(g.links, {'typeId':d})
       return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
-    .style('fill', function(d,i){
-      // if(Sutils.Palettes[l.linksColors][d]) return Sutils.Palettes[l.linksColors][d];
-      return getLinkColor(i)
-    })
+        .attr('text-anchor', 'middle')
+
+    .attr('x', (captionWidth-captionSpacing)/2 )
+    .attr('y', -3 )
+    .style('fill', function(d,i){ return getLinkColor(i)})
     .on('click', onLinkTypeClick)
     .append('title')
     .text(function(d) {
       var sample = _.find(g.links, {'typeId':d})
       if(sample) return sample.typeId;
     })
+
+
+    linkTypeCaption.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', captionWidth-captionSpacing)
+        .attr('y2', 0)
+    .style('stroke', function(d,i){ return getLinkColor(i)})
+
+    linkTypeCaption.append('circle')
+      .attr('r', l.sourceR)
+      .style('fill', function(d,i){ return getLinkColor(i)})
+
+    linkTypeCaption.append('circle')
+      .attr('r', l.sourceR)
+      .attr('cx', captionWidth-captionSpacing)
+      .style('fill','white')
+      .style('stroke', function(d,i){ return getLinkColor(i)})
+      .style('stroke-width', function(d){return l.targetR/3 } )
+
   }
+
+
 
   // draw events
   var prevDate;
@@ -356,7 +388,7 @@ function onData(error, data) {
     .text(function(d){return d.startDate})
     .attr('transform', 'translate(' + 4 + ',' + 0 + ')')
     .attr('text-anchor', 'middle')
-    .attr('y', 60)
+    .attr('y', 12)
     .attr('width', 0)
     .on('mouseover', yearLabelOn)
     .on('mouseout', yearLabelOff)
@@ -364,7 +396,7 @@ function onData(error, data) {
   // year mark
   var yearMark = event.append('line')
     .attr('class', 'yearMark')
-    .attr('y1', 50)
+    .attr('y1', 0)
     .attr('y2', h)
     .style('opacity',l.gridOpacity)
     .attr('transform', 'translate(' + -10 + ',' + 0 + ')')
@@ -451,6 +483,7 @@ function onData(error, data) {
     // year label
     yearLabel
       .attr('x',linkX)
+      .attr('transform', 'translate(' + 5 + ',' + 0 + ')')
 
     // year mark
     yearMark
