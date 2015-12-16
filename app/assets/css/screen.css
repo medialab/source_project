@@ -6764,10 +6764,40 @@ button.close {
     display: none !important;
   }
 }
+@font-face {
+  font-family: 'dejavu_sans_condensed';
+  src: url("../fonts/dejavusanscondensed-webfont.eot");
+  src: url("../fonts/dejavusanscondensed-webfont.eot?#iefix") format('embedded-opentype'), url("../fonts/dejavusanscondensed-webfont.woff") format('woff'), url("../fonts/dejavusanscondensed-webfont.ttf") format('truetype'), url("../fonts/dejavusanscondensed-webfont.svg#dejavu_sans_condensedbook") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'dejavu_sans_condensed';
+  src: url("../fonts/dejavusanscondensed-bold-webfont.eot");
+  src: url("../fonts/dejavusanscondensed-bold-webfont.eot?#iefix") format('embedded-opentype'), url("../fonts/dejavusanscondensed-bold-webfont.woff") format('woff'), url("../fonts/dejavusanscondensed-bold-webfont.ttf") format('truetype'), url("../fonts/dejavusanscondensed-bold-webfont.svg#dejavu_sans_condensedbold") format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'dejavu_sans_condensed';
+  src: url("../fonts/dejavusanscondensed-boldoblique-webfont.eot");
+  src: url("../fonts/dejavusanscondensed-boldoblique-webfont.eot?#iefix") format('embedded-opentype'), url("../fonts/dejavusanscondensed-boldoblique-webfont.woff") format('woff'), url("../fonts/dejavusanscondensed-boldoblique-webfont.ttf") format('truetype'), url("../fonts/dejavusanscondensed-boldoblique-webfont.svg#dejavu_sans_condensedbold_oblique") format('svg');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'dejavu_sans_condensed';
+  src: url("../fonts/dejavusanscondensed-oblique-webfont.eot");
+  src: url("../fonts/dejavusanscondensed-oblique-webfont.eot?#iefix") format('embedded-opentype'), url("../fonts/dejavusanscondensed-oblique-webfont.woff") format('woff'), url("../fonts/dejavusanscondensed-oblique-webfont.ttf") format('truetype'), url("../fonts/dejavusanscondensed-oblique-webfont.svg#dejavu_sans_condensedoblique") format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
 html,
 body {
   margin: 0;
   padding: 0;
+  font-family: "dejavu_sans_condensed";
+  font-weight: normal;
 }
 html a,
 body a {
@@ -6777,8 +6807,34 @@ text[active="0"],
 *[active="0"] text {
   font-weight: bold;
 }
-h1 {
-  text-align: center;
+.title {
+  font-style: italic;
+  text-transform: uppercase;
+}
+.title a {
+  font-size: 1em;
+  color: black;
+}
+.header {
+  margin: 0.5em;
+  padding: 1em;
+  border-bottom: 1px solid grey;
+}
+.header .title,
+.header .disclaimer,
+.header .comment {
+  margin-top: 0;
+  padding-top: 0;
+}
+.header .comment {
+  line-height: 1.5em;
+  font-style: italic;
+}
+.header .disclaimer {
+  font-size: 10px;
+}
+.graph {
+  margin: 1em;
 }
 #profile {
   font-weight: bold;
@@ -6815,31 +6871,8 @@ h1 {
 #explo .t1234 {
   display: none;
 }
-#explo .header {
-  padding: 2em;
-  height: 6em;
-  border-bottom: 1px solid grey;
-}
-#explo svg {
-  margin-top: 0;
-  position: absolute;
-  top: 7em;
-  left: 1.5em;
-}
 #explo .edgeShadow {
   stroke: black;
-}
-#explo .description,
-#explo .update {
-  opacity: 0;
-}
-#explo .title {
-  text-transform: uppercase;
-  text-align: center;
-}
-#explo .title a {
-  font-size: 1.5em;
-  color: black;
 }
 #explo .yearMark,
 #explo .grid {
