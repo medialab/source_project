@@ -6814,6 +6814,7 @@ text[active="0"],
 .title a {
   font-size: 1em;
   color: black;
+  text-decoration: underline;
 }
 .header {
   margin: 0.5em;
@@ -6872,68 +6873,68 @@ text[active="0"],
 #explo .type1234 {
   display: none;
 }
-#explo .type5286.source,
-#explo .type5286.typeCaption {
+#explo .typeId5286.source,
+#explo .typeId5286.typeCaption {
   fill: #ff7f00 !important;
 }
-#explo .type5286.target,
-#explo .type5286.edges {
+#explo .typeId5286.target,
+#explo .typeId5286.edges {
   stroke: #ff7f00 !important;
 }
-#explo .type5331.source,
-#explo .type5331.typeCaption {
+#explo .typeId5331.source,
+#explo .typeId5331.typeCaption {
   fill: #33a02c !important;
 }
-#explo .type5331.target,
-#explo .type5331.edges {
+#explo .typeId5331.target,
+#explo .typeId5331.edges {
   stroke: #33a02c !important;
 }
-#explo .type5097.source,
-#explo .type5097.typeCaption {
+#explo .typeId5097.source,
+#explo .typeId5097.typeCaption {
   fill: #6a3d9a !important;
 }
-#explo .type5097.target,
-#explo .type5097.edges {
+#explo .typeId5097.target,
+#explo .typeId5097.edges {
   stroke: #6a3d9a !important;
 }
-#explo .type5110.source,
-#explo .type5110.typeCaption {
+#explo .typeId5110.source,
+#explo .typeId5110.typeCaption {
   fill: grey !important;
 }
-#explo .type5110.target,
-#explo .type5110.edges {
+#explo .typeId5110.target,
+#explo .typeId5110.edges {
   stroke: grey !important;
 }
-#explo .type5177.source,
-#explo .type5177.typeCaption {
+#explo .typeId5177.source,
+#explo .typeId5177.typeCaption {
   fill: #fb9a99 !important;
 }
-#explo .type5177.target,
-#explo .type5177.edges {
+#explo .typeId5177.target,
+#explo .typeId5177.edges {
   stroke: #fb9a99 !important;
 }
-#explo .type5365.source,
-#explo .type5365.typeCaption {
+#explo .typeId5365.source,
+#explo .typeId5365.typeCaption {
   fill: red !important;
 }
-#explo .type5365.target,
-#explo .type5365.edges {
+#explo .typeId5365.target,
+#explo .typeId5365.edges {
   stroke: red !important;
 }
-#explo .type5112.source,
-#explo .type5112.typeCaption {
+#explo .typeId5112.source,
+#explo .typeId5112.typeCaption {
   fill: #1f78b4 !important;
 }
-#explo .type5112.target,
-#explo .type5112.edges {
+#explo .typeId5112.target,
+#explo .typeId5112.edges {
   stroke: #1f78b4 !important;
 }
-#explo .type5241.source,
-#explo .type5241.typeCaption {
+#explo .typeId5241.source,
+#explo .typeId5241.typeCaption {
   fill: #33a02c !important;
 }
-#explo .type5241.target,
-#explo .type5241.edges {
+#explo .typeId5241.target,
+#explo .typeId5241.edges {
   stroke: #33a02c !important;
 }
 #explo .edgeShadow {

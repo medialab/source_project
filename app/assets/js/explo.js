@@ -326,7 +326,7 @@ function onData(error, data) {
       return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
     .attr('text-anchor', 'middle')
-    .attr('class',function (d) {return 'typeCaption type'+d})
+    .attr('class',function (d) {return 'typeCaption '+l.linksColors+d})
     .attr('x', (captionWidth-captionSpacing)/2 )
     .attr('y', -3 )
     // .style('fill', function(d,i){ return getLinkColor(i)})
@@ -344,17 +344,17 @@ function onData(error, data) {
         .attr('x2', captionWidth-captionSpacing)
         .attr('y2', 0)
         .style('stroke', function(d,i){ return getLinkColor(i)})
-        .attr('class',function (d) {return 'edges type'+d})
+        .attr('class',function (d) {return 'edges '+l.linksColors+d})
 
 
     linkTypeCaption.append('circle')
       .attr('r', l.sourceR)
-      .attr('class',function (d) {return 'node source type'+d})
+      .attr('class',function (d) {return 'node source '+l.linksColors+d})
       .style('fill', function(d,i){ return getLinkColor(i)})
 
     linkTypeCaption.append('circle')
       .attr('r', l.sourceR)
-      .attr('class',function (d) {return 'node target type'+d})
+      .attr('class',function (d) {return 'node target '+l.linksColors+d})
 
       .attr('cx', captionWidth-captionSpacing)
       .style('fill','white')
@@ -408,7 +408,7 @@ function onData(error, data) {
 
   // target node
   var targetNode = event.append('circle')
-    .attr('class',function (d) {return 'node target type'+d.typeId})
+    .attr('class',function (d) {return 'node target '+l.linksColors+d.typeId})
     .attr('cy', targetY)
     .style('stroke', linkColor)
     .style('stroke-width', function(d){return getLayout(d,'links', 'targetR')/3 } )
@@ -428,7 +428,7 @@ function onData(error, data) {
     .attr("marker-end", function(d) { return "url(#arrow)"; });
 
   var edges = event.append('line')
-    .attr('class',function (d) {return 'edges type'+d.typeId})
+    .attr('class',function (d) {return 'edges '+l.linksColors+d.typeId})
     .style('stroke',linkColor)
     .style('opacity', function(d){ return getLayout(d, 'links', 'edgesOpacity') })
     .attr('y1', sourceY)
@@ -438,7 +438,7 @@ function onData(error, data) {
 
   // source node
   var sourceNode = event.append('circle')
-    .attr('class',function (d) {return 'node source type'+d.typeId})
+    .attr('class',function (d) {return 'node source '+l.linksColors+d.typeId})
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', function(d){return getLayout(d,'links', 'sourceR')})

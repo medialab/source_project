@@ -49,7 +49,7 @@ text[active="0"], *[active="0"] text {
 .title {
   font-style: italic;
   text-transform: uppercase;
-  a { font-size: 1em; color:black;}
+  a { font-size: 1em; color:black; text-decoration: underline;}
 }
 .header {
   margin:0.5em;
@@ -117,7 +117,7 @@ text[active="0"], *[active="0"] text {
 
 }
 
-.typeSet (@color: gold) {
+.forceColor (@color: gold) {
   &.source, &.typeCaption { fill: @color !important;}
   &.target, &.edges { stroke: @color !important;}
 }
@@ -127,14 +127,14 @@ text[active="0"], *[active="0"] text {
   font-size: 11px;
   .type1234 { display: none;}
 
-  .type5286 { .typeSet(#ff7f00) } // signs
-  .type5331 { .typeSet(#33a02c) } // applies
-  .type5097 { .typeSet(#6a3d9a) } // has for legal basis
-  .type5110 { .typeSet(grey) } // is contained
-  .type5177 { .typeSet(#fb9a99) } // is integrated
-  .type5365 { .typeSet(red) } // discontinued by
-  .type5112 { .typeSet(#1f78b4) } // create
-  .type5241 { .typeSet(#33a02c) } // refers to
+  .typeId5286 { .forceColor(#ff7f00) } // signs
+  .typeId5331 { .forceColor(#33a02c) } // applies
+  .typeId5097 { .forceColor(#6a3d9a) } // has for legal basis
+  .typeId5110 { .forceColor(grey) } // is contained
+  .typeId5177 { .forceColor(#fb9a99) } // is integrated
+  .typeId5365 { .forceColor(red) } // discontinued by
+  .typeId5112 { .forceColor(#1f78b4) } // create
+  .typeId5241 { .forceColor(#33a02c) } // refers to
 
 
   .edgeShadow {
