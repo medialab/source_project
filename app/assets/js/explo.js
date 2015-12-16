@@ -69,7 +69,7 @@ function onData(error, data) {
     indexes.nodes[d] = _.groupBy(g.nodes, d);
     indexes.links[d] = _.groupBy(g.links, d);
     recTypes.nodes[d] = _(g.nodes).sortBy(d).map(d).uniq().value();
-    recTypes.links[d] = _(g.links).sortBy(d).map(d).uniq().value();
+    recTypes.links[d] = _(g.links).reject('typeId',1234).sortBy(d).map(d).uniq().value();
   })
 
   var line = d3.svg.line()
