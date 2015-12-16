@@ -309,7 +309,7 @@ function onData(error, data) {
     var captionWidth = 180;
     var captionSpacing = 25;
     svg.append('text')
-      .text('RELATION TYPES COLOR')
+      .text('RELATION TYPES COLORS')
       .attr('x', function(d){ return l.offsetX } )
       .attr('y', function(d,i){return _(eventPosY).max() + 5 * l.spacingY +3 } )
 

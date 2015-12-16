@@ -6856,7 +6856,7 @@ text[active="0"],
 }
 #profile .axis {
   font-weight: normal;
-  font-size: 10px;
+  font-size: 9px;
 }
 #profile .axis path {
   display: none;
@@ -6872,7 +6872,7 @@ text[active="0"],
   font-weight: normal;
   font-style: normal;
 }
-#explo .type1234 {
+#explo .typeId1234 {
   display: none;
 }
 #explo .typeId5286.source,
@@ -6940,7 +6940,7 @@ text[active="0"],
   stroke: #33a02c !important;
 }
 #explo .edgeShadow {
-  stroke: black;
+  stroke: white;
 }
 #explo .yearMark,
 #explo .grid {
@@ -6949,6 +6949,9 @@ text[active="0"],
 #explo .hoverZoneLines {
   opacity: 0;
   stroke: gold;
+}
+#explo .listItem text {
+  font-size: 9px;
 }
 #explo .groupLabel {
   text-transform: uppercase;
