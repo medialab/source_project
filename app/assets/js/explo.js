@@ -104,14 +104,7 @@ function onData(error, data) {
   var ntCount = _.keys(indexes.nodes[l.nodesColors]).length;
   var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
-  console.log(l.nodesColors, ntCount, l.linksColors , ltCount)
-
-
-  var filteredColors = _(colorbrewer.Set2[8]).filter(function (d) {
-    return d !== "#fc8d62";
-  }).value();
-
-  console.log(filteredColors)
+  var filteredColors = _(colorbrewer.Set2[8]).filter(function (d) {return d !== "#fc8d62";}).value();
   var getNodeColor = (ntCount < 7 ? d3.scale.ordinal().range(filteredColors) : d3.scale.category20() )
   var getLinkColor = (ltCount < 8 ? d3.scale.category10() : d3.scale.category20() )
 
@@ -152,37 +145,17 @@ function onData(error, data) {
   // event handlers
   function onZoomChange(){ l.spacingX = this.value; update() }
   function onClick(e,f,g,h){
+
     var keyDown = window.event.metaKey;
     var state = parseInt(d3.select(this).attr('active'));
 
-    d3.selectAll('.node').filter(function(d, i){
-      var test = false;
-      if(e.recordTypeId === 1) test = d.source.recordId === e.source.recordId || d.target.recordId === e.target.recordId
-      if(d.source) test = test || d.source.recordId === e.recordId || d.target.recordId === e.recordId
-      return keyDown ? !test : test
-    }).style('opacity',state)
-
-    d3.selectAll('.edges').filter(function(d, i){
-      var test = (d.source.recordId === e.recordId || d.target.recordId === e.recordId)
-      return keyDown ? !test : test
-    }).attr('visibility', function(d){ return isVisible(state)} )
-
-    d3.selectAll('.nodeTimeline').filter(function(d,i){
-      var test = d.recordId === e.recordId
-      return keyDown ? !test : test
-    }).attr('visibility', function(d){ return isVisible(state) })
-
-    d3.selectAll('.listItem').filter(function(d,i){
-      var test = d.recordId === e.recordId
-      return keyDown ? !test : test
-    }).attr('active', 1-state)
-
-    d3.selectAll('.pathway').filter(function(d,i){
-      var test = d[0][2] === e.recordId
-      return keyDown ? !test : test
-    }).attr('visibility', function(d){ return isVisible(state) })
-
-    d3.select(this).attr('active', 1-state)
+    if(keyDown) {
+      state = !state;
+      d3.selectAll('.listItem').attr('active', 0);
+      d3.selectAll('.node, .edges, .nodeTimeline').attr('visibility', 'hidden');
+    }
+    d3.selectAll('.recordId'+e.recordId+', .sourceRecordId'+e.recordId+', .targetRecordId'+e.recordId).attr('visibility', function(d){ return isVisible(state)} )
+    d3.select(this).attr('active', 1-state);
 
   }
   function onLinkTypeClick(e){
@@ -247,7 +220,7 @@ function onData(error, data) {
     .style('stroke-width', function(d){return getLayout(d, 'nodes', 'entityLineWidth')})
     .style('opacity', function(d){return getLayout(d,'nodes', 'entityLineOpacity')})
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .attr('class','nodeTimeline');
+    .attr('class',function (d) {return 'nodeTimeline recordId'+d.recordId})
 
   // list nodes
   var list = svg.selectAll('.entities')
@@ -330,7 +303,7 @@ function onData(error, data) {
       return sample ? sample.typeName + ' ('+indexes.links.typeId[d].length+')' : d;
     })
     .attr('text-anchor', 'middle')
-    .attr('class',function (d) {return 'typeCaption '+l.linksColors+d})
+    .attr('class',function (d) {return 'typeCaption recordId'+d.recordId+' '+l.linksColors+d})
     .attr('x', (captionWidth-captionSpacing)/2 )
     .attr('y', -3 )
     // .style('fill', function(d,i){ return getLinkColor(i)})
@@ -348,17 +321,17 @@ function onData(error, data) {
         .attr('x2', captionWidth-captionSpacing)
         .attr('y2', 0)
         .style('stroke', function(d,i){ return getLinkColor(i)})
-        .attr('class',function (d) {return 'edges '+l.linksColors+d})
+        .attr('class',function (d) {return 'edges recordId'+d.recordId+' '+l.linksColors+d})
 
 
     linkTypeCaption.append('circle')
       .attr('r', l.sourceR)
-      .attr('class',function (d) {return 'node source '+l.linksColors+d})
+      .attr('class',function (d) {return 'node source recordId'+d.recordId+' '+l.linksColors+d})
       .style('fill', function(d,i){ return getLinkColor(i)})
 
     linkTypeCaption.append('circle')
       .attr('r', l.sourceR)
-      .attr('class',function (d) {return 'node target '+l.linksColors+d})
+      .attr('class',function (d) {return 'node target recordId'+d.recordId+' '+l.linksColors+d})
 
       .attr('cx', captionWidth-captionSpacing)
       .style('fill','white')
@@ -412,7 +385,7 @@ function onData(error, data) {
 
   // target node
   var targetNode = event.append('circle')
-    .attr('class',function (d) {return 'node target '+l.linksColors+d.typeId})
+    .attr('class',function (d) {return 'node target sourceRecordId'+d.source.recordId+'  targetRecordId'+d.target.recordId+' recordId'+d.recordId+' '+l.linksColors+d.typeId})
     .attr('cy', targetY)
     .style('stroke', linkColor)
     .style('stroke-width', function(d){return getLayout(d,'links', 'targetR')/3 } )
@@ -424,7 +397,7 @@ function onData(error, data) {
 
   // edges
   var edgesShadow = event.append('line')
-    .attr('class', 'edges edgeShadow')
+    .attr('class',function (d) {return 'edges edgeShadow sourceRecordId'+d.source.recordId+'  targetRecordId'+d.target.recordId+' recordId'+d.recordId+' '+l.linksColors+d.typeId})
     .style('opacity', function(d){ return getLayout(d, 'links', 'linksColorsShadowOpacity') })
     .attr('y1', sourceY)
     .attr('y2', targetY)
@@ -432,7 +405,7 @@ function onData(error, data) {
     .attr("marker-end", function(d) { return "url(#arrow)"; });
 
   var edges = event.append('line')
-    .attr('class',function (d) {return 'edges '+l.linksColors+d.typeId})
+    .attr('class',function (d) {return 'edges  sourceRecordId'+d.source.recordId+'  targetRecordId'+d.target.recordId+' recordId'+d.recordId+' '+l.linksColors+d.typeId})
     .style('stroke',linkColor)
     .style('opacity', function(d){ return getLayout(d, 'links', 'edgesOpacity') })
     .attr('y1', sourceY)
@@ -442,7 +415,7 @@ function onData(error, data) {
 
   // source node
   var sourceNode = event.append('circle')
-    .attr('class',function (d) {return 'node source '+l.linksColors+d.typeId})
+    .attr('class',function (d) {return 'node source sourceRecordId'+d.source.recordId+'  targetRecordId'+d.target.recordId+' recordId'+d.recordId+' '+l.linksColors+d.typeId})
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', function(d){return getLayout(d,'links', 'sourceR')})
