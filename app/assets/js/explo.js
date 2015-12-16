@@ -244,12 +244,12 @@ function onData(error, data) {
     // hover invisible zone
     list.append('line')
     .attr('x1', 0)
-    .attr('y1', function(d){return eventPosY[d.recordId]})
+    .attr('y1', function(d){return eventPosY[d.recordId] + 1 })
     .attr('x2', w)
     .attr('y2', function(d){return eventPosY[d.recordId]})
     .attr('class','hoverZoneLines')
     .attr('id',function(d){ return 'l'+d.recordId } )
-    .style('stroke-width', l.spacingY-3)
+    .style('stroke-width', l.spacingY - 4)
     .on('mouseover', function (d) {
       d3.select(this).style('opacity',.4)
     })
