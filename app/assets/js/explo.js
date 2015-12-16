@@ -12,6 +12,8 @@ function onData(error, data) {
   console.log(data, error);
 
   data = data.results
+
+
   var eventPosY = {}, eventPosX = {}, l = _.defaults(g.layout, g.conf.layout);
 
   console.log('\n== data report == \n',Sutils.dataCheck(data),'\n== end ==\n\n');
@@ -20,11 +22,16 @@ function onData(error, data) {
   g.conf.relMerges = typeof g.corpus.relMerges !== 'undefined' ? g.corpus.relMerges : g.conf.relMerges;
   data = Sutils.mergeNodesFromRelation(data, g.conf, l);
 
+
+  // adding fake relation to have a proper startdate #shameOnYou
+  data.push({recordId: 9999, recordTypeId: 1, recordTypeName: "Record relationship", source: g.corpus.continueId, startDate: 2015, target: g.corpus.continueId, title: "", typeId: 1234, typeName: "end"})
+
   // get relations with a source and a target
   g.links = _(Sutils.getValidLinks(data, g.conf, l))
     .filter(function(d){return g.corpus.links.reject ? Sutils.multiValueFilter(d, g.corpus.links.reject, true) : true})
     .sortByOrder(g.corpus.links.sortBy, g.corpus.links.sortOrder)
     .value();
+
 
   // get linked nodes
   g.nodes = Sutils.getLinkedNodes(data, g.links);
@@ -56,6 +63,7 @@ function onData(error, data) {
   var indexType = ['typeId','typeName','recordTypeId','startDate','recordId','category','typeGroup'],
       indexes = {nodes:{},links:{}},
       recTypes = {nodes:{},links:{}};
+
 
   _.forEach(indexType, function(d){
     indexes.nodes[d] = _.groupBy(g.nodes, d);
@@ -97,6 +105,7 @@ function onData(error, data) {
   var ltCount = _.keys(indexes.links[l.linksColors]).length;
 
   console.log(l.nodesColors, ntCount, l.linksColors , ltCount)
+
 
   var filteredColors = _(colorbrewer.Set2[8]).filter(function (d) {
     return d !== "#fc8d62";
@@ -335,7 +344,7 @@ function onData(error, data) {
     event.append('title')
       .text(function(d) {
         return  + d.startDate + '\n'
-        + d.source.shortName + ' '
+        + d.source.shortName + '  ('+d.source. recordId+')'
         + '\n\t['+ d.typeName + ' — ' + d.typeId + ']\n'
         + '\t\t' + d.target.shortName
         +' ('+d.recordId+')\n—\n[[' + d.title + ']]'
@@ -362,7 +371,7 @@ function onData(error, data) {
 
   // target node
   var targetNode = event.append('circle')
-    .attr('class','node target')
+    .attr('class',function (d) {return 'node target t'+d.typeId})
     .attr('cy', targetY)
     .style('stroke', linkColor)
     .style('stroke-width', function(d){return getLayout(d,'links', 'targetR')/3 } )
@@ -392,7 +401,7 @@ function onData(error, data) {
 
   // source node
   var sourceNode = event.append('circle')
-    .attr('class','node source' )
+    .attr('class',function (d) {return 'node source t'+d.typeId})
     .attr('cy', sourceY)
     .style('fill', linkColor)
     .attr('r', function(d){return getLayout(d,'links', 'sourceR')})
