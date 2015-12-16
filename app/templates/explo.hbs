@@ -6,11 +6,12 @@
   </head>
   <body id="{{corpus.template}}" class="container-fluid">
     <div class="row header">
-      <h4  class="col-sm-1 surtitle">30 years of&nbsp;Schengen <br><a href="./" class="no-print">back</a></h4>
+      <h4  class="col-sm-1 surtitle">30 years of&nbsp;Schengen <br><a href="./" class="no-print">back</a><input id="zoom" type="range" value="1" max="50" min="1" step="1"></h4>
       <h1 class="col-sm-4 title">{{{corpus.title}}}</h1>
       <h6 class="col-sm-4 comment">{{corpus.description}}</h6>
 
       <div class="col-sm-3 disclaimer">
+
         <p><strong>how to read ?</strong>
           Horizontal lines represents entities ( documents, organisations, devices ) and vertical lines represents relations.Relations between entities change over time : they allow us to capture transformations and dynamics.
         </p>
@@ -23,6 +24,8 @@
         This visualisation was designed in the framework of the 'source' project by King's College London and SciencesPo Médialab.
         </p>
       </div>
+
+
     </div>
     <div class="row">
       <div class="graph col-sm-12">
@@ -30,7 +33,6 @@
     </div>
 
 
-    <p class="col-sm-1 slide" ><input id="zoom" type="range" value="1" max="50" min="1" step="1"></p>
 
     <script type="text/javascript" src="assets/js/lib.min.js"></script>
     <script type="text/javascript" src="assets/js/sutils.js"></script>

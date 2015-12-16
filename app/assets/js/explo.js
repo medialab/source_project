@@ -311,7 +311,7 @@ function onData(error, data) {
     svg.append('text')
       .text('RELATION TYPES COLOR')
       .attr('x', function(d){ return l.offsetX } )
-      .attr('y', function(d,i){return _(eventPosY).max() + 4 * l.spacingY +3 } )
+      .attr('y', function(d,i){return _(eventPosY).max() + 5 * l.spacingY +3 } )
 
     var linkTypeCaption = svg.selectAll('.linkTypeCaption')
     .data(recTypes.links[l.linksColors]).enter()
@@ -319,7 +319,7 @@ function onData(error, data) {
     .attr('transform', function(d,i){
 
       var x = l.offsetX + _.floor(i/l.linkTypeLabelByline)*captionWidth + captionWidth ;
-      var y = (_(eventPosY).max() + 4 * l.spacingY) + (i%l.linkTypeLabelByline) * (l.spacingY *1.2)
+      var y = (_(eventPosY).max() + 5 * l.spacingY) + (i%l.linkTypeLabelByline) * (l.spacingY *1.2)
       return 'translate(' + x + ',' + y + ')';
     })
     linkTypeCaption.append('text')
