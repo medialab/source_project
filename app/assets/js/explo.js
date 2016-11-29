@@ -1,6 +1,6 @@
 var config  = {}, g = {};
 
-d3.json('../config.json', function(error, config){
+d3.json('config.json', function(error, config){
   g.conf = config;
   g.corpus = _(config.corpus).filter(function(value, key) {return key === corpusId;}).first();
   g.layout = typeof g.corpus.layout !== 'undefined' ? g.corpus.layout : {};

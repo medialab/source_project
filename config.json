@@ -1,0 +1,375 @@
+{
+  "server":"http://heurist.sydney.edu.au/h4-ao/migrated/viewers/smarty/showReps.php?db=meder_test_to_delete&w=all&q=",
+  "param":"&h4=1&publish=1&debug=0&template=JSON-structured.tpl",
+
+  "corpus": {
+    "enlargement": {
+      "title":"Expanding freedom of movement: across Europe and beyond?",
+      "description":"This first timeline shows the European treaties, as well as the Schengen treaties.  Both lines run in parallel with one another until 1999. With the entry into force of the Amsterdam Treaty in 1999, the Schengen Acquis belongs fully to the Community Acquis. States that have become members of the European Union after 1999 have also become members of Schengen. Schengen today applies to 26 States, 4 of which are non-EU members. It has expanded far beyond the five founding members, which do not have the monopoly over Schengen.",
+      "query": "f:212:enlargement OR t:1",
+      "mergeDirection": "target",
+      "continueId":55,
+      "layout":{
+        "linearTime":false,
+        "nodesColors":"category",
+        "linksColorsShadowOpacity":0,
+        "spacingX": 15,
+        "spacingY":17,
+        "linearTime": false
+      },
+      "nodes":{
+        "groups":[
+          {
+            "name":"documents",
+            "filter":{"recordTypeId":13},
+            "sortBy":["category","typeId","startDate"],
+            "sortOrder":["asc","desc","asc"]
+          },
+          {
+            "name":"states",
+            "filter":{"typeId":5314}
+          }
+        ],
+        "layouts":[
+          {
+            "typeIds":[5314],
+            "layout":{"entityLineWidth":0}
+          }
+        ]
+      },
+
+      "links": {
+        "layouts":[
+          {
+            "typeIds":[5177, 5097, 5111],
+            "layout":{"edgesWidth":13, "linksColorsShadowWidth":2, "linksColorsShadowOpacity":0.5}
+          },
+          {
+            "typeIds":[5331],
+            "layout":{"sourceR":4}
+          }
+        ]
+      },
+      "template":["explo"]
+    },
+
+    "fom": {
+      "title":"Two modalities to achieve freedom&nbsp;of&nbsp;movement (1)",
+      "description":"The second timeline shows that Schengen is not the laboratory of freedom of movement in Europe. Predating the Schengen cooperation, one finds another history of freedom of movement. The articles of the European Treaties provide legal basis for a series of regulation and directives making provisions for the free movement of workers as well as freedom of establishment. The years 1984-85 accelerate this community-based history of free movement. Art. 8a TEC, created by the Single European Act, makes provision for the abolition of internal borders by 1992. This would result in the unification of the territory of the Member States, attributing a more significant role to community actors.",
+      "query": "f:212:move OR t:1",
+      "mergeDirection": "target",
+      "continueId":2552,
+      "layout":{
+        "nodesColors":"category",
+        "nodesMergeFromRelation":[],
+        "spacingX":12,
+        "spacingY":17,
+        "offsetX": 425,
+        "linksColorsShadowOpacity":0
+      },
+      "nodes":{
+        "groups":[
+          {
+            "name":"EUROPEAN COMMUNITY / UNION",
+            "filter":{"category":"1_EC"},
+            "sortBy":["recordTypeId"]
+          },
+          {"name":"Hybrid","filter":{"category":"2_hybrid"}},
+          {"name":"Schengen","filter":{"category":"3_Schengen"}}
+        ],
+        "layouts":[
+          { "typeIds":[5379],
+            "layout":{
+              "entityLineWidth":3
+            }
+          }
+        ]
+      },
+      "links": {
+        "layouts":[
+          { "typeIds":[5177,5364],
+            "layout":{
+              "edgesWidth":14, "linksColorsShadowOpacity":0
+            }
+          }
+        ]
+      },
+      "template":["explo"]
+    },
+
+    "control": {
+      "title":"Two modalities to achieve freedom of movement (2)",
+      "description":"Another difference between both modalities relate to the link between freedom of movement and control of movement, between liberty and security. In the EC modality, security measures exist but remain exceptional. In Schengen, the control of movement, often called “offsetting” or “flanking” measures, are much more pervasive. Exchange of information becomes automatic and systematic. Also, emphasis is put on a tighter control of external borders, which, however, should remain under the responsibility of Member-States, foreclosing the option of a European corps of border guards.",
+      "continueId":55,
+      "query": "f:212:control or t:1",
+      "mergeDirection": "target",
+      "layout":{
+        "nodesColors":"category",
+        "spacingX":27,
+        "spacingY":17,
+        "offsetX": 450
+      },
+      "nodes":{
+        "groups":[
+          {
+            "name":"EUROPEAN COMMUNITY / UNION",
+            "filter":{"category":"1_EC"},
+            "sortBy":["recordTypeId"]
+          },
+          {"name":"Hybrid","filter":{"category":"2_hybrid"}},
+          {"name":"Schengen","filter":{"category":"3_Schengen"}}
+        ],
+        "layouts":[
+          { "typeIds":[5379],
+            "layout":{
+              "entityLineWidth":3
+            }
+          }
+        ]
+      },
+      "links": {
+        "layouts":[
+          { "typeIds":[5177, 5097, 5364],
+            "layout":{
+              "edgesWidth":14, "linksColorsShadowOpacity":0
+            }
+          }
+        ]
+      },
+      "template":["explo"]
+    },
+
+    "border": {
+      "title":"Control and surveillance of movement: groups and actors",
+      "description":"This timeline shows the actors who participated in drafting the Schengen agreement and, more generally, re-shaping freedom of movement in Europe. The Schengen groups are located within a constellation of other forums.  Two cascades run in parallel: the Schengen cascade and the cascade sourced in the ad hoc working groups of the late 1980s.  They flow together in the years 1998-2000, following the entry into force of the Treaty of Amsterdam. This integration, however, does not mean that struggles between different understandings of freedom of movement fade away. Who should have a say in determining what are the proper conditions for achieving free movement? The current debate around Frontex is a testimony to the continued vivacity of these disputes.",
+      "query": "f:212:border OR t:1",
+      "mergeDirection": "target",
+      "continueId":343,
+
+      "nodes":{
+        "groups":[
+          {"filter":{"typeGroup":"forum"}, "name":"forum"},
+          {"filter":{"typeGroup":"council body"}, "name":"council bodies"},
+          {"filter":{"typeGroup":"administration"}, "name":"European commission"},
+          {"filter":{"typeGroup":"agency"}, "name":"agency"},
+          {"filter":{"typeGroup":"zero"}, "name":"databases"}
+        ]
+      },
+      "layout":{
+        "edgesWidth":11,
+        "nodesColors":"typeGroup",
+        "linksColors":"source",
+        "linearTime":false,
+        "nodesMergeFromRelation":[],
+        "linksColorsShadowOpacity":1,
+        "spacingX":8,
+        "spacingY":12,
+        "offsetX": 230
+      },
+      "links": {
+        "sortBy":["startDate","typeId"],
+        "sortOrder":["asc","desc"]
+      },
+      "template":["explo"]
+    },
+    "police": {
+      "title":"Police and intelligence cooperation: groups and actors",
+      "description":"The same image of the two cascades also characterizes the history of crime control. Many Schengen working group deal with issues of judicial and police cooperation. In 1998-2000, those groups too are integrated in the structures of the Council. Starting with the Schengen negotiation and working groups and following the relations of filiation, one stumbles quickly on the council bodies and, further, on EU agencies of security, such as Europol or Frontex. Such agencies play an increasingly prominent role in policing free movement across Europe. ",
+      "query": "f:212:police OR t:1",
+      "mergeDirection": "source",
+      "continueId":343,
+
+      "layout":{
+        "edgesWidth":8,
+        "nodesColors":"typeGroup",
+        "linksColors":"source",
+        "linearTime":false,
+        "nodesMergeFromRelation":[],
+        "linksColorsShadowOpacity":1,
+        "spacingX":6,
+        "spacingY":10,
+        "entityLineWidth":8,
+        "offsetX": 230
+      },
+      "nodes":{
+        "groups":[
+          {"filter":{"typeGroup":"club"}, "name":"clubs"},
+          {"filter":{"typeGroup":"forum"}, "name":"forum"},
+          {"filter":{"typeGroup":"council body"}, "name":"council bodies"},
+          {"filter":{"typeGroup":"administration"}, "name":"European administration"},
+          {"filter":{"typeGroup":"agency"}, "name":"agency"},
+          {"filter":{"typeGroup":"zero"}, "name":"databases"}
+        ]
+      },
+      "links": {},
+      "template":["explo"]
+    },
+    "function-creep": {
+      "title":"Schengen and information sharing",
+      "description":"Those groups have effectively hooked freedom of movement on control, surveillance and policing. But they have not only changed the way free movement is managed. They also have changed the way security is practiced. In particular, Schengen represents a stepping-stone in a far-reaching trend towards the technologization of policing. The Schengen Information System represents the first of the large-IT systems for the management of free movement across borders. These databases have become so central that their number increase over the past 30 years, as do the functions that each of them fulfills.",
+      "query": "f:212:database OR t:1",
+      "mergeDirection": "source",
+      "layout":{
+        "nodesColors":"category",
+        "spacingY":13,
+        "nodesMergeFromRelation":[5111,5111, 5354, 5353]
+      },
+      "nodes":{
+        "groups":[
+          {
+            "name":"issues",
+            "filter":{"recordTypeId":14},
+            "sortBy":["category","startDate"],
+            "sortOrder":["asc"]
+          },
+          {
+            "name":"devices",
+            "filter":{"recordTypeId":16},
+            "sortBy":["shortName","startDate"],
+            "sortOrder":["asc","asc"]
+          }
+        ]
+      },
+      "links": {
+        "sortBy":["startDate"],
+        "sortOrder":["asc"],
+        "layouts":[
+          {
+            "typeIds":[5090,5111,5353,5373,5364],
+            "layout":{"edgesWidth":10}
+          }
+        ]
+      },
+      "template":["profile"]
+    },
+
+    "all": {
+      "title":"all heurist database",
+      "description":"",
+
+      "query": "sortby:-m",
+      "mergeDirection": "source",
+      "nodes":{
+        "groups":[
+          {
+            "name":"all",
+            "sortBy":["recordTypeId","typeId","startDate"],
+            "sortOrder":["asc","asc","asc"]
+          }
+        ]
+      },
+      "links": {
+        "filter":{"typeId":[5164,5177,5331]},
+        "sortBy":["startDate"],
+        "sortOrder":["asc"]
+      },
+      "template":["explo"]
+    }
+  },
+
+  "layout":{
+
+    "edgesWidth":2,
+    "edgesOpacity":1,
+    "continueId":55,
+
+    "entityLineWidth":10,
+    "entityLineOpacity":1,
+
+    "sourceR": 6,
+    "targetR": 8,
+    "sourceOpacity": 1,
+    "targetOpacity": 1,
+
+    "offsetX": 200,
+    "spacingX": 10,
+
+    "offsetY": 50,
+    "spacingY": 12,
+
+    "gridOpacity":0.2,
+
+    "nodesColors":"typeId",
+    "linksColors":"typeId",
+    "linksColorsShadowWidth":1,
+    "linksColorsShadowOpacity":0,
+
+    "edgesHover":false,
+    "stopRelation":[5373, 5364, 5178, 5354, 5177,5365],
+    "nodesMergeFromRelation":[5353, 5260, 5261, 5373],
+
+    "linearTime": false,
+    "YearSpacing":3,
+
+    "linkTypeLabelByline":2,
+    "graphPerCol":5,
+
+
+    "pathwayInterpolation":"step",
+    "pathwayStrokeWidth":5,
+    "pathwayOpacity":0.7,
+    "pathwayFill":false,
+    "pathwayCrossTarget":false,
+    "pathwayCrossSource":false,
+    "pathwayMinSteps": 2
+
+  },
+  "relMerges":[
+    [
+      {"5241":"refers to"},
+      {"5242":"is refered to by"}
+    ],
+    [
+      {"5184":"table"},
+      {"5184":"is tabled by"}
+    ],
+    [
+      {"5286":"signs"},
+      {"5287":"is signed by"}
+    ],
+    [
+      {"5331":"applies"},
+      {"5331":"applies to"}
+    ],
+    [
+      {"5095":"joins"},
+      {"5095":"is joined by"}
+    ],
+    [
+      {"5112":"creates"},
+      {"5164":"created by"}
+    ],
+    [
+      {"5354":"is replaced by"},
+      {"5353":"replaces"}
+    ],
+    [
+      {"5177":"integrated by"},
+      {"5178":"integrates"}
+    ],
+    [
+      {"5110":"contained by"},
+      {"5111":"contains"}
+    ],
+    [
+      {"5373":"splits into"},
+      {"5374":"is the split of "}
+    ],
+    [
+      {"5365":"discontinued by"},
+      {"5364":"discontinues"}
+    ],
+    [
+      {"5333":"adopts"},
+      {"5332":"is adopted by"}
+    ],
+    [
+      {"5336":"amends"},
+      {"5335":"is amended by"}
+    ],
+    [
+      {"5097":"has for legal basis"},
+      {"5068":"is the legal basis of"}
+    ]
+  ]
+}

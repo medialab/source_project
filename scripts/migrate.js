@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   fs = require('fs'),
-  config = require('../config.json')
+  config = require('config.json')
   wget = require('wget-improved'),
   handlebars = require("handlebars");
   config.date = new Date();
