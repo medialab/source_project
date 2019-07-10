@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   fs = require('fs'),
-  config = require('config.json')
+  config = require('../config.json')
   wget = require('wget-improved'),
   handlebars = require("handlebars");
   config.date = new Date();
@@ -27,6 +27,7 @@ _.forEach(config.corpus, function(data, key){
 
   wget
     .download(req, '../app/data/'+data.json)
+    .on('error', function(error){ console.log("ERROR requesting", req, "for", key, json) })
     .on('end', function(json){ console.log(key, json) });
 
 });
